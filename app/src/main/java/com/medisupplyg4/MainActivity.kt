@@ -7,10 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.medisupplyg4.navigation.MediSupplyNavigation
 import com.medisupplyg4.ui.theme.MedisupplyG4Theme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +19,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MedisupplyG4Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MediSupplyApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MedisupplyG4Theme {
-        Greeting("Android")
+fun MediSupplyApp() {
+    val navController = rememberNavController()
+    
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            // El bottom navigation se maneja dentro de cada pantalla
+        }
+    ) { innerPadding ->
+        MediSupplyNavigation(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
