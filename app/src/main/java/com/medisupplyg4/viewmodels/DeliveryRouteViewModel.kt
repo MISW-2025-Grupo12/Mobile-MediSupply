@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.medisupplyg4.models.DeliveryRoute
+import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.repositories.DeliveryRouteRepository
 import kotlinx.coroutines.launch
@@ -22,13 +22,13 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
 
     private val deliveryRouteRepository = DeliveryRouteRepository(application)
 
-    private val _routes = MutableLiveData<List<DeliveryRoute>>()
+    private val _deliveries = MutableLiveData<List<SimpleDelivery>>()
     private val _isLoading = MutableLiveData(false)
     private val _selectedPeriod = MutableLiveData(RoutePeriod.DAY)
     private val _selectedDate = MutableLiveData(LocalDate.now())
 
-    val routes: LiveData<List<DeliveryRoute>>
-        get() = _routes
+    val deliveries: LiveData<List<SimpleDelivery>>
+        get() = _deliveries
 
     val isLoading: LiveData<Boolean>
         get() = _isLoading
@@ -56,17 +56,17 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
 
-                val fetchedRoutes = when (period) {
-                    RoutePeriod.DAY -> deliveryRouteRepository.getDeliveryRoutesForDay(date, driverId)
-                    RoutePeriod.WEEK -> deliveryRouteRepository.getDeliveryRoutesForWeek(date, driverId)
-                    RoutePeriod.MONTH -> deliveryRouteRepository.getDeliveryRoutesForMonth(
+                val fetchedDeliveries = when (period) {
+                    RoutePeriod.DAY -> deliveryRouteRepository.getDeliveriesForDay(date, driverId)
+                    RoutePeriod.WEEK -> deliveryRouteRepository.getDeliveriesForWeek(date, driverId)
+                    RoutePeriod.MONTH -> deliveryRouteRepository.getDeliveriesForMonth(
                         date.monthValue,
                         date.year,
                         driverId
                     )
                 }
 
-                _routes.value = fetchedRoutes
+                _deliveries.value = fetchedDeliveries
                 _eventNetworkError.value = false
                 _isLoading.value = false
             } catch (error: Exception) {

@@ -14,11 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.ui.components.SimplePeriodTabs
-import com.medisupplyg4.ui.components.SimpleDeliveryItem
+import com.medisupplyg4.ui.components.SimpleDeliveryCard
 import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -30,21 +31,15 @@ fun WorkingRoutesScreen(
     viewModel: DeliveryRouteViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-    // Usar remember para simular el estado
-    var routes by remember { mutableStateOf(emptyList<com.medisupplyg4.models.DeliveryRoute>()) }
-    var isLoading by remember { mutableStateOf(false) }
-    var selectedPeriod by remember { mutableStateOf(RoutePeriod.DAY) }
-    var networkError by remember { mutableStateOf(false) }
+    // Usar el ViewModel real
+    val deliveries by viewModel.deliveries.observeAsState(emptyList())
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val selectedPeriod by viewModel.selectedPeriod.observeAsState(RoutePeriod.DAY)
+    val selectedDate by viewModel.selectedDate.observeAsState(LocalDate.now())
 
-    // Simular carga de datos
-    LaunchedEffect(selectedPeriod) {
-        isLoading = true
-        kotlinx.coroutines.delay(1000) // Simular delay de red
-        isLoading = false
-        
-        // Crear datos mock
-        val mockRoutes = createMockRoutes()
-        routes = mockRoutes
+    // Cargar datos cuando cambie el período o fecha
+    LaunchedEffect(selectedPeriod, selectedDate) {
+        viewModel.loadRoutes()
     }
 
     Scaffold(
@@ -97,7 +92,7 @@ fun WorkingRoutesScreen(
         SimplePeriodTabs(
             selectedPeriod = selectedPeriod,
             onPeriodSelected = { period ->
-                selectedPeriod = period
+                viewModel.setSelectedPeriod(period)
             },
             modifier = Modifier.padding(horizontal = 24.dp)
         )
@@ -123,46 +118,32 @@ fun WorkingRoutesScreen(
                     )
                 }
             }
-            networkError -> {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Error de conexión",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = { 
-                                networkError = false
-                                isLoading = true
-                            }
-                        ) {
-                            Text("Reintentar")
-                        }
-                    }
-                }
-            }
-            routes.isEmpty() -> {
+            deliveries.isEmpty() -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "No hay rutas programadas para este período",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "No hay rutas disponibles",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "Intenta más tarde o verifica tu conexión",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
             else -> {
@@ -172,13 +153,9 @@ fun WorkingRoutesScreen(
                         .padding(horizontal = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Mostrar los primeros 3 puntos de entrega como en el mockup
-                    val allPoints = routes.flatMap { route -> route.deliveryPoints }
-                    val sortedPoints = allPoints.sortedBy { point -> point.order }
-                    val displayPoints = sortedPoints.take(3)
-                    
-                    items(displayPoints) { deliveryPoint ->
-                        SimpleDeliveryItem(deliveryPoint = deliveryPoint)
+                    // Mostrar todas las entregas
+                    items(deliveries) { delivery ->
+                        SimpleDeliveryCard(delivery = delivery)
                     }
                 }
             }
