@@ -27,6 +27,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.R
 
 
@@ -51,19 +52,19 @@ fun WorkingRoutesScreen(
     }
 
     val navigationItems = listOf(
-        "Rutas" to R.drawable.map,
-        "Entregas" to R.drawable.inventory,
-        "Perfil" to R.drawable.person,
+        stringResource(R.string.nav_routes) to R.drawable.map,
+        stringResource(R.string.nav_deliveries) to R.drawable.inventory,
+        stringResource(R.string.nav_profile) to R.drawable.person,
     )
 
-    val selectedItem = "Rutas"
+    val selectedItem = stringResource(R.string.nav_routes)
 
         Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Rutas",
+                        text = stringResource(R.string.nav_routes),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
@@ -151,12 +152,12 @@ fun WorkingRoutesScreen(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "No hay rutas disponibles",
+                            text = stringResource(R.string.no_routes_available),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = "Intenta más tarde o verifica tu conexión",
+                            text = stringResource(R.string.no_routes_message),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

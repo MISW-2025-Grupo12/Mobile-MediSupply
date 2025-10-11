@@ -13,9 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.SimpleDelivery
-import java.time.format.DateTimeFormatter
 import com.medisupplyg4.R
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun SimpleDeliveryCard(
@@ -49,7 +50,7 @@ fun SimpleDeliveryCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Ubicación",
+                    contentDescription = stringResource(R.string.delivery_location),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(32.dp)
                 )
@@ -60,7 +61,7 @@ fun SimpleDeliveryCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Cliente ${delivery.clienteId.takeLast(4)}",
+                    text = stringResource(R.string.customer_id, delivery.clienteId.takeLast(4)),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -73,13 +74,13 @@ fun SimpleDeliveryCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Producto: ${delivery.productoId}",
+                    text = stringResource(R.string.product_id, delivery.productoId),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Entrega: ${delivery.fechaEntrega.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
+                    text = stringResource(R.string.delivery_date, delivery.fechaEntrega.format(DateTimeFormatter.ofPattern(stringResource(R.string.date_format_short)))),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
@@ -88,7 +89,7 @@ fun SimpleDeliveryCard(
             // Flecha
             Icon(
                 painter = painterResource(id = R.drawable.chevron_forward),
-                contentDescription = "Ver detalles",
+                contentDescription = stringResource(R.string.delivery_view_details),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 modifier = Modifier.size(20.dp)
             )

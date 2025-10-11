@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.medisupplyg4.R
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.repositories.DeliveryRouteRepository
@@ -52,7 +53,7 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                val driverId = "driver-001" // TODO: Obtener del usuario autenticado
+                val driverId = getApplication<Application>().getString(R.string.default_driver_id) // TODO: Obtener del usuario autenticado
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
 

@@ -12,8 +12,8 @@ object ApiConfig {
     // const val BASE_URL = "http://localhost:5003/api/logistica/" // Para dispositivo físico
     
     // Headers comunes
-    const val CONTENT_TYPE = "application/json"
-    const val ACCEPT = "application/json"
+    const val CONTENT_TYPE = "application/json" // TODO: Mover a strings.xml
+    const val ACCEPT = "application/json" // TODO: Mover a strings.xml
     
     // Timeouts
     const val CONNECT_TIMEOUT = 30L // segundos

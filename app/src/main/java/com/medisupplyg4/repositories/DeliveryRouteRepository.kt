@@ -1,7 +1,9 @@
 package com.medisupplyg4.repositories
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import com.medisupplyg4.R
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +11,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DeliveryRouteRepository(application: Application) {
+class DeliveryRouteRepository(private val application: Application) {
     
     companion object {
         private const val TAG = "DeliveryRouteRepository"
@@ -22,19 +24,19 @@ class DeliveryRouteRepository(application: Application) {
                 val response = NetworkClient.deliveryApiService.getDeliveries(
                     driverId = driverId,
                     date = dateString,
-                    period = "day"
+                    period = application.getString(R.string.api_period_day)
                 )
                 
                 if (response.isSuccessful) {
                     val deliveries = response.body() ?: emptyList()
-                    Log.d(TAG, "Datos recibidos del backend: ${deliveries.size} entregas")
+                    Log.d(TAG, application.getString(R.string.log_data_received, deliveries.size))
                     deliveries
                 } else {
-                    Log.w(TAG, "Error del backend: ${response.code()}")
+                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error de red: ${e.message}", e)
+                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
                 emptyList()
             }
         }
@@ -47,17 +49,17 @@ class DeliveryRouteRepository(application: Application) {
                 val response = NetworkClient.deliveryApiService.getDeliveries(
                     driverId = driverId,
                     date = dateString,
-                    period = "week"
+                    period = application.getString(R.string.api_period_week)
                 )
                 
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
-                    Log.w(TAG, "Error del backend: ${response.code()}")
+                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error de red: ${e.message}", e)
+                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
                 emptyList()
             }
         }
@@ -71,17 +73,17 @@ class DeliveryRouteRepository(application: Application) {
                 val response = NetworkClient.deliveryApiService.getDeliveries(
                     driverId = driverId,
                     date = dateString,
-                    period = "month"
+                    period = application.getString(R.string.api_period_month)
                 )
                 
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
-                    Log.w(TAG, "Error del backend: ${response.code()}")
+                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error de red: ${e.message}", e)
+                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
                 emptyList()
             }
         }

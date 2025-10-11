@@ -12,7 +12,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.RoutePeriod
+import com.medisupplyg4.R
 
 @Composable
 fun SimplePeriodTabs(
@@ -21,9 +23,9 @@ fun SimplePeriodTabs(
     modifier: Modifier = Modifier
 ) {
     val periods = listOf(
-        RoutePeriod.DAY to "Día",
-        RoutePeriod.WEEK to "Semana", 
-        RoutePeriod.MONTH to "Mes"
+        RoutePeriod.DAY to stringResource(R.string.period_day),
+        RoutePeriod.WEEK to stringResource(R.string.period_week), 
+        RoutePeriod.MONTH to stringResource(R.string.period_month)
     )
 
     Row(

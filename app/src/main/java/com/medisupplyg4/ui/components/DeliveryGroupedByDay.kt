@@ -12,7 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.SimpleDelivery
+import com.medisupplyg4.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -53,7 +55,7 @@ private fun DayHeader(
     date: LocalDate,
     modifier: Modifier = Modifier
 ) {
-    val formatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale("es", "ES"))
+    val formatter = DateTimeFormatter.ofPattern(stringResource(R.string.date_format_day_name), Locale("es", "ES"))
     val today = LocalDate.now()
     val isToday = date == today
     
@@ -70,7 +72,7 @@ private fun DayHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = if (isToday) "Hoy" else formatter.format(date).replaceFirstChar { 
+            text = if (isToday) stringResource(R.string.today) else formatter.format(date).replaceFirstChar { 
                 if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
             },
             style = MaterialTheme.typography.titleMedium,
@@ -80,7 +82,7 @@ private fun DayHeader(
         )
         
         Text(
-            text = "${date.dayOfMonth}/${date.monthValue}",
+            text = stringResource(R.string.date_format_day_month, date.dayOfMonth, date.monthValue),
             style = MaterialTheme.typography.bodyMedium,
             color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                    else MaterialTheme.colorScheme.onSurfaceVariant

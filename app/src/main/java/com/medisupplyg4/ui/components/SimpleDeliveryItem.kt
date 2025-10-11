@@ -13,7 +13,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.DeliveryPoint
+import com.medisupplyg4.R
 
 @Composable
 fun SimpleDeliveryItem(
@@ -45,7 +47,7 @@ fun SimpleDeliveryItem(
         ) {
             Icon(
                 imageVector = Icons.Default.Star,
-                contentDescription = "Lugar",
+                contentDescription = stringResource(R.string.delivery_place),
                 tint = Color.Gray,
                 modifier = Modifier.size(32.dp)
             )
@@ -65,7 +67,7 @@ fun SimpleDeliveryItem(
             Spacer(modifier = Modifier.height(4.dp))
             
             Text(
-                text = "Entrega #${deliveryPoint.orderId}",
+                text = stringResource(R.string.delivery_number, deliveryPoint.orderId),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
@@ -80,7 +82,7 @@ fun SimpleDeliveryItem(
             if (deliveryPoint.requiresColdChain) {
                 Icon(
                     imageVector = Icons.Default.Star,
-                    contentDescription = "Cadena de frío",
+                    contentDescription = stringResource(R.string.delivery_cold_chain),
                     tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(20.dp)
                 )
@@ -89,7 +91,7 @@ fun SimpleDeliveryItem(
             // Flecha
             Icon(
                 imageVector = Icons.Default.Star,
-                contentDescription = "Ver detalles",
+                contentDescription = stringResource(R.string.delivery_view_details),
                 tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 modifier = Modifier.size(20.dp)
             )

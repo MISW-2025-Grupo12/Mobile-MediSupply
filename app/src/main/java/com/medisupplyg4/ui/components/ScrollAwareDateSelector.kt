@@ -12,8 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.models.SimpleDelivery
+import com.medisupplyg4.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -26,7 +28,7 @@ fun ScrollAwareDateSelector(
     modifier: Modifier = Modifier
 ) {
     val today = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
+    val formatter = DateTimeFormatter.ofPattern(stringResource(R.string.date_format_day_month_year), Locale("es", "ES"))
     
     // Determinar qué fecha mostrar según el período y el scroll
     val displayDate = when (selectedPeriod) {
@@ -51,7 +53,7 @@ fun ScrollAwareDateSelector(
         // Mostrar "Hoy" solo si la fecha mostrada es hoy
         if (isToday) {
             Text(
-                text = "Hoy",
+                text = stringResource(R.string.today),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
@@ -72,7 +74,7 @@ fun ScrollAwareDateSelector(
             )
             Icon(
                 imageVector = Icons.Default.DateRange,
-                contentDescription = "Calendario",
+                contentDescription = stringResource(R.string.calendar),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
