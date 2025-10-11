@@ -25,7 +25,7 @@ fun SimpleDeliveryCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(12.dp)
@@ -42,7 +42,7 @@ fun SimpleDeliveryCard(
                 modifier = Modifier
                     .size(60.dp)
                     .background(
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
                         shape = RoundedCornerShape(8.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -50,7 +50,7 @@ fun SimpleDeliveryCard(
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Ubicación",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -63,25 +63,25 @@ fun SimpleDeliveryCard(
                     text = "Cliente ${delivery.clienteId.takeLast(4)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = delivery.direccion,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Producto: ${delivery.productoId}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Entrega: ${delivery.fechaEntrega.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
             }
 
@@ -89,7 +89,7 @@ fun SimpleDeliveryCard(
             Icon(
                 painter = painterResource(id = R.drawable.chevron_forward),
                 contentDescription = "Ver detalles",
-                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 modifier = Modifier.size(20.dp)
             )
         }

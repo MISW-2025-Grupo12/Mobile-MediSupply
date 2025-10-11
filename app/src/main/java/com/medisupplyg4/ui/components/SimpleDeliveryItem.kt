@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medisupplyg4.models.DeliveryPoint
-import com.medisupplyg4.ui.theme.LightBlue
 
 @Composable
 fun SimpleDeliveryItem(
@@ -82,7 +81,7 @@ fun SimpleDeliveryItem(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Cadena de frío",
-                    tint = LightBlue,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(20.dp)
                 )
             }

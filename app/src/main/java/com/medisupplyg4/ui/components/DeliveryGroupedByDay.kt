@@ -61,8 +61,8 @@ private fun DayHeader(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = if (isToday) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) 
-                       else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                color = if (isToday) MaterialTheme.colorScheme.primaryContainer
+                       else MaterialTheme.colorScheme.surfaceContainer,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
             )
             .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -75,15 +75,15 @@ private fun DayHeader(
             },
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = if (isToday) MaterialTheme.colorScheme.primary 
-                   else MaterialTheme.colorScheme.onSurfaceVariant
+            color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer
+                   else MaterialTheme.colorScheme.onSurface
         )
         
         Text(
             text = "${date.dayOfMonth}/${date.monthValue}",
             style = MaterialTheme.typography.bodyMedium,
-            color = if (isToday) MaterialTheme.colorScheme.primary 
-                   else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+            color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                   else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

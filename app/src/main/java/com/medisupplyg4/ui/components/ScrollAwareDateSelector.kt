@@ -54,7 +54,7 @@ fun ScrollAwareDateSelector(
                 text = "Hoy",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
         } else {
             // Espacio vacío para mantener la alineación
@@ -68,12 +68,12 @@ fun ScrollAwareDateSelector(
             Text(
                 text = formatter.format(displayDate),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSurface
             )
             Icon(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Calendario",
-                tint = MaterialTheme.colorScheme.onBackground,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         }

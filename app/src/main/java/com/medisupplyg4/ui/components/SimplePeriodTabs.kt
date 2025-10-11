@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medisupplyg4.models.RoutePeriod
-import com.medisupplyg4.ui.theme.OliveGreen
 
 @Composable
 fun SimplePeriodTabs(
@@ -49,9 +48,9 @@ fun SimplePeriodTabs(
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         color = if (isSelected) 
-                            OliveGreen 
+                            MaterialTheme.colorScheme.primary 
                         else 
-                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     
                     if (isSelected) {
@@ -61,7 +60,7 @@ fun SimplePeriodTabs(
                                 .width(24.dp)
                                 .height(2.dp)
                                 .background(
-                                    color = OliveGreen,
+                                    color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(1.dp)
                                 )
                         )
@@ -77,6 +76,6 @@ fun SimplePeriodTabs(
         modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
-            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
+            .background(MaterialTheme.colorScheme.outlineVariant)
     )
 }
