@@ -66,7 +66,8 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
                     )
                 }
 
-                _deliveries.value = fetchedDeliveries
+                // Ordenar entregas por fecha de entrega
+                _deliveries.value = fetchedDeliveries.sortedBy { it.fechaEntrega }
                 _eventNetworkError.value = false
                 _isLoading.value = false
             } catch (error: Exception) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -19,6 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.ui.components.SimplePeriodTabs
 import com.medisupplyg4.ui.components.SimpleDeliveryCard
+import com.medisupplyg4.ui.components.DeliveryGroupedByDay
+import com.medisupplyg4.ui.components.ScrollAwareDateSelector
 import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -39,6 +42,9 @@ fun WorkingRoutesScreen(
     val selectedPeriod by viewModel.selectedPeriod.observeAsState(RoutePeriod.DAY)
     val selectedDate by viewModel.selectedDate.observeAsState(LocalDate.now())
 
+    // Estado de scroll para el contenido agrupado
+    val groupedListState = rememberLazyListState()
+    
     // Cargar datos cuando cambie el período o fecha
     LaunchedEffect(selectedPeriod, selectedDate) {
         viewModel.loadRoutes()
@@ -107,8 +113,11 @@ fun WorkingRoutesScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Selector de fecha
-        WorkingDateSelector(
+        // Selector de fecha dinámico con scroll
+        ScrollAwareDateSelector(
+            deliveries = deliveries,
+            selectedPeriod = selectedPeriod,
+            listState = groupedListState,
             modifier = Modifier.padding(horizontal = 24.dp)
         )
 
@@ -155,15 +164,28 @@ fun WorkingRoutesScreen(
                 }
             }
             else -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Mostrar todas las entregas
-                    items(deliveries) { delivery ->
-                        SimpleDeliveryCard(delivery = delivery)
+                // Mostrar entregas según el período seleccionado
+                when (selectedPeriod) {
+                    RoutePeriod.DAY -> {
+                        // Para día, mostrar lista simple
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 24.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(deliveries) { delivery ->
+                                SimpleDeliveryCard(delivery = delivery)
+                            }
+                        }
+                    }
+                    RoutePeriod.WEEK, RoutePeriod.MONTH -> {
+                        // Para semana y mes, mostrar agrupado por día
+                        DeliveryGroupedByDay(
+                            deliveries = deliveries,
+                            listState = groupedListState,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
                     }
                 }
             }
@@ -172,40 +194,3 @@ fun WorkingRoutesScreen(
     }
 }
 
-@Composable
-fun WorkingDateSelector(
-    modifier: Modifier = Modifier
-) {
-    val today = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
-    
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "Hoy",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = formatter.format(today),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = "Calendario",
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
