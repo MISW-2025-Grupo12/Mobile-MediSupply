@@ -77,4 +77,20 @@
     
     <!-- Default Driver ID -->
     <string name="default_driver_id">driver-001</string>
+    
+    <!-- Startup Screen -->
+    <string name="startup_title">Bienvenido a MediSupply</string>
+    <string name="startup_subtitle">Selecciona tu idioma preferido</string>
+    <string name="startup_select_language">Seleccionar idioma</string>
+    <string name="startup_continue">Continuar</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+    <string name="country_colombia">Colombia</string>
+    <string name="country_usa">United States</string>
+    
+    <!-- Startup Screen Additional -->
+    <string name="startup_info_title">ℹ️ Información</string>
+    <string name="startup_info_spanish">Los formatos de fecha y valores monetarios se mostrarán según el formato de Colombia.</string>
+    <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
+    <string name="startup_expand">Desplegar</string>
 </resources>

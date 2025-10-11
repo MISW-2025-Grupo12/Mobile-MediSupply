@@ -92,7 +92,7 @@ private val LightColorScheme = lightColorScheme(
 fun MedisupplyG4Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Usar nuestros colores personalizados
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

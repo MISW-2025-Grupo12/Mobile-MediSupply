@@ -12,12 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.R
+import com.medisupplyg4.utils.DateFormatter
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Composable
 fun DeliveryGroupedByDay(
@@ -55,7 +55,7 @@ private fun DayHeader(
     date: LocalDate,
     modifier: Modifier = Modifier
 ) {
-    val formatter = DateTimeFormatter.ofPattern(stringResource(R.string.date_format_day_name), Locale("es", "ES"))
+    val context = LocalContext.current
     val today = LocalDate.now()
     val isToday = date == today
     
@@ -72,9 +72,7 @@ private fun DayHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = if (isToday) stringResource(R.string.today) else formatter.format(date).replaceFirstChar { 
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
-            },
+            text = if (isToday) stringResource(R.string.today) else DateFormatter.formatLongDate(date, context),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer
@@ -82,7 +80,7 @@ private fun DayHeader(
         )
         
         Text(
-            text = stringResource(R.string.date_format_day_month, date.dayOfMonth, date.monthValue),
+            text = DateFormatter.formatDayMonth(date, context),
             style = MaterialTheme.typography.bodyMedium,
             color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                    else MaterialTheme.colorScheme.onSurfaceVariant

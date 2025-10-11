@@ -12,13 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.R
+import com.medisupplyg4.utils.DateFormatter
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Composable
 fun ScrollAwareDateSelector(
@@ -27,8 +27,8 @@ fun ScrollAwareDateSelector(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val today = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern(stringResource(R.string.date_format_day_month_year), Locale("es", "ES"))
     
     // Determinar qué fecha mostrar según el período y el scroll
     val displayDate = when (selectedPeriod) {
@@ -68,7 +68,7 @@ fun ScrollAwareDateSelector(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = formatter.format(displayDate),
+                text = DateFormatter.formatFullDate(displayDate, context),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )

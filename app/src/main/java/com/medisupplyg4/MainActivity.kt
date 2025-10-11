@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.medisupplyg4.base.BaseActivity
 import com.medisupplyg4.navigation.MediSupplyNavigation
 import com.medisupplyg4.ui.theme.MedisupplyG4Theme
+import com.medisupplyg4.viewmodels.StartupViewModel
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,6 +31,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MediSupplyApp() {
     val navController = rememberNavController()
+    val startupViewModel: StartupViewModel = viewModel()
     
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -37,6 +41,7 @@ fun MediSupplyApp() {
     ) { innerPadding ->
         MediSupplyNavigation(
             navController = navController,
+            startupViewModel = startupViewModel,
             modifier = Modifier.padding(innerPadding)
         )
     }

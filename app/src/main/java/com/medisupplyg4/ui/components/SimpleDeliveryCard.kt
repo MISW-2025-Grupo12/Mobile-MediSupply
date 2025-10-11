@@ -13,16 +13,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.R
-import java.time.format.DateTimeFormatter
+import com.medisupplyg4.utils.DateFormatter
 
 @Composable
 fun SimpleDeliveryCard(
     delivery: SimpleDelivery,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -80,7 +82,7 @@ fun SimpleDeliveryCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = stringResource(R.string.delivery_date, delivery.fechaEntrega.format(DateTimeFormatter.ofPattern(stringResource(R.string.date_format_short)))),
+                    text = stringResource(R.string.delivery_date, DateFormatter.formatShortDateTime(delivery.fechaEntrega, context)),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )
