@@ -87,7 +87,7 @@ fun SimpleDeliveryCard(
 
             // Flecha
             Icon(
-                painter = painterResource(id = R.drawable.chevron_forward_24dp),
+                painter = painterResource(id = R.drawable.chevron_forward),
                 contentDescription = "Ver detalles",
                 tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 modifier = Modifier.size(20.dp)
