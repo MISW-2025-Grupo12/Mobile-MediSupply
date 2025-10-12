@@ -1,0 +1,118 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Medisupply G4</string>
+    
+    <!-- Navigation -->
+    <string name="nav_routes">Routes</string>
+    <string name="nav_deliveries">Deliveries</string>
+    <string name="nav_profile">Profile</string>
+    
+    <!-- Period Tabs -->
+    <string name="period_day">Day</string>
+    <string name="period_week">Week</string>
+    <string name="period_month">Month</string>
+    
+    <!-- Date Selector -->
+    <string name="today">Today</string>
+    <string name="calendar">Calendar</string>
+    
+    <!-- Delivery Cards -->
+    <string name="delivery_location">Location</string>
+    <string name="customer_avatar">Customer avatar</string>
+    <string name="delivery_place">Place</string>
+    <string name="delivery_number">Delivery #%1$s</string>
+    <string name="delivery_cold_chain">Cold chain</string>
+    <string name="delivery_view_details">View details</string>
+    <string name="delivery_address">Address</string>
+    <string name="delivery_phone">Phone</string>
+    <string name="delivery_time">Time</string>
+    <string name="delivery_estimated_time">Delivery: %1$s</string>
+    <string name="delivery_products">Products:</string>
+    <string name="delivery_product_item">• %1$s (%2$d %3$s)</string>
+    <string name="delivery_priority">Priority</string>
+    <string name="delivery_special_instructions">Special instructions</string>
+    <string name="delivery_instructions">Instructions</string>
+    
+    <!-- Priority Levels -->
+    <string name="priority_low">Low</string>
+    <string name="priority_normal">Normal</string>
+    <string name="priority_high">High</string>
+    <string name="priority_urgent">Urgent</string>
+    
+    <!-- Customer Info -->
+    <string name="customer_id">Customer %1$s</string>
+    <string name="product_id">Product: %1$s</string>
+    <string name="delivery_date">Delivery: %1$s</string>
+    
+    <!-- Empty States -->
+    <string name="no_routes_available">No routes available</string>
+    <string name="no_routes_message">Try again later or check your connection</string>
+    
+    <!-- Date Formats -->
+    <string name="date_format_day_month_year">MMMM d, yyyy</string>
+    <string name="date_format_day_name">EEEE, MMMM d</string>
+    <string name="date_format_short">MM/dd/yyyy HH:mm</string>
+    <string name="date_format_time">HH:mm</string>
+    <string name="date_format_day_month">%1$d/%2$d</string>
+    
+    <!-- API Configuration -->
+    <string name="api_content_type">application/json</string>
+    <string name="api_accept">application/json</string>
+    
+    <!-- Network Periods -->
+    <string name="api_period_day">day</string>
+    <string name="api_period_week">week</string>
+    <string name="api_period_month">month</string>
+    
+    <!-- Error Messages -->
+    <string name="error_constructing_viewmodel">Unable to construct viewmodel</string>
+    <string name="error_network">Network error: %1$s</string>
+    <string name="error_backend">Backend error: %1$d</string>
+    
+    <!-- Log Messages -->
+    <string name="log_data_received">Data received from backend: %1$d deliveries</string>
+    <string name="log_first_delivery">First delivery: %1$s</string>
+    
+    <!-- TODO Comments -->
+    <string name="todo_get_authenticated_user">Get from authenticated user</string>
+    
+    <!-- Default Driver ID -->
+    <string name="default_driver_id">driver-001</string>
+    
+    <!-- Startup Screen -->
+    <string name="startup_title">Welcome to MediSupply</string>
+    <string name="startup_subtitle">Select your preferred language</string>
+    <string name="startup_select_language">Select language</string>
+    <string name="startup_select_role">Select a role</string>
+    <string name="role_driver">Driver</string>
+    <string name="role_client">Client</string>
+    <string name="role_seller">Seller</string>
+    <string name="role_not_implemented">This functionality is not yet implemented</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+    <string name="country_colombia">Colombia</string>
+    <string name="country_usa">United States</string>
+    
+    <!-- Startup Screen Additional -->
+    <string name="startup_info_title">ℹ️ Information</string>
+    <string name="startup_info_spanish">Date and monetary value formats will be displayed according to Colombia format.</string>
+    <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
+    <string name="startup_expand">Expand</string>
+    
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+
+    <!-- Working Routes Screen -->
+    <string name="screen_title_routes">Routes</string>
+    <string name="loading_deliveries">Loading deliveries…</string>
+    <string name="no_deliveries_found">No deliveries found for the selected date.</string>
+
+    <!-- Date Header -->
+    <string name="date_header_today">Today</string>
+
+    <!-- SimplePeriodTabs -->
+    <string name="period_tab_day">Day</string>
+    <string name="period_tab_week">Week</string>
+    <string name="period_tab_month">Month</string>
+
+</resources>

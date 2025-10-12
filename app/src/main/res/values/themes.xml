@@ -1,0 +1,10 @@
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/md_theme_primary</item>
+        <item name="android:colorPrimaryDark">@color/md_theme_primary</item>
+        <item name="android:colorAccent">@color/md_theme_secondary</item>
+        <item name="android:colorBackground">@color/md_theme_background</item>
+        <item name="android:textColorPrimary">@color/md_theme_onSurface</item>
+        <item name="android:textColorSecondary">@color/md_theme_onSurfaceVariant</item>
+    </style>
+</resources>
