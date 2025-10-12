@@ -25,9 +25,8 @@ object DateFormatter {
             "en" -> DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", locale)
             else -> DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM 'de' yyyy", locale)
         }
-        return formatter.format(date).replaceFirstChar { 
-            if (it.isLowerCase()) it.titlecase(locale) else it.toString() 
-        }
+        val formattedDate = formatter.format(date)
+        return formattedDate.substring(0, 1).uppercase(locale) + formattedDate.substring(1)
     }
     
     /**
@@ -68,3 +67,4 @@ object DateFormatter {
         return formatter.format(date)
     }
 }
+

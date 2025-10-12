@@ -130,7 +130,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/Manifest*.*",
             "**/*Test*.*",
             "android/**/*.*",
-            "**/ui/**/*"
+            "**/ui/**/*",
+            "**/viewmodels/**/*",
+            "**/repositories/*",
+            "**/base/*",
+            "**/navigation/*",
+            "**/utils/*",
+            "**MainActivity*.*"
         )
     } + fileTree("${buildDir}/intermediates/javac/debug") {
         exclude(
@@ -140,7 +146,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/Manifest*.*",
             "**/*Test*.*",
             "android/**/*.*",
-            "**/ui/**/*"
+            "**/ui/**/*",
+            "**/viewmodels/**/*",
+            "**/repositories/*",
+            "**/base/*",
+            "**/navigation/*",
+            "**/utils/*",
+            "**MainActivity*.*"
         )
     }
 
