@@ -1,30 +1,64 @@
 package com.medisupplyg4.models
 
-import org.junit.Assert.*
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class RoutePeriodTest {
 
     @Test
-    fun `RoutePeriod enum should have all expected values`() {
-        // When
-        val periods = RoutePeriod.values()
-
-        // Then
-        assertEquals(3, periods.size)
-        assertTrue(periods.contains(RoutePeriod.DAY))
-        assertTrue(periods.contains(RoutePeriod.WEEK))
-        assertTrue(periods.contains(RoutePeriod.MONTH))
+    fun `DAY enum should have correct name`() {
+        assertEquals("DAY", RoutePeriod.DAY.name)
     }
 
     @Test
-    fun `RoutePeriod values should be unique`() {
-        // When
-        val periods = RoutePeriod.values()
-        val uniquePeriods = periods.distinct()
+    fun `WEEK enum should have correct name`() {
+        assertEquals("WEEK", RoutePeriod.WEEK.name)
+    }
 
-        // Then
-        assertEquals(periods.size, uniquePeriods.size)
+    @Test
+    fun `MONTH enum should have correct name`() {
+        assertEquals("MONTH", RoutePeriod.MONTH.name)
+    }
+
+    @Test
+    fun `DAY enum should have correct ordinal`() {
+        assertEquals(0, RoutePeriod.DAY.ordinal)
+    }
+
+    @Test
+    fun `WEEK enum should have correct ordinal`() {
+        assertEquals(1, RoutePeriod.WEEK.ordinal)
+    }
+
+    @Test
+    fun `MONTH enum should have correct ordinal`() {
+        assertEquals(2, RoutePeriod.MONTH.ordinal)
+    }
+
+    @Test
+    fun `values should return all enum values`() {
+        val values = RoutePeriod.values()
+        assertEquals(3, values.size)
+        assertEquals(RoutePeriod.DAY, values[0])
+        assertEquals(RoutePeriod.WEEK, values[1])
+        assertEquals(RoutePeriod.MONTH, values[2])
+    }
+
+    @Test
+    fun `valueOf should return correct enum for DAY`() {
+        val result = RoutePeriod.valueOf("DAY")
+        assertEquals(RoutePeriod.DAY, result)
+    }
+
+    @Test
+    fun `valueOf should return correct enum for WEEK`() {
+        val result = RoutePeriod.valueOf("WEEK")
+        assertEquals(RoutePeriod.WEEK, result)
+    }
+
+    @Test
+    fun `valueOf should return correct enum for MONTH`() {
+        val result = RoutePeriod.valueOf("MONTH")
+        assertEquals(RoutePeriod.MONTH, result)
     }
 }
-

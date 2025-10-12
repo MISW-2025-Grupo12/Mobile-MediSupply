@@ -95,6 +95,8 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlin.test)
     
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -127,7 +129,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/BuildConfig.*",
             "**/Manifest*.*",
             "**/*Test*.*",
-            "android/**/*.*"
+            "android/**/*.*",
+            "**/ui/**/*"
         )
     } + fileTree("${buildDir}/intermediates/javac/debug") {
         exclude(
@@ -136,7 +139,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
             "**/BuildConfig.*",
             "**/Manifest*.*",
             "**/*Test*.*",
-            "android/**/*.*"
+            "android/**/*.*",
+            "**/ui/**/*"
         )
     }
 
