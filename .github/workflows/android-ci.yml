@@ -1,0 +1,67 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SKIP_JDK_VERSION_CHECK: true
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 34
+        build-tools: 34.0.0
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+      
+    - name: Verify Gradle wrapper
+      run: |
+        ls -la gradle/wrapper/
+        file gradle/wrapper/gradle-wrapper.jar
+        echo "Gradle wrapper properties:"
+        cat gradle/wrapper/gradle-wrapper.properties
+      
+    - name: Download Gradle wrapper if needed
+      run: |
+        if [ ! -f gradle/wrapper/gradle-wrapper.jar ] || [ ! -s gradle/wrapper/gradle-wrapper.jar ]; then
+          echo "Downloading Gradle wrapper..."
+          curl -L https://github.com/gradle/gradle/raw/v8.13.0/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+        fi
+        chmod +x ./gradlew
+      
+    - name: Test Gradle wrapper
+      run: ./gradlew --version
+      
+    - name: Grant execute permission for our test script
+      run: chmod +x ./execute-tests.sh
+      
+    - name: Run tests
+      run: ./execute-tests.sh
+      
