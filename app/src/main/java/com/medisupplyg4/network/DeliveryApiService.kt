@@ -10,10 +10,9 @@ import retrofit2.http.Query
  */
 interface DeliveryApiService {
     
-    @GET("entregas/")
+    @GET("entregas")
     suspend fun getDeliveries(
-        @Query("driver_id") driverId: String,
-        @Query("date") date: String? = null,
-        @Query("period") period: String? = null // "day", "week", "month"
+        @Query("fecha_inicio") fechaInicio: String,
+        @Query("fecha_fin") fechaFin: String
     ): Response<List<SimpleDelivery>>
 }

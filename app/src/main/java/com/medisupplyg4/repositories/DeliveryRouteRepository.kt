@@ -1,9 +1,8 @@
 package com.medisupplyg4.repositories
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
-import com.medisupplyg4.R
+import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.network.NetworkClient
 import kotlinx.coroutines.Dispatchers
@@ -17,76 +16,60 @@ class DeliveryRouteRepository(private val application: Application) {
         private const val TAG = "DeliveryRouteRepository"
     }
     
-    suspend fun getDeliveriesForDay(date: LocalDate, driverId: String): List<SimpleDelivery> {
+    /**
+     * Obtiene entregas según el período seleccionado
+     */
+    suspend fun getDeliveries(selectedDate: LocalDate, selectedPeriod: RoutePeriod): List<SimpleDelivery> {
         return withContext(Dispatchers.IO) {
             try {
-                val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val (fechaInicio, fechaFin) = calculateDateRange(selectedDate, selectedPeriod)
+                
+                Log.d(TAG, "Obteniendo entregas desde $fechaInicio hasta $fechaFin")
+                
                 val response = NetworkClient.deliveryApiService.getDeliveries(
-                    driverId = driverId,
-                    date = dateString,
-                    period = application.getString(R.string.api_period_day)
+                    fechaInicio = fechaInicio,
+                    fechaFin = fechaFin
                 )
                 
                 if (response.isSuccessful) {
                     val deliveries = response.body() ?: emptyList()
-                    Log.d(TAG, application.getString(R.string.log_data_received, deliveries.size))
+                    Log.d(TAG, "Datos recibidos: ${deliveries.size} entregas")
                     deliveries
                 } else {
-                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
+                    Log.w(TAG, "Error del backend: ${response.code()}")
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
+                Log.e(TAG, "Error de red: ${e.message}", e)
                 emptyList()
             }
         }
     }
     
-    suspend fun getDeliveriesForWeek(startDate: LocalDate, driverId: String): List<SimpleDelivery> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val dateString = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                val response = NetworkClient.deliveryApiService.getDeliveries(
-                    driverId = driverId,
-                    date = dateString,
-                    period = application.getString(R.string.api_period_week)
-                )
-                
-                if (response.isSuccessful) {
-                    response.body() ?: emptyList()
-                } else {
-                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
-                emptyList()
+    /**
+     * Calcula el rango de fechas según el período seleccionado
+     */
+    private fun calculateDateRange(selectedDate: LocalDate, selectedPeriod: RoutePeriod): Pair<String, String> {
+        val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+        
+        return when (selectedPeriod) {
+            RoutePeriod.DAY -> {
+                // Para el día: fecha actual para ambos parámetros
+                val fecha = selectedDate.format(formatter)
+                Pair(fecha, fecha)
+            }
+            RoutePeriod.WEEK -> {
+                // Para la semana: desde hoy hasta dentro de 7 días
+                val fechaInicio = selectedDate.format(formatter)
+                val fechaFin = selectedDate.plusDays(7).format(formatter)
+                Pair(fechaInicio, fechaFin)
+            }
+            RoutePeriod.MONTH -> {
+                // Para el mes: desde hoy hasta dentro de 30 días
+                val fechaInicio = selectedDate.format(formatter)
+                val fechaFin = selectedDate.plusDays(30).format(formatter)
+                Pair(fechaInicio, fechaFin)
             }
         }
     }
-    
-    suspend fun getDeliveriesForMonth(month: Int, year: Int, driverId: String): List<SimpleDelivery> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val startDate = LocalDate.of(year, month, 1)
-                val dateString = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                val response = NetworkClient.deliveryApiService.getDeliveries(
-                    driverId = driverId,
-                    date = dateString,
-                    period = application.getString(R.string.api_period_month)
-                )
-                
-                if (response.isSuccessful) {
-                    response.body() ?: emptyList()
-                } else {
-                    Log.w(TAG, application.getString(R.string.error_backend, response.code()))
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, application.getString(R.string.error_network, e.message), e)
-                emptyList()
-            }
-        }
-    }
-
 }

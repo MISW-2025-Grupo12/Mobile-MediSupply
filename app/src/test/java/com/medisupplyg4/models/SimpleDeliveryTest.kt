@@ -12,24 +12,44 @@ class SimpleDeliveryTest {
         val id = "test-id"
         val direccion = "Test Address 123"
         val fechaEntregaString = "2025-10-15T14:30:00"
-        val productoId = "product-123"
-        val clienteId = "client-456"
+        val cliente = ClienteAPI(
+            nombre = "Test Client",
+            telefono = "3001234567",
+            direccion = "Test Address 123",
+            avatar = "https://example.com/avatar.jpg"
+        )
+        val productos = listOf(
+            ProductoAPI(
+                nombre = "Paracetamol",
+                cantidad = 2,
+                precioUnitario = 8000,
+                subtotal = 16000,
+                avatar = "https://example.com/product.jpg"
+            )
+        )
+        val pedido = PedidoAPI(
+            id = "pedido-123",
+            cliente = cliente,
+            productos = productos
+        )
 
         // When
         val delivery = SimpleDelivery(
             id = id,
             direccion = direccion,
             fechaEntregaString = fechaEntregaString,
-            productoId = productoId,
-            clienteId = clienteId
+            pedido = pedido
         )
 
         // Then
         assertEquals(id, delivery.id)
         assertEquals(direccion, delivery.direccion)
         assertEquals(fechaEntregaString, delivery.fechaEntregaString)
-        assertEquals(productoId, delivery.productoId)
-        assertEquals(clienteId, delivery.clienteId)
+        assertEquals(pedido, delivery.pedido)
+        assertEquals("Test Client", delivery.nombreCliente)
+        assertEquals("3001234567", delivery.telefonoCliente)
+        assertEquals(16000, delivery.totalPedido)
+        assertEquals(2, delivery.cantidadTotalProductos)
     }
 
     @Test
@@ -37,14 +57,14 @@ class SimpleDeliveryTest {
         // Given
         val fechaString = "2025-10-15T14:30:00"
         val expectedDateTime = LocalDateTime.of(2025, 10, 15, 14, 30)
+        val pedido = createTestPedido()
 
         // When
         val delivery = SimpleDelivery(
             id = "test-id",
             direccion = "Test Address",
             fechaEntregaString = fechaString,
-            productoId = "product-123",
-            clienteId = "client-456"
+            pedido = pedido
         )
 
         // Then
@@ -52,21 +72,65 @@ class SimpleDeliveryTest {
     }
 
     @Test
-    fun `fechaEntrega should handle different date formats`() {
+    fun `totalPedido should calculate correctly with multiple products`() {
         // Given
-        val fechaString = "2025-12-25T09:15:30"
-        val expectedDateTime = LocalDateTime.of(2025, 12, 25, 9, 15, 30)
+        val productos = listOf(
+            ProductoAPI(
+                nombre = "Paracetamol",
+                cantidad = 2,
+                precioUnitario = 8000,
+                subtotal = 16000,
+                avatar = "https://example.com/p1.jpg"
+            ),
+            ProductoAPI(
+                nombre = "Ibuprofeno",
+                cantidad = 1,
+                precioUnitario = 10000,
+                subtotal = 10000,
+                avatar = "https://example.com/p2.jpg"
+            )
+        )
+        val pedido = PedidoAPI(
+            id = "pedido-123",
+            cliente = createTestCliente(),
+            productos = productos
+        )
 
         // When
         val delivery = SimpleDelivery(
             id = "test-id",
             direccion = "Test Address",
-            fechaEntregaString = fechaString,
-            productoId = "product-123",
-            clienteId = "client-456"
+            fechaEntregaString = "2025-10-15T14:30:00",
+            pedido = pedido
         )
 
         // Then
-        assertEquals(expectedDateTime, delivery.fechaEntrega)
+        assertEquals(26000, delivery.totalPedido)
+        assertEquals(3, delivery.cantidadTotalProductos)
+    }
+
+    private fun createTestCliente(): ClienteAPI {
+        return ClienteAPI(
+            nombre = "Test Client",
+            telefono = "3001234567",
+            direccion = "Test Address 123",
+            avatar = "https://example.com/avatar.jpg"
+        )
+    }
+
+    private fun createTestPedido(): PedidoAPI {
+        return PedidoAPI(
+            id = "pedido-123",
+            cliente = createTestCliente(),
+            productos = listOf(
+                ProductoAPI(
+                    nombre = "Test Product",
+                    cantidad = 1,
+                    precioUnitario = 10000,
+                    subtotal = 10000,
+                    avatar = "https://example.com/product.jpg"
+                )
+            )
+        )
     }
 }

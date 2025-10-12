@@ -54,20 +54,7 @@ object DateFormatter {
             else -> "${date.dayOfMonth}/${date.monthValue}"
         }
     }
-    
-    /**
-     * Formatea una hora (ej: "14:30" o "2:30 PM")
-     */
-    fun formatTime(dateTime: LocalDateTime, context: Context): String {
-        val locale = getCurrentLocale(context)
-        val formatter = when (locale.language) {
-            "es" -> DateTimeFormatter.ofPattern("HH:mm", locale)
-            "en" -> DateTimeFormatter.ofPattern("h:mm a", locale)
-            else -> DateTimeFormatter.ofPattern("HH:mm", locale)
-        }
-        return formatter.format(dateTime)
-    }
-    
+
     /**
      * Formatea una fecha en formato de fecha completa (ej: "15 de enero de 2024" o "January 15, 2024")
      */

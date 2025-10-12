@@ -18,6 +18,7 @@
     
     <!-- Delivery Cards -->
     <string name="delivery_location">Location</string>
+    <string name="customer_avatar">Customer avatar</string>
     <string name="delivery_place">Place</string>
     <string name="delivery_number">Delivery #%1$s</string>
     <string name="delivery_cold_chain">Cold chain</string>

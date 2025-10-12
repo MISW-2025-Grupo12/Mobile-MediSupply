@@ -1,9 +1,7 @@
 package com.medisupplyg4.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
@@ -97,8 +95,7 @@ private fun getVisibleDateFromScroll(
     
     // Calcular qué día está visible basado en la posición del scroll
     val firstVisibleIndex = listState.firstVisibleItemIndex
-    val visibleItemCount = listState.layoutInfo.visibleItemsInfo.size
-    
+
     // Cada día tiene un header + sus entregas
     var currentIndex = 0
     for ((date, dayDeliveries) in groupedDeliveries) {

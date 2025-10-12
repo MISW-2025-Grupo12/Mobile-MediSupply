@@ -53,22 +53,13 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                val driverId = getApplication<Application>().getString(R.string.default_driver_id) // TODO: Obtener del usuario autenticado
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
 
-                val fetchedDeliveries = when (period) {
-                    RoutePeriod.DAY -> deliveryRouteRepository.getDeliveriesForDay(date, driverId)
-                    RoutePeriod.WEEK -> deliveryRouteRepository.getDeliveriesForWeek(date, driverId)
-                    RoutePeriod.MONTH -> deliveryRouteRepository.getDeliveriesForMonth(
-                        date.monthValue,
-                        date.year,
-                        driverId
-                    )
-                }
+                val fetchedDeliveries = deliveryRouteRepository.getDeliveries(date, period)
 
                 // Ordenar entregas por fecha de entrega
-                _deliveries.value = fetchedDeliveries.sortedBy { it.fechaEntrega }
+                _deliveries.value = fetchedDeliveries.sortedBy { delivery -> delivery.fechaEntrega }
                 _eventNetworkError.value = false
                 _isLoading.value = false
             } catch (error: Exception) {

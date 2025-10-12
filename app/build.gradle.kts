@@ -86,6 +86,9 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)
+    
+    // Image loading
+    implementation(libs.coil.compose)
 
     // Testing dependencies
     testImplementation(libs.junit)

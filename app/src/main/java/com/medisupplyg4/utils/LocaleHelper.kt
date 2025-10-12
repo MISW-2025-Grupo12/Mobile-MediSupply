@@ -33,12 +33,4 @@ object LocaleHelper {
         
         return context
     }
-    
-    fun getLanguage(context: Context): String {
-        return context.resources.configuration.locales[0].language
-    }
-    
-    fun isRTL(context: Context): Boolean {
-        return context.resources.configuration.layoutDirection == android.view.View.LAYOUT_DIRECTION_RTL
-    }
 }
