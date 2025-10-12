@@ -1,7 +1,15 @@
+import org.gradle.api.tasks.testing.Test
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("jacoco")
+}
+
+jacoco {
+
 }
 
 android {
@@ -19,6 +27,9 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            enableUnitTestCoverage = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -36,6 +47,18 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+    
+    buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+        }
     }
 }
 
@@ -64,11 +87,70 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Testing dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+tasks.withType<Test> {
+    useJUnit()
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/testDebugUnitTest/jacocoTestReport.xml"))
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/testDebugUnitTest/html"))
+    }
+
+    // Archivos de clases compiladas (Kotlin + Java)
+    val classDirs = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
+        exclude(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+    } + fileTree("${buildDir}/intermediates/javac/debug") {
+        exclude(
+            "**/R.class",
+            "**/R$*.class",
+            "**/BuildConfig.*",
+            "**/Manifest*.*",
+            "**/*Test*.*",
+            "android/**/*.*"
+        )
+    }
+
+    // Directorio del código fuente
+    val mainSrc = files(
+        "$projectDir/src/main/java",
+        "$projectDir/src/main/kotlin"
+    )
+
+    classDirectories.setFrom(classDirs)
+    sourceDirectories.setFrom(mainSrc)
+
+    // Archivos de cobertura (.exec)
+    executionData.setFrom(fileTree(buildDir) {
+        include(
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+            "jacoco/testDebugUnitTest.exec"
+        )
+    })
 }

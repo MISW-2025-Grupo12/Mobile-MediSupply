@@ -112,17 +112,19 @@ fun WorkingRoutesScreen(
             modifier = Modifier.padding(horizontal = 24.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+         Spacer(modifier = Modifier.height(16.dp))
 
-        // Selector de fecha dinámico con scroll
-        ScrollAwareDateSelector(
-            deliveries = deliveries,
-            selectedPeriod = selectedPeriod,
-            listState = groupedListState,
-            modifier = Modifier.padding(horizontal = 24.dp)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
+         // Selector de fecha solo para el período DÍA
+         if (selectedPeriod == RoutePeriod.DAY) {
+             ScrollAwareDateSelector(
+                 deliveries = deliveries,
+                 selectedPeriod = selectedPeriod,
+                 listState = groupedListState,
+                 modifier = Modifier.padding(horizontal = 24.dp)
+             )
+             
+             Spacer(modifier = Modifier.height(16.dp))
+         }
 
         // Contenido principal
         when {

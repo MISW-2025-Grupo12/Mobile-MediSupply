@@ -27,6 +27,7 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
     val selectedLanguage: LiveData<Language> = _selectedLanguage
     
     private val _selectedRole = MutableLiveData<UserRole?>()
+    val selectedRole: LiveData<UserRole?> = _selectedRole
 
     private val _isFirstLaunch = MutableLiveData<Boolean>()
     val isFirstLaunch: LiveData<Boolean> = _isFirstLaunch
