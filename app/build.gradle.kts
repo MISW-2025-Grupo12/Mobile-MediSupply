@@ -121,55 +121,28 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/testDebugUnitTest/html"))
     }
 
-    // Archivos de clases compiladas (Kotlin + Java)
-    val classDirs = fileTree("${buildDir}/tmp/kotlin-classes/debug") {
-        exclude(
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
-            "**/ui/**/*",
-            "**/viewmodels/**/*",
-            "**/repositories/*",
-            "**/base/*",
-            "**/navigation/*",
-            "**/utils/*",
-            "**MainActivity*.*"
-        )
-    } + fileTree("${buildDir}/intermediates/javac/debug") {
-        exclude(
-            "**/R.class",
-            "**/R$*.class",
-            "**/BuildConfig.*",
-            "**/Manifest*.*",
-            "**/*Test*.*",
-            "android/**/*.*",
-            "**/ui/**/*",
-            "**/viewmodels/**/*",
-            "**/repositories/*",
-            "**/base/*",
-            "**/navigation/*",
-            "**/utils/*",
-            "**MainActivity*.*"
-        )
-    }
-
-    // Directorio del código fuente
-    val mainSrc = files(
-        "$projectDir/src/main/java",
-        "$projectDir/src/main/kotlin"
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/ui/**/*",
+        "**/repositories/**",
+        "**/viewmodels/**",
+        "**/navigation/**",
+        "**/base/**",
+        "**/MainActivity*.*"
     )
 
-    classDirectories.setFrom(classDirs)
-    sourceDirectories.setFrom(mainSrc)
+    val kotlinClasses = fileTree(layout.buildDirectory.dir("classes/kotlin/debug")) {
+        exclude(fileFilter)
+    }
 
-    // Archivos de cobertura (.exec)
-    executionData.setFrom(fileTree(buildDir) {
-        include(
-            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-            "jacoco/testDebugUnitTest.exec"
-        )
+    classDirectories.setFrom(files(kotlinClasses))
+    sourceDirectories.setFrom(files("$projectDir/src/main/java", "$projectDir/src/main/kotlin"))
+    executionData.setFrom(fileTree(layout.buildDirectory) {
+        include("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec", "jacoco/testDebugUnitTest.exec")
     })
 }
