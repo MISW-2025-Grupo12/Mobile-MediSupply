@@ -82,7 +82,11 @@
     <string name="startup_title">Bienvenido a MediSupply</string>
     <string name="startup_subtitle">Selecciona tu idioma preferido</string>
     <string name="startup_select_language">Seleccionar idioma</string>
-    <string name="startup_continue">Continuar</string>
+    <string name="startup_select_role">Selecciona un rol</string>
+    <string name="role_driver">Repartidor</string>
+    <string name="role_client">Cliente</string>
+    <string name="role_seller">Vendedor</string>
+    <string name="role_not_implemented">Esta funcionalidad aún no está implementada</string>
     <string name="language_spanish">Español</string>
     <string name="language_english">English</string>
     <string name="country_colombia">Colombia</string>
@@ -93,4 +97,23 @@
     <string name="startup_info_spanish">Los formatos de fecha y valores monetarios se mostrarán según el formato de Colombia.</string>
     <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
     <string name="startup_expand">Desplegar</string>
+    
+    <!-- Settings -->
+    <string name="settings">Configuración</string>
+
+
+        <!-- Working Routes Screen -->
+        <string name="screen_title_routes">Rutas</string>
+        <string name="loading_deliveries">Cargando entregas…</string>
+        <string name="no_deliveries_found">No se encontraron entregas para la fecha seleccionada.</string>
+
+        <!-- Date Header -->
+        <string name="date_header_today">Hoy</string>
+
+        <!-- SimplePeriodTabs -->
+        <string name="period_tab_day">Día</string>
+        <string name="period_tab_week">Semana</string>
+        <string name="period_tab_month">Mes</string>
+
+
 </resources>

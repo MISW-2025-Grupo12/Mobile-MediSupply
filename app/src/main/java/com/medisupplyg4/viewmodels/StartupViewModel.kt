@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.medisupplyg4.base.BaseActivity
 import com.medisupplyg4.models.Language
+import com.medisupplyg4.models.UserRole
 
 class StartupViewModel(application: Application) : AndroidViewModel(application) {
     
@@ -16,6 +17,7 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
         private const val TAG = "StartupViewModel"
         private const val PREFS_NAME = "MediSupplyPrefs"
         private const val KEY_SELECTED_LANGUAGE = "selected_language"
+        private const val KEY_SELECTED_ROLE = "selected_role"
         private const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
     }
     
@@ -24,11 +26,14 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
     private val _selectedLanguage = MutableLiveData<Language>()
     val selectedLanguage: LiveData<Language> = _selectedLanguage
     
+    private val _selectedRole = MutableLiveData<UserRole?>()
+
     private val _isFirstLaunch = MutableLiveData<Boolean>()
     val isFirstLaunch: LiveData<Boolean> = _isFirstLaunch
     
     init {
         loadSavedLanguage()
+        loadSavedRole()
         checkFirstLaunch()
     }
     
@@ -67,8 +72,29 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
             .apply()
         _isFirstLaunch.value = false
     }
+
     
-    fun getCurrentLanguage(): Language {
-        return _selectedLanguage.value ?: Language.SPANISH
+    fun selectRole(role: UserRole) {
+        Log.d(TAG, "Role selected: ${role.name}")
+        _selectedRole.value = role
+        prefs.edit()
+            .putString(KEY_SELECTED_ROLE, role.name)
+            .apply()
+    }
+    
+    fun loadSavedRole() {
+        val roleName = prefs.getString(KEY_SELECTED_ROLE, null)
+        if (roleName != null) {
+            try {
+                val role = UserRole.valueOf(roleName)
+                _selectedRole.value = role
+                Log.d(TAG, "Loaded saved role: $roleName")
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Invalid role saved: $roleName")
+                _selectedRole.value = null
+            }
+        } else {
+            _selectedRole.value = null
+        }
     }
 }

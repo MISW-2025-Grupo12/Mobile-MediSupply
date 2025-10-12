@@ -1,5 +1,6 @@
 package com.medisupplyg4.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,19 +9,23 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.medisupplyg4.R
 import com.medisupplyg4.models.Language
+import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.components.LanguageSelector
+import com.medisupplyg4.ui.components.RoleSelector
 
 @Composable
 fun StartupScreen(
     selectedLanguage: Language,
     onLanguageSelected: (Language) -> Unit,
-    onContinue: () -> Unit,
+    onRoleSelected: (UserRole) -> Unit,
     modifier: Modifier = Modifier
 ) {
     
@@ -33,7 +38,17 @@ fun StartupScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo o título principal
+        // Logo de la aplicación
+        Image(
+            painter = painterResource(id = R.drawable.app_logo),
+            contentDescription = stringResource(R.string.app_name),
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 16.dp),
+            contentScale = ContentScale.Fit
+        )
+        
+        // Título principal
         Text(
             text = stringResource(R.string.startup_title),
             style = MaterialTheme.typography.headlineLarge,
@@ -63,28 +78,7 @@ fun StartupScreen(
             modifier = Modifier.fillMaxWidth()
         )
         
-        Spacer(modifier = Modifier.height(48.dp))
-        
-        // Botón continuar
-        Button(
-            onClick = onContinue,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            shape = MaterialTheme.shapes.medium
-        ) {
-            Text(
-                text = stringResource(R.string.startup_continue),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         
         // Información adicional sobre localización
         Card(
@@ -117,5 +111,13 @@ fun StartupScreen(
                 )
             }
         }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Selector de roles
+        RoleSelector(
+            onRoleSelected = onRoleSelected,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

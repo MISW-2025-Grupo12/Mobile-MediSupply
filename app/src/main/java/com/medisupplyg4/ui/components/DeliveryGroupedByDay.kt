@@ -1,7 +1,9 @@
 package com.medisupplyg4.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -34,12 +36,18 @@ fun DeliveryGroupedByDay(
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         groupedDeliveries.forEach { (date, dayDeliveries) ->
             // Header del día
             item {
                 DayHeader(date = date)
+            }
+            
+            // Espaciado adicional para efecto de desprendimiento
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
             }
             
             // Entregas del día
@@ -59,18 +67,29 @@ private fun DayHeader(
     val today = LocalDate.now()
     val isToday = date == today
     
-    Row(
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = if (isToday) MaterialTheme.colorScheme.primaryContainer
-                       else MaterialTheme.colorScheme.surfaceContainer,
-                shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
-            )
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .border(
+                width = 1.dp,
+                color = if (isToday) MaterialTheme.colorScheme.primary
+                       else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(12.dp)
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isToday) MaterialTheme.colorScheme.primaryContainer
+                           else MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
         Text(
             text = if (isToday) stringResource(R.string.today) else DateFormatter.formatLongDate(date, context),
             style = MaterialTheme.typography.titleMedium,
@@ -79,11 +98,12 @@ private fun DayHeader(
                    else MaterialTheme.colorScheme.onSurface
         )
         
-        Text(
-            text = DateFormatter.formatDayMonth(date, context),
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
-                   else MaterialTheme.colorScheme.onSurfaceVariant
-        )
+            Text(
+                text = DateFormatter.formatDayMonth(date, context),
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isToday) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                       else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }
