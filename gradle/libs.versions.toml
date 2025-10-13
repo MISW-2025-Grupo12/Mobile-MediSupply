@@ -20,7 +20,7 @@ appcompat = "1.7.0"
 mockk = "1.14.6"
 coroutinesTest = "1.8.1"
 turbine = "1.2.1"
-coil = "2.5.0"
+coil = "2.7.0"
 robolectric = "4.12"
 kotlinTest = "2.0.0"
 
