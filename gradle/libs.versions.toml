@@ -22,7 +22,7 @@ coroutinesTest = "1.8.1"
 turbine = "1.2.1"
 coil = "2.5.0"
 robolectric = "4.12"
-kotlinTest = "2.0.0"
+kotlinTest = "2.2.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
