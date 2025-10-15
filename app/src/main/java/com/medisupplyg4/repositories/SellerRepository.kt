@@ -1,0 +1,83 @@
+package com.medisupplyg4.repositories
+
+import android.util.Log
+import com.medisupplyg4.models.SellerAPI
+import com.medisupplyg4.models.VisitAPI
+import com.medisupplyg4.network.NetworkClient
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+/**
+ * Repository to handle seller and visit data
+ */
+class SellerRepository {
+    
+    companion object {
+        private const val TAG = "SellerRepository"
+    }
+    
+    private val vendedorApiService = NetworkClient.vendedorApiService
+    private val visitasApiService = NetworkClient.visitasApiService
+    
+    /**
+     * Gets the list of sellers
+     * TODO: Change this when authentication is implemented
+     * For now always returns the first seller from the list
+     */
+    suspend fun getCurrentSeller(): SellerAPI? {
+        return try {
+            Log.d(TAG, "Obteniendo lista de vendedores...")
+            val response = vendedorApiService.getVendedores()
+            
+            if (response.isSuccessful) {
+                val vendedores = response.body()
+                Log.d(TAG, "Vendedores recibidos: ${vendedores?.size ?: 0}")
+                
+                // TODO: Cambiar esto cuando se implemente la autenticación
+                // Por ahora siempre retornamos el primer vendedor
+                vendedores?.firstOrNull()
+            } else {
+                Log.e(TAG, "Error al obtener vendedores: ${response.code()} - ${response.message()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción al obtener vendedores", e)
+            null
+        }
+    }
+    
+    /**
+     * Gets the scheduled visits of a seller for a date range
+     */
+    suspend fun getSellerVisits(
+        vendedorId: String,
+        fechaInicio: LocalDate,
+        fechaFin: LocalDate
+    ): List<VisitAPI> {
+        return try {
+            val fechaInicioStr = fechaInicio.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            val fechaFinStr = fechaFin.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            
+            Log.d(TAG, "Obteniendo visitas para vendedor $vendedorId desde $fechaInicioStr hasta $fechaFinStr")
+            
+            val response = visitasApiService.getVisitasVendedor(
+                vendedorId = vendedorId,
+                fechaInicio = fechaInicioStr,
+                fechaFin = fechaFinStr,
+                estado = "pendiente"
+            )
+            
+            if (response.isSuccessful) {
+                val visitas = response.body() ?: emptyList()
+                Log.d(TAG, "Visitas recibidas: ${visitas.size}")
+                visitas
+            } else {
+                Log.e(TAG, "Error al obtener visitas: ${response.code()} - ${response.message()}")
+                emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción al obtener visitas", e)
+            emptyList()
+        }
+    }
+}

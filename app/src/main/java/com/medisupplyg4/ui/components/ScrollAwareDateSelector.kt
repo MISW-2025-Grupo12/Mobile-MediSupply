@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -94,7 +95,10 @@ private fun getVisibleDateFromScroll(
     val dates = groupedDeliveries.keys.toList()
     
     // Calcular qué día está visible basado en la posición del scroll
-    val firstVisibleIndex = listState.firstVisibleItemIndex
+    // Usar derivedStateOf para optimizar recomposiciones
+    val firstVisibleIndex by remember {
+        derivedStateOf { listState.firstVisibleItemIndex }
+    }
 
     // Cada día tiene un header + sus entregas
     var currentIndex = 0

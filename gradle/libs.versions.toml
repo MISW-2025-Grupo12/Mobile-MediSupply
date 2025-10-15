@@ -1,28 +1,29 @@
 [versions]
 agp = "8.13.0"
-kotlin = "2.0.0"
-coreKtx = "1.15.0"
+kotlin = "2.2.20"
+coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.8.0"
-composeBom = "2024.04.01"
-viewmodelCompose = "2.8.7"
-navigationCompose = "2.8.4"
-runtimeCompose = "2.8.7"
-livedataCompose = "1.2.0"
-retrofit = "2.11.0"
-gson = "2.11.0"
-coroutines = "1.8.1"
-okhttp = "4.12.0"
-appcompat = "1.7.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.10.00"
+viewmodelCompose = "2.9.4"
+navigationCompose = "2.9.5"
+runtimeCompose = "2.9.4"
+livedataCompose = "1.9.3"
+retrofit = "3.0.0"
+gson = "2.13.2"
+coroutines = "1.10.2"
+okhttp = "5.2.1"
+appcompat = "1.7.1"
 mockk = "1.14.6"
-coroutinesTest = "1.8.1"
+coroutinesTest = "1.10.2"
 turbine = "1.2.1"
-coil = "2.5.0"
-robolectric = "4.12"
+coil = "2.7.0"
+robolectric = "4.16"
 kotlinTest = "2.0.0"
+materialIcons = "1.6.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +56,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

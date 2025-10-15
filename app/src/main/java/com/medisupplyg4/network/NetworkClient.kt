@@ -19,15 +19,42 @@ object NetworkClient {
             .build()
     }
     
-    private val retrofit: Retrofit by lazy {
+    // Retrofit para el servicio de logística (entregas)
+    private val logisticaRetrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(ApiConfig.BASE_URL)
+            .baseUrl(ApiConfig.LOGISTICA_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    
+    // Retrofit para el servicio de usuarios (vendedores)
+    private val usuariosRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(ApiConfig.USUARIOS_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    
+    // Retrofit para el servicio de ventas (visitas)
+    private val ventasRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(ApiConfig.VENTAS_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
     
     val deliveryApiService: DeliveryApiService by lazy {
-        retrofit.create(DeliveryApiService::class.java)
+        logisticaRetrofit.create(DeliveryApiService::class.java)
+    }
+    
+    val vendedorApiService: VendedorApiService by lazy {
+        usuariosRetrofit.create(VendedorApiService::class.java)
+    }
+    
+    val visitasApiService: VisitasApiService by lazy {
+        ventasRetrofit.create(VisitasApiService::class.java)
     }
 }

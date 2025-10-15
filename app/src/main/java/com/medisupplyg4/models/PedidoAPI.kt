@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  */
 data class PedidoAPI(
     val id: String,
-    val cliente: ClienteAPI,
+    val cliente: ClientAPI,
     val productos: List<ProductoAPI>
 )
