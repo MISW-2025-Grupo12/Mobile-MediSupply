@@ -3,15 +3,11 @@ package com.medisupplyg4.ui.screens.driver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.livedata.observeAsState
@@ -19,7 +15,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.ui.components.SimplePeriodTabs
-import com.medisupplyg4.ui.components.SimpleDeliveryCard
 import com.medisupplyg4.ui.components.DeliveryGroupedByDay
 import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
 import java.time.LocalDate

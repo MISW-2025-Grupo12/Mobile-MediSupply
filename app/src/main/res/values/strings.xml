@@ -32,6 +32,9 @@
     <string name="description">Descripción</string>
     <string name="time">Hora</string>
     
+    <!-- Not Implemented -->
+    <string name="section_not_implemented">Sección no implementada aún</string>
+    
     <!-- Period Tabs -->
     <string name="period_day">Día</string>
     <string name="period_week">Semana</string>

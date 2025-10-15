@@ -1,9 +1,9 @@
 package com.medisupplyg4.models
 
 /**
- * Modelo para representar un vendedor del backend
+ * Model to represent a seller from the backend
  */
-data class VendedorAPI(
+data class SellerAPI(
     val id: String,
     val nombre: String,
     val email: String,

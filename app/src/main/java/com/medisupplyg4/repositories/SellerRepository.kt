@@ -1,30 +1,30 @@
 package com.medisupplyg4.repositories
 
 import android.util.Log
-import com.medisupplyg4.models.VendedorAPI
-import com.medisupplyg4.models.VisitaAPI
+import com.medisupplyg4.models.SellerAPI
+import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.network.NetworkClient
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 /**
- * Repositorio para manejar datos de vendedores y visitas
+ * Repository to handle seller and visit data
  */
-class VendedorRepository {
+class SellerRepository {
     
     companion object {
-        private const val TAG = "VendedorRepository"
+        private const val TAG = "SellerRepository"
     }
     
     private val vendedorApiService = NetworkClient.vendedorApiService
     private val visitasApiService = NetworkClient.visitasApiService
     
     /**
-     * Obtiene la lista de vendedores
-     * TODO: Cambiar esto cuando se implemente la autenticación
-     * Por ahora siempre retorna el primer vendedor de la lista
+     * Gets the list of sellers
+     * TODO: Change this when authentication is implemented
+     * For now always returns the first seller from the list
      */
-    suspend fun getVendedorActual(): VendedorAPI? {
+    suspend fun getCurrentSeller(): SellerAPI? {
         return try {
             Log.d(TAG, "Obteniendo lista de vendedores...")
             val response = vendedorApiService.getVendedores()
@@ -47,13 +47,13 @@ class VendedorRepository {
     }
     
     /**
-     * Obtiene las visitas programadas de un vendedor para un rango de fechas
+     * Gets the scheduled visits of a seller for a date range
      */
-    suspend fun getVisitasVendedor(
+    suspend fun getSellerVisits(
         vendedorId: String,
         fechaInicio: LocalDate,
         fechaFin: LocalDate
-    ): List<VisitaAPI> {
+    ): List<VisitAPI> {
         return try {
             val fechaInicioStr = fechaInicio.format(DateTimeFormatter.ISO_LOCAL_DATE)
             val fechaFinStr = fechaFin.format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -79,15 +79,5 @@ class VendedorRepository {
             Log.e(TAG, "Excepción al obtener visitas", e)
             emptyList()
         }
-    }
-    
-    /**
-     * Obtiene las visitas programadas de un vendedor para una fecha específica
-     */
-    suspend fun getVisitasVendedorPorFecha(
-        vendedorId: String,
-        fecha: LocalDate
-    ): List<VisitaAPI> {
-        return getVisitasVendedor(vendedorId, fecha, fecha)
     }
 }

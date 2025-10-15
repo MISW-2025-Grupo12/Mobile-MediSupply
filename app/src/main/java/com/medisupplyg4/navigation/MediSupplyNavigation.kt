@@ -23,8 +23,6 @@ import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.R
 import com.medisupplyg4.ui.screens.StartupScreen
 import com.medisupplyg4.ui.screens.HomeScreen
-import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.medisupplyg4.viewmodels.StartupViewModel
 
 @Composable

@@ -1,9 +1,9 @@
 package com.medisupplyg4.models
 
 /**
- * Modelo para representar un cliente en el contexto de visitas
+ * Model to represent a client in the context of visits
  */
-data class ClienteVisitaAPI(
+data class ClientVisitAPI(
     val id: String,
     val nombre: String,
     val email: String,

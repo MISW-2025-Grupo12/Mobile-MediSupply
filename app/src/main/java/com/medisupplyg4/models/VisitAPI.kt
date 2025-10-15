@@ -4,48 +4,48 @@ import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
 /**
- * Modelo para representar una visita programada del backend
+ * Model to represent a scheduled visit from the backend
  */
-data class VisitaAPI(
+data class VisitAPI(
     val id: String,
     @SerializedName("fecha_programada") val fechaProgramadaString: String,
     val direccion: String,
     val telefono: String,
     val estado: String,
     val descripcion: String,
-    val vendedor: VendedorAPI,
-    val cliente: ClienteVisitaAPI
+    val vendedor: SellerAPI,
+    val cliente: ClientVisitAPI
 ) {
     /**
-     * Convierte la fecha string a LocalDateTime
+     * Converts the date string to LocalDateTime
      */
     val fechaProgramada: LocalDateTime
         get() = try {
             LocalDateTime.parse(fechaProgramadaString)
         } catch (e: Exception) {
-            LocalDateTime.now() // Fallback si hay error en el parsing
+            LocalDateTime.now() // Fallback if there's an error in parsing
         }
 
     /**
-     * Obtiene el nombre del cliente
+     * Gets the client name
      */
     val nombreCliente: String
         get() = cliente.nombre
 
     /**
-     * Obtiene el teléfono del cliente
+     * Gets the client phone
      */
     val telefonoCliente: String
         get() = cliente.telefono
 
     /**
-     * Obtiene la dirección del cliente
+     * Gets the client address
      */
     val direccionCliente: String
         get() = cliente.direccion
 
     /**
-     * Obtiene el email del cliente
+     * Gets the client email
      */
     val emailCliente: String
         get() = cliente.email

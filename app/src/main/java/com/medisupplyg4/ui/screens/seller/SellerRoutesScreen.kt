@@ -1,13 +1,10 @@
 package com.medisupplyg4.ui.screens.seller
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -23,10 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.medisupplyg4.models.VisitaAPI
-import com.medisupplyg4.ui.components.SimpleDeliveryCard
+import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.utils.DateFormatter
-import com.medisupplyg4.viewmodels.VendedorRoutesViewModel
+import com.medisupplyg4.viewmodels.SellerRoutesViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -35,15 +31,14 @@ import com.medisupplyg4.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellerRoutesScreen(
-    viewModel: VendedorRoutesViewModel = viewModel(),
+    viewModel: SellerRoutesViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-    val vendedor by viewModel.vendedorActual.observeAsState()
-    val visitas by viewModel.visitas.observeAsState(emptyList())
+    val visits by viewModel.visits.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     val error by viewModel.error.observeAsState()
-    val fechaInicio by viewModel.fechaInicio.observeAsState(LocalDate.now())
-    val fechaFin by viewModel.fechaFin.observeAsState(LocalDate.now().plusDays(7))
+    val startDate by viewModel.startDate.observeAsState(LocalDate.now())
+    val endDate by viewModel.endDate.observeAsState(LocalDate.now().plusDays(7))
 
     val context = LocalContext.current
 
@@ -51,8 +46,8 @@ fun SellerRoutesScreen(
     var showDatePickerInicio by remember { mutableStateOf(false) }
     var showDatePickerFin by remember { mutableStateOf(false) }
 
-    // Agrupar visitas por día
-    val groupedVisits = visitas
+    // Group visits by day
+    val groupedVisits = visits
         .sortedBy { it.fechaProgramada }
         .groupBy { it.fechaProgramada.toLocalDate() }
         .toSortedMap()
@@ -114,7 +109,7 @@ fun SellerRoutesScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = fechaInicio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                    text = startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -149,7 +144,7 @@ fun SellerRoutesScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = fechaFin.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                    text = endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -171,7 +166,7 @@ fun SellerRoutesScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Button(
-                        onClick = { viewModel.loadVisitas() }
+                        onClick = { viewModel.loadVisits() }
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.filter_alt),
@@ -192,8 +187,8 @@ fun SellerRoutesScreen(
                     if (startDateMillis != null && endDateMillis != null) {
                         val startDate = LocalDate.ofEpochDay(startDateMillis / (24 * 60 * 60 * 1000))
                         val endDate = LocalDate.ofEpochDay(endDateMillis / (24 * 60 * 60 * 1000))
-                        // Usar setRangoFechas para evitar llamadas duplicadas
-                        viewModel.setRangoFechas(startDate, endDate)
+                        // Use setDateRange to avoid duplicate calls
+                        viewModel.setDateRange(startDate, endDate)
                     }
                 },
                 onDismiss = {
@@ -234,14 +229,14 @@ fun SellerRoutesScreen(
                             color = MaterialTheme.colorScheme.error
                         )
                         Button(
-                            onClick = { viewModel.clearError(); viewModel.loadVisitas() }
+                            onClick = { viewModel.clearError(); viewModel.loadVisits() }
                         ) {
                             Text("Reintentar")
                         }
                     }
                 }
             }
-            visitas.isEmpty() -> {
+            visits.isEmpty() -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -266,18 +261,18 @@ fun SellerRoutesScreen(
             }
             else -> {
                 // Lista de visitas agrupadas por fecha
-                VisitasGroupedByDate(visitas = visitas)
+                VisitsGroupedByDate(visits = visits)
             }
         }
     }
 }
 
 @Composable
-private fun VisitasGroupedByDate(
-    visitas: List<VisitaAPI>,
+private fun VisitsGroupedByDate(
+    visits: List<VisitAPI>,
     modifier: Modifier = Modifier
 ) {
-    val groupedVisitas = visitas
+    val groupedVisits = visits
         .sortedBy { it.fechaProgramada }
         .groupBy { it.fechaProgramada.toLocalDate() }
         .toSortedMap()
@@ -286,7 +281,7 @@ private fun VisitasGroupedByDate(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        groupedVisitas.forEach { (date, dayVisitas) ->
+        groupedVisits.forEach { (date, dayVisitas) ->
             item {
                 VisitaDayHeader(date = date)
             }
@@ -332,7 +327,7 @@ private fun VisitaDayHeader(
 
 @Composable
 private fun VisitaCard(
-    visita: VisitaAPI,
+    visita: VisitAPI,
     modifier: Modifier = Modifier
 ) {
     Card(
