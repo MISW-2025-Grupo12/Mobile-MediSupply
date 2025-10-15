@@ -7,6 +7,31 @@
     <string name="nav_deliveries">Deliveries</string>
     <string name="nav_profile">Profile</string>
     
+    <!-- Role-specific navigation -->
+    <string name="routes">Routes</string>
+    <string name="deliveries">Deliveries</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="clients">Clients</string>
+    <string name="history">History</string>
+    
+    <!-- Seller Routes -->
+    <string name="visit_routes">Visits</string>
+    <string name="filters">Filters</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="filter">Filter</string>
+    <string name="no_visits_found">No visits found</string>
+    
+    <!-- DatePicker -->
+    <string name="select_date">Select date</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Visit Details -->
+    <string name="address">Address</string>
+    <string name="description">Description</string>
+    <string name="time">Time</string>
+    
     <!-- Period Tabs -->
     <string name="period_day">Day</string>
     <string name="period_week">Week</string>
@@ -28,6 +53,39 @@
     <string name="delivery_time">Time</string>
     <string name="delivery_estimated_time">Delivery: %1$s</string>
     <string name="delivery_products">Products:</string>
+    
+    <!-- Profile Screen -->
+    <string name="deliveries_today">Deliveries today</string>
+    <string name="rating">Rating</string>
+    <string name="total_deliveries">Total deliveries</string>
+    <string name="settings">Settings</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="edit_profile_subtitle">Update your personal information</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_subtitle">Configure your preferences</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_subtitle">Configure your privacy</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="help_support_subtitle">Get help when you need it</string>
+    <string name="logout">Logout</string>
+    <string name="logout_subtitle">Sign out of your account</string>
+    
+    <!-- Common -->
+    <string name="all">All</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="delivered">Delivered</string>
+    <string name="add_client">Add client</string>
+    <string name="search_clients">Search clients</string>
+    <string name="view_details">View details</string>
+    <string name="new_order">New order</string>
+    <string name="my_orders">My orders</string>
+    <string name="order_history">Order history</string>
+    <string name="total_orders">Total orders</string>
+    <string name="total_spent">Total spent</string>
+    <string name="avg_rating">Average rating</string>
+    <string name="no_deliveries">No deliveries</string>
     <string name="delivery_product_item">• %1$s (%2$d %3$s)</string>
     <string name="delivery_priority">Priority</string>
     <string name="delivery_special_instructions">Special instructions</string>
@@ -54,6 +112,7 @@
     <string name="date_format_short">MM/dd/yyyy HH:mm</string>
     <string name="date_format_time">HH:mm</string>
     <string name="date_format_day_month">%1$d/%2$d</string>
+    <string name="date_format_long_date">EEEE, MMMM d, yyyy</string>
     
     <!-- API Configuration -->
     <string name="api_content_type">application/json</string>
@@ -100,7 +159,6 @@
     <string name="startup_expand">Expand</string>
     
     <!-- Settings -->
-    <string name="settings">Settings</string>
 
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
