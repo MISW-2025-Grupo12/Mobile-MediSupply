@@ -2,10 +2,10 @@ package com.medisupplyg4.repositories
 
 import android.util.Log
 import com.medisupplyg4.models.ClienteAPI
+import com.medisupplyg4.models.ErrorResponse
 import com.medisupplyg4.models.InventarioAPI
 import com.medisupplyg4.models.PedidoCompletoRequest
 import com.medisupplyg4.models.PedidoCompletoResponse
-
 import com.medisupplyg4.models.ProductoConInventario
 import com.medisupplyg4.network.NetworkClient
 import com.google.gson.Gson
@@ -141,7 +141,26 @@ class PedidosRepository {
                 result
             } else {
                 Log.e(TAG, "Error al crear pedido: ${response.code()} - ${response.message()}")
-                Log.e(TAG, "Response body: ${response.errorBody()?.string()}")
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Response body: $errorBody")
+                
+                // Try to parse error response to get detail
+                try {
+                    val gson = Gson()
+                    val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
+                    if (errorResponse.detalle != null) {
+                        Log.e(TAG, "Error detalle: ${errorResponse.detalle}")
+                        // Store the detail in a way that can be accessed by the ViewModel
+                        // We'll throw an exception with the detail as message
+                        throw Exception(errorResponse.detalle)
+                    }
+                } catch (e: Exception) {
+                    if (e.message?.contains("Error inesperado") == true) {
+                        // Re-throw with the detail message
+                        throw e
+                    }
+                    // If parsing fails, continue with normal error handling
+                }
                 null
             }
         } catch (e: Exception) {

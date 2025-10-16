@@ -302,7 +302,12 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Excepción al crear pedido", e)
-                _error.value = ERROR_NETWORK_CONNECTION
+                // Check if the exception contains a detail message from the API
+                if (e.message?.contains("Error inesperado") == true) {
+                    _error.value = e.message ?: ERROR_CREATING_ORDER
+                } else {
+                    _error.value = ERROR_NETWORK_CONNECTION
+                }
             } finally {
                 _isCreatingOrder.value = false
             }
