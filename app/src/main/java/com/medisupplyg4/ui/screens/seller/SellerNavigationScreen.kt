@@ -30,7 +30,7 @@ fun SellerNavigationScreen(
             )
         }
         
-                composable("visit_record/{visitaId}/{clienteId}/{clienteNombre}") { backStackEntry ->
+        composable("visit_record/{visitaId}/{clienteId}/{clienteNombre}") { backStackEntry ->
             val visitaId = backStackEntry.arguments?.getString("visitaId") ?: ""
             val clienteId = backStackEntry.arguments?.getString("clienteId") ?: ""
             val clienteNombre = URLDecoder.decode(
@@ -38,13 +38,49 @@ fun SellerNavigationScreen(
                 StandardCharsets.UTF_8.toString()
             )
             
-                    VisitRecordScreen(
-                        navController = navController,
-                        visitaId = visitaId,
-                        clienteId = clienteId,
-                        clienteNombre = clienteNombre,
-                        onVisitRecorded = { refreshVisits = true }
-                    )
+            VisitRecordScreen(
+                navController = navController,
+                visitaId = visitaId,
+                clienteId = clienteId,
+                clienteNombre = clienteNombre,
+                onVisitRecorded = { refreshVisits = true }
+            )
+        }
+        
+        composable("orders_list") {
+            OrdersListScreen(
+                onCreateOrderClick = {
+                    navController.navigate("new_order")
+                }
+            )
+        }
+        
+        composable("new_order") {
+            NewOrderScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onViewOrderSummaryClick = {
+                    navController.navigate("order_summary")
+                }
+            )
+        }
+        
+        composable("order_summary") {
+            // TODO: Get vendedorId from user session
+            val vendedorId = "test-vendedor-id" // This should come from the logged-in user
+            
+            OrderSummaryScreen(
+                vendedorId = vendedorId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onOrderCreated = {
+                    navController.navigate("orders_list") {
+                        popUpTo("orders_list") { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

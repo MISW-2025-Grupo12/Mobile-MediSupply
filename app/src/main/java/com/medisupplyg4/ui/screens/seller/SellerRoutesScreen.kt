@@ -41,7 +41,7 @@ fun SellerRoutesScreen(
     val startDate by viewModel.startDate.observeAsState(LocalDate.now())
     val endDate by viewModel.endDate.observeAsState(LocalDate.now().plusDays(7))
 
-    val context = LocalContext.current
+    LocalContext.current
 
     // Estados para los DatePickers
     var showDatePickerInicio by remember { mutableStateOf(false) }
@@ -56,7 +56,7 @@ fun SellerRoutesScreen(
     }
 
     // Group visits by day
-    val groupedVisits = visits
+    visits
         .sortedBy { it.fechaProgramada }
         .groupBy { it.fechaProgramada.toLocalDate() }
         .toSortedMap()

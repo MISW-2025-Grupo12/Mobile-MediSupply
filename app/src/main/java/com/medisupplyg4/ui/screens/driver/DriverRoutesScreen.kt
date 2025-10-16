@@ -109,7 +109,7 @@ fun DriverRoutesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            groupedDeliveries.forEach { (date, dayDeliveries) ->
+                            groupedDeliveries.forEach { (_, dayDeliveries) ->
                                 item {
                                     DeliveryGroupedByDay(
                                         deliveries = dayDeliveries
@@ -132,7 +132,7 @@ fun DriverRoutesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            groupedDeliveries.forEach { (date, dayDeliveries) ->
+                            groupedDeliveries.forEach { (_, dayDeliveries) ->
                                 item {
                                     DeliveryGroupedByDay(
                                         deliveries = dayDeliveries

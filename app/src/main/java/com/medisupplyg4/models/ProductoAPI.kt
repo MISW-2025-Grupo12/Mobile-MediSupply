@@ -3,12 +3,34 @@ package com.medisupplyg4.models
 import com.google.gson.annotations.SerializedName
 
 /**
- * Modelo para el producto que viene del API
+ * Model to represent a product from the API
  */
 data class ProductoAPI(
+    val id: String,
     val nombre: String,
-    val cantidad: Int,
-    @SerializedName("precio_unitario") val precioUnitario: Int,
-    val subtotal: Int,
-    val avatar: String
+    val descripcion: String,
+    val precio: Double,
+    val avatar: String? = null, // URL del avatar del producto
+    val categoria: CategoriaAPI,
+    val proveedor: ProveedorAPI,
+    @SerializedName("inventario_disponible") val inventarioDisponible: Int = 0
+)
+
+/**
+ * Model to represent a product category
+ */
+data class CategoriaAPI(
+    val id: String,
+    val nombre: String,
+    val descripcion: String
+)
+
+/**
+ * Model to represent a product supplier
+ */
+data class ProveedorAPI(
+    val id: String,
+    val nombre: String,
+    val email: String,
+    val direccion: String
 )

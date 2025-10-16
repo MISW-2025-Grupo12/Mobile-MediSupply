@@ -80,7 +80,6 @@
     <string name="confirmed">Confirmado</string>
     <string name="delivered">Entregado</string>
     <string name="add_client">Agregar cliente</string>
-    <string name="search_clients">Buscar clientes</string>
     <string name="view_details">Ver detalles</string>
     <string name="new_order">Nuevo pedido</string>
     <string name="my_orders">Mis pedidos</string>
@@ -216,5 +215,42 @@
     <string name="recording_visit">Registrando...</string>
     <string name="visit_recorded">¡Registrado!</string>
     <string name="continue_button">Continuar</string>
+
+    <!-- Orders -->
+    <string name="orders_title">Pedidos</string>
+    <string name="new_order_title">Nuevo pedido</string>
+    <string name="order_summary_title">Resumen del pedido</string>
+    <string name="client_field">Cliente</string>
+    <string name="select_client">Seleccionar cliente</string>
+    <string name="search_products">Buscar productos...</string>
+    <string name="no_products_found">No se encontraron productos</string>
+    <string name="units_available">unidades disponibles</string>
+    <string name="view_order_summary">Ver resumen del pedido</string>
+    <string name="confirm_order">Confirmar pedido</string>
+    <string name="total">Total:</string>
+    <string name="order_created_success">Pedido creado exitosamente</string>
+    <string name="order_created_message">El pedido ha sido creado exitosamente</string>
+    <string name="order_error">Error al crear el pedido</string>
+    <string name="order_network_error">Error de conexión. Intente nuevamente</string>
+    <string name="creating_order">Creando pedido...</string>
+    <string name="order_created">¡Creado!</string>
+    
+    <!-- Order Validation Messages -->
+    <string name="validation_client_required_order">Debe seleccionar un cliente</string>
+    <string name="validation_search_too_long">La búsqueda no puede exceder 100 caracteres</string>
+    <string name="validation_no_products_in_order">Debe agregar al menos un producto al pedido</string>
+    <string name="validation_insufficient_inventory">No hay suficiente inventario disponible</string>
+    <string name="validation_minimum_quantity">La cantidad mínima es 1 unidad</string>
+    <string name="validation_maximum_quantity">La cantidad no puede exceder el inventario disponible</string>
+    <string name="no_products_added_to_order">No se agregaron productos al pedido</string>
+    <string name="search_clients">Buscar clientes</string>
+    <string name="no_clients_found">No se encontraron clientes</string>
+    
+    <!-- Common UI strings -->
+    <string name="back">Volver</string>
+    <string name="ok">Aceptar</string>
+    <string name="add">Agregar</string>
+    <string name="remove">Quitar</string>
+    <string name="error">Error</string>
 
 </resources>

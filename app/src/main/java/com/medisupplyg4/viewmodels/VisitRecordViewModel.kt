@@ -110,7 +110,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
     init {
         // Initialize with current date and time
         val today = LocalDate.now()
-        val now = java.time.LocalTime.now()
+        val now = LocalTime.now()
         
         _fecha.value = today.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
         _hora.value = now.format(DateTimeFormatter.ofPattern(TIME_FORMAT))
@@ -157,7 +157,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
     /**
      * Sets the time from LocalTime
      */
-    fun setHoraFromTime(time: java.time.LocalTime) {
+    fun setHoraFromTime(time: LocalTime) {
         val formattedTime = time.format(DateTimeFormatter.ofPattern(TIME_FORMAT))
         _hora.value = formattedTime
         validateForm()
@@ -235,7 +235,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      */
     fun clearFormAndReset() {
         val today = LocalDate.now()
-        val now = java.time.LocalTime.now()
+        val now = LocalTime.now()
         
         _fecha.value = today.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
         _hora.value = now.format(DateTimeFormatter.ofPattern(TIME_FORMAT))

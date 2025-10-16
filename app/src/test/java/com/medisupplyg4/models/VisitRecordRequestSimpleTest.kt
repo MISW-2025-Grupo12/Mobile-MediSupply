@@ -113,3 +113,4 @@ class VisitRecordResponseSimpleTest {
         assertEquals("completada", response.estado)
     }
 }
+

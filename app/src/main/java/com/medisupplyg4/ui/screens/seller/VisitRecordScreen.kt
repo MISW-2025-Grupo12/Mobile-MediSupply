@@ -34,7 +34,7 @@ fun VisitRecordScreen(
     onVisitRecorded: (() -> Unit)? = null,
     viewModel: VisitRecordViewModel = viewModel()
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     
     // UI State
     val fecha by viewModel.fecha.observeAsState("")
@@ -195,7 +195,7 @@ fun VisitRecordScreen(
                 onClick = { navController.popBackStack() }
             ) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    painter = painterResource(R.drawable.arrow_back),
                     contentDescription = stringResource(R.string.visit_record_back)
                 )
             }

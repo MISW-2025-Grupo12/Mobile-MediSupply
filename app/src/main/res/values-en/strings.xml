@@ -80,7 +80,6 @@
     <string name="confirmed">Confirmed</string>
     <string name="delivered">Delivered</string>
     <string name="add_client">Add client</string>
-    <string name="search_clients">Search clients</string>
     <string name="view_details">View details</string>
     <string name="new_order">New order</string>
     <string name="my_orders">My orders</string>
@@ -215,5 +214,42 @@
     <string name="recording_visit">Recording...</string>
     <string name="visit_recorded">Recorded!</string>
     <string name="continue_button">Continue</string>
+
+    <!-- Orders -->
+    <string name="orders_title">Orders</string>
+    <string name="new_order_title">New order</string>
+    <string name="order_summary_title">Order summary</string>
+    <string name="client_field">Client</string>
+    <string name="select_client">Select client</string>
+    <string name="search_products">Search products...</string>
+    <string name="no_products_found">No products found</string>
+    <string name="units_available">units available</string>
+    <string name="view_order_summary">View order summary</string>
+    <string name="confirm_order">Confirm order</string>
+    <string name="total">Total:</string>
+    <string name="order_created_success">Order created successfully</string>
+    <string name="order_created_message">The order has been created successfully</string>
+    <string name="order_error">Error creating the order</string>
+    <string name="order_network_error">Connection error. Please try again</string>
+    <string name="creating_order">Creating order...</string>
+    <string name="order_created">Created!</string>
+    
+    <!-- Order Validation Messages -->
+    <string name="validation_client_required_order">You must select a client</string>
+    <string name="validation_search_too_long">Search cannot exceed 100 characters</string>
+    <string name="validation_no_products_in_order">You must add at least one product to the order</string>
+    <string name="validation_insufficient_inventory">Insufficient inventory available</string>
+    <string name="validation_minimum_quantity">Minimum quantity is 1 unit</string>
+    <string name="validation_maximum_quantity">Quantity cannot exceed available inventory</string>
+    <string name="no_products_added_to_order">No products added to order</string>
+    <string name="search_clients">Search clients</string>
+    <string name="no_clients_found">No clients found</string>
+    
+    <!-- Common UI strings -->
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="error">Error</string>
 
 </resources>
