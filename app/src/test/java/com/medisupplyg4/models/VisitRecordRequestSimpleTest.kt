@@ -2,12 +2,10 @@ package com.medisupplyg4.models
 
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
-class VisitRecordRequestTest {
+class VisitRecordRequestSimpleTest {
 
     @Test
     fun `VisitRecordRequest should serialize correctly with Gson`() {
@@ -24,11 +22,11 @@ class VisitRecordRequestTest {
         val json = Gson().toJson(request)
         
         // Then
-        assert(json.contains("\"fecha_realizada\":\"2024-01-15\""))
-        assert(json.contains("\"hora_realizada\":\"14:30:00\""))
-        assert(json.contains("\"cliente_id\":\"test-client-id\""))
-        assert(json.contains("\"novedades\":\"Test notes\""))
-        assert(json.contains("\"pedido_generado\":true"))
+        assertTrue(json.contains("\"fecha_realizada\":\"2024-01-15\""))
+        assertTrue(json.contains("\"hora_realizada\":\"14:30:00\""))
+        assertTrue(json.contains("\"cliente_id\":\"test-client-id\""))
+        assertTrue(json.contains("\"novedades\":\"Test notes\""))
+        assertTrue(json.contains("\"pedido_generado\":true"))
     }
 
     @Test
@@ -70,13 +68,12 @@ class VisitRecordRequestTest {
         val json = Gson().toJson(request)
         
         // Then
-        assert(json.contains("\"novedades\":\"\""))
-        assert(json.contains("\"pedido_generado\":false"))
+        assertTrue(json.contains("\"novedades\":\"\""))
+        assertTrue(json.contains("\"pedido_generado\":false"))
     }
 }
 
-@RunWith(RobolectricTestRunner::class)
-class VisitRecordResponseTest {
+class VisitRecordResponseSimpleTest {
 
     @Test
     fun `VisitRecordResponse should serialize correctly with Gson`() {
@@ -91,9 +88,9 @@ class VisitRecordResponseTest {
         val json = Gson().toJson(response)
         
         // Then
-        assert(json.contains("\"message\":\"Visita registrada exitosamente\""))
-        assert(json.contains("\"visita_id\":\"test-visit-id\""))
-        assert(json.contains("\"estado\":\"completada\""))
+        assertTrue(json.contains("\"message\":\"Visita registrada exitosamente\""))
+        assertTrue(json.contains("\"visita_id\":\"test-visit-id\""))
+        assertTrue(json.contains("\"estado\":\"completada\""))
     }
 
     @Test

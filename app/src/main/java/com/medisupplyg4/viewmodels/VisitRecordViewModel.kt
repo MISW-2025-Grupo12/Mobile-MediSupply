@@ -35,6 +35,38 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
         const val ERROR_TIME_FORMAT = "ERROR_TIME_FORMAT"
         const val ERROR_FUTURE_DATE = "ERROR_FUTURE_DATE"
         const val ERROR_NOTES_MAX_LENGTH = "ERROR_NOTES_MAX_LENGTH"
+        
+        // Static methods for testing
+        fun getFechaErrorMessageStatic(fecha: String): String? {
+            if (fecha.isEmpty()) return ERROR_DATE_REQUIRED
+            
+            return try {
+                val parsedDate = LocalDate.parse(fecha, DateTimeFormatter.ofPattern(DATE_FORMAT))
+                val today = LocalDate.now()
+                if (parsedDate.isAfter(today)) {
+                    ERROR_FUTURE_DATE
+                } else null
+            } catch (e: DateTimeParseException) {
+                ERROR_DATE_FORMAT
+            }
+        }
+        
+        fun getHoraErrorMessageStatic(hora: String): String? {
+            if (hora.isEmpty()) return ERROR_TIME_REQUIRED
+            
+            return try {
+                LocalTime.parse(hora, DateTimeFormatter.ofPattern(TIME_FORMAT))
+                null
+            } catch (e: DateTimeParseException) {
+                ERROR_TIME_FORMAT
+            }
+        }
+        
+        fun getNovedadesErrorMessageStatic(novedades: String): String? {
+            return if (novedades.length > MAX_NOTES_LENGTH) {
+                ERROR_NOTES_MAX_LENGTH
+            } else null
+        }
     }
     
     private val repository = SellerRepository()
@@ -264,19 +296,9 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      * Gets validation error message for date
      */
     fun getFechaErrorMessage(fecha: String): String? {
-        if (fecha.isEmpty()) return ERROR_DATE_REQUIRED
-        
-        return try {
-            LocalDate.parse(fecha, DateTimeFormatter.ofPattern(DATE_FORMAT))
-            val parsedDate = LocalDate.parse(fecha, DateTimeFormatter.ofPattern(DATE_FORMAT))
-            val today = LocalDate.now()
-            if (parsedDate.isAfter(today)) {
-                ERROR_FUTURE_DATE
-            } else null
-        } catch (e: DateTimeParseException) {
-            ERROR_DATE_FORMAT
-        }
+        return getFechaErrorMessageStatic(fecha)
     }
+    
     
     /**
      * Gets validation error message for time

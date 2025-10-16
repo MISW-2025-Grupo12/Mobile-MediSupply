@@ -195,7 +195,7 @@ fun VisitRecordScreen(
                 onClick = { navController.popBackStack() }
             ) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.visit_record_back)
                 )
             }
@@ -222,72 +222,113 @@ fun VisitRecordScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     // Date Field
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showDatePicker = true },
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    Column(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showDatePicker = true },
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
-                            Text(
-                                text = stringResource(R.string.visit_record_date),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.padding(16.dp)
                             ) {
                                 Text(
-                                    text = if (fecha.isEmpty()) stringResource(R.string.visit_record_select_date) else fecha,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = if (fecha.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
+                                    text = stringResource(R.string.visit_record_date),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                Icon(
-                                    Icons.Default.DateRange,
-                                    contentDescription = stringResource(R.string.select_date_description),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = if (fecha.isEmpty()) stringResource(R.string.visit_record_select_date) else fecha,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = if (fecha.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Icon(
+                                        Icons.Default.DateRange,
+                                        contentDescription = stringResource(R.string.select_date_description),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
+                        }
+                        
+                        // Date validation error
+                        val fechaError = viewModel.getFechaErrorMessage(fecha)
+                        if (fechaError != null) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = when (fechaError) {
+                                    VisitRecordViewModel.ERROR_DATE_REQUIRED -> stringResource(R.string.validation_date_required)
+                                    VisitRecordViewModel.ERROR_DATE_FORMAT -> stringResource(R.string.validation_date_format)
+                                    VisitRecordViewModel.ERROR_FUTURE_DATE -> stringResource(R.string.validation_future_date)
+                                    else -> fechaError
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
                         }
                     }
                     
                     // Time Field
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { showTimePicker = true },
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    Column(
+                        modifier = Modifier.weight(1f)
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showTimePicker = true },
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
-                            Text(
-                                text = stringResource(R.string.visit_record_time),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.padding(16.dp)
                             ) {
                                 Text(
-                                    text = if (hora.isEmpty()) stringResource(R.string.visit_record_select_time) else hora,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = if (hora.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
+                                    text = stringResource(R.string.visit_record_time),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                Icon(
-                                    Icons.Default.Schedule,
-                                    contentDescription = stringResource(R.string.select_time_description),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = if (hora.isEmpty()) stringResource(R.string.visit_record_select_time) else hora,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = if (hora.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Icon(
+                                        Icons.Default.Schedule,
+                                        contentDescription = stringResource(R.string.select_time_description),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
+                        }
+                        
+                        // Time validation error
+                        val horaError = viewModel.getHoraErrorMessage(hora)
+                        if (horaError != null) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = when (horaError) {
+                                    VisitRecordViewModel.ERROR_TIME_REQUIRED -> stringResource(R.string.validation_time_required)
+                                    VisitRecordViewModel.ERROR_TIME_FORMAT -> stringResource(R.string.validation_time_format)
+                                    else -> horaError
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
                         }
                     }
                 }
@@ -326,24 +367,42 @@ fun VisitRecordScreen(
                 }
                 
                 // Notes Field
-                OutlinedTextField(
-                    value = novedades,
-                    onValueChange = { viewModel.setNovedades(it) },
-                    label = { Text(stringResource(R.string.visit_record_notes)) },
-                    placeholder = { Text(stringResource(R.string.visit_record_write_notes)) },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.notes),
-                            contentDescription = null
+                Column {
+                    OutlinedTextField(
+                        value = novedades,
+                        onValueChange = { viewModel.setNovedades(it) },
+                        label = { Text(stringResource(R.string.visit_record_notes)) },
+                        placeholder = { Text(stringResource(R.string.visit_record_write_notes)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.notes),
+                                contentDescription = null
+                            )
+                        },
+                        supportingText = {
+                            Text("${novedades.length}/500")
+                        },
+                        isError = viewModel.getNovedadesErrorMessage(novedades) != null,
+                        minLines = 3,
+                        maxLines = 5,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    // Notes validation error
+                    val novedadesError = viewModel.getNovedadesErrorMessage(novedades)
+                    if (novedadesError != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = when (novedadesError) {
+                                VisitRecordViewModel.ERROR_NOTES_MAX_LENGTH -> stringResource(R.string.validation_notes_max_length)
+                                else -> novedadesError
+                            },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(start = 16.dp)
                         )
-                    },
-                    supportingText = {
-                        Text("${novedades.length}/500")
-                    },
-                    minLines = 3,
-                    maxLines = 5,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    }
+                }
                 
                 // Order Generated Toggle
                 Row(
