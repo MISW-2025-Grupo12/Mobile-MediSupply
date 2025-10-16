@@ -25,14 +25,15 @@ import com.medisupplyg4.utils.DateFormatter
 import com.medisupplyg4.viewmodels.SellerRoutesViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 import com.medisupplyg4.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellerRoutesScreen(
     viewModel: SellerRoutesViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    refreshTrigger: Boolean = false,
+    onRefreshComplete: () -> Unit = {}
 ) {
     val visits by viewModel.visits.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -40,14 +41,22 @@ fun SellerRoutesScreen(
     val startDate by viewModel.startDate.observeAsState(LocalDate.now())
     val endDate by viewModel.endDate.observeAsState(LocalDate.now().plusDays(7))
 
-    val context = LocalContext.current
+    LocalContext.current
 
     // Estados para los DatePickers
     var showDatePickerInicio by remember { mutableStateOf(false) }
     var showDatePickerFin by remember { mutableStateOf(false) }
+    
+    // Handle refresh trigger
+    LaunchedEffect(refreshTrigger) {
+        if (refreshTrigger) {
+            viewModel.loadVisits()
+            onRefreshComplete()
+        }
+    }
 
     // Group visits by day
-    val groupedVisits = visits
+    visits
         .sortedBy { it.fechaProgramada }
         .groupBy { it.fechaProgramada.toLocalDate() }
         .toSortedMap()
@@ -261,7 +270,7 @@ fun SellerRoutesScreen(
             }
             else -> {
                 // Lista de visitas agrupadas por fecha
-                VisitsGroupedByDate(visits = visits)
+                VisitsGroupedByDate(visits = visits, navController = navController)
             }
         }
     }
@@ -270,6 +279,7 @@ fun SellerRoutesScreen(
 @Composable
 private fun VisitsGroupedByDate(
     visits: List<VisitAPI>,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val groupedVisits = visits
@@ -287,7 +297,14 @@ private fun VisitsGroupedByDate(
             }
             
             items(dayVisitas) { visita ->
-                VisitaCard(visita = visita)
+                VisitaCard(
+                    visita = visita,
+                    onClick = {
+                        // Navigate to visit registration screen
+                        val encodedClienteNombre = java.net.URLEncoder.encode(visita.cliente.nombre, "UTF-8")
+                        navController.navigate("visit_record/${visita.id}/${visita.cliente.id}/$encodedClienteNombre")
+                    }
+                )
             }
         }
     }
@@ -328,10 +345,13 @@ private fun VisitaDayHeader(
 @Composable
 private fun VisitaCard(
     visita: VisitAPI,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(

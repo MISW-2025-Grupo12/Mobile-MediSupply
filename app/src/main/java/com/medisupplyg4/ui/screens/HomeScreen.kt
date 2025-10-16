@@ -13,7 +13,8 @@ import com.medisupplyg4.R
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.screens.driver.DriverRoutesScreen
 import com.medisupplyg4.ui.screens.driver.DriverDeliveriesScreen
-import com.medisupplyg4.ui.screens.seller.SellerRoutesScreen
+import com.medisupplyg4.ui.screens.seller.SellerNavigationScreen
+import com.medisupplyg4.ui.screens.seller.SellerOrdersNavigationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +33,7 @@ fun HomeScreen(
         )
         UserRole.SELLER -> listOf(
             Triple(R.drawable.map, stringResource(R.string.visit_routes), "routes"),
+            Triple(R.drawable.inventory, stringResource(R.string.orders_title), "orders"),
             Triple(R.drawable.group_people, stringResource(R.string.clients), "clients"),
             Triple(R.drawable.person, stringResource(R.string.profile), "profile")
         )
@@ -44,7 +46,7 @@ fun HomeScreen(
     Scaffold(
         bottomBar = {
             NavigationBar {
-                tabs.forEachIndexed { index, (iconRes, label, route) ->
+                tabs.forEachIndexed { index, (iconRes, label) ->
                     NavigationBarItem(
                         icon = { Icon(painterResource(iconRes), contentDescription = label) },
                         label = { Text(label) },
@@ -75,8 +77,9 @@ fun HomeScreen(
                 }
                 UserRole.SELLER -> {
                     when (selectedTabIndex) {
-                        0 -> SellerRoutesScreen(navController = navController)
-                        1 -> {
+                        0 -> SellerNavigationScreen()
+                        1 -> SellerOrdersNavigationScreen()
+                        2 -> {
                             // Clientes - no implementado aún
                             Box(
                                 modifier = Modifier.fillMaxSize(),
@@ -89,7 +92,7 @@ fun HomeScreen(
                                 )
                             }
                         }
-                        2 -> ProfileScreen(navController = navController)
+                        3 -> ProfileScreen(navController = navController)
                     }
                 }
                 else -> {

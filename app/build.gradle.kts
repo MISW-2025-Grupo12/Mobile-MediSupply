@@ -81,6 +81,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.compose)
     implementation(libs.androidx.navigation.compose)
     
+    // Image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    
     // Network
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)

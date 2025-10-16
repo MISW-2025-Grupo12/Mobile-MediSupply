@@ -13,7 +13,7 @@ abstract class BaseActivity : ComponentActivity() {
     }
     
     override fun attachBaseContext(newBase: Context) {
-        val prefs = newBase.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = newBase.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val language = prefs.getString(KEY_SELECTED_LANGUAGE, "es") ?: "es"
         super.attachBaseContext(LocaleHelper.setLocale(newBase, language))
     }
@@ -23,7 +23,7 @@ abstract class BaseActivity : ComponentActivity() {
     }
     
     fun changeLanguage(language: String) {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         prefs.edit().putString(KEY_SELECTED_LANGUAGE, language).apply()
         
         // Recreate activity to apply language change

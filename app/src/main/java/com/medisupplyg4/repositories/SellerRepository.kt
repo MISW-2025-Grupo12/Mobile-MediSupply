@@ -3,6 +3,8 @@ package com.medisupplyg4.repositories
 import android.util.Log
 import com.medisupplyg4.models.SellerAPI
 import com.medisupplyg4.models.VisitAPI
+import com.medisupplyg4.models.VisitRecordRequest
+import com.medisupplyg4.models.VisitRecordResponse
 import com.medisupplyg4.network.NetworkClient
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -78,6 +80,32 @@ class SellerRepository {
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al obtener visitas", e)
             emptyList()
+        }
+    }
+    
+    /**
+     * Records a completed visit
+     */
+    suspend fun recordVisit(
+        visitaId: String,
+        request: VisitRecordRequest
+    ): VisitRecordResponse? {
+        return try {
+            Log.d(TAG, "Registrando visita $visitaId")
+            
+            val response = visitasApiService.recordVisit(visitaId, request)
+            
+            if (response.isSuccessful) {
+                val result = response.body()
+                Log.d(TAG, "Visita registrada exitosamente: ${result?.message}")
+                result
+            } else {
+                Log.e(TAG, "Error al registrar visita: ${response.code()} - ${response.message()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción al registrar visita", e)
+            null
         }
     }
 }

@@ -20,10 +20,10 @@ object ApiConfig {
     const val VENTAS_BASE_URL = "http://10.0.2.2:5002/" // Para emulador Android
     // const val VENTAS_BASE_URL = "http://localhost:5002/" // Para dispositivo físico
     
-    // Headers comunes
-    const val CONTENT_TYPE = "application/json" // TODO: Mover a strings.xml
-    const val ACCEPT = "application/json" // TODO: Mover a strings.xml
-    
+    // Servicio de productos
+    const val PRODUCTOS_BASE_URL = "http://10.0.2.2:5000/" // Para emulador Android
+    // const val PRODUCTOS_BASE_URL = "http://localhost:5000/" // Para dispositivo físico
+
     // Timeouts
     const val CONNECT_TIMEOUT = 30L // segundos
     const val READ_TIMEOUT = 30L // segundos
