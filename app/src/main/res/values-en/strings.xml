@@ -176,4 +176,44 @@
     <string name="period_tab_week">Week</string>
     <string name="period_tab_month">Month</string>
 
+    <!-- Visit Record -->
+    <string name="visit_record_title">Visit record</string>
+    <string name="visit_record_date">Date</string>
+    <string name="visit_record_time">Time</string>
+    <string name="visit_record_client">Client</string>
+    <string name="visit_record_notes">Notes</string>
+    <string name="visit_record_order_generated">order generated?</string>
+    <string name="visit_record_save">Save</string>
+    <string name="visit_record_back">Back</string>
+    <string name="visit_record_select_date">Select</string>
+    <string name="visit_record_select_time">Select</string>
+    <string name="visit_record_select_client">Select client</string>
+    <string name="visit_record_write_notes">Write here...</string>
+    <string name="visit_record_yes">Yes</string>
+    <string name="visit_record_no">No</string>
+    
+    <!-- Validation Messages -->
+    <string name="validation_date_required">Date is required</string>
+    <string name="validation_time_required">Time is required</string>
+    <string name="validation_client_required">You must select a client</string>
+    <string name="validation_date_format">Incorrect date format. Use MM/dd/yyyy</string>
+    <string name="validation_time_format">Incorrect time format. Use HH:mm</string>
+    <string name="validation_future_date">Future dates are not allowed</string>
+    <string name="validation_notes_max_length">Notes cannot exceed 500 characters</string>
+    
+    <!-- Success/Error Messages -->
+    <string name="visit_record_success">Visit recorded successfully</string>
+    <string name="visit_record_success_message">The visit has been recorded successfully</string>
+    <string name="visit_record_error">Error recording the visit</string>
+    <string name="visit_record_network_error">Connection error. Please try again</string>
+    
+    <!-- Content Descriptions -->
+    <string name="select_date_description">Select date</string>
+    <string name="select_time_description">Select time</string>
+    
+    <!-- Loading States -->
+    <string name="recording_visit">Recording...</string>
+    <string name="visit_recorded">Recorded!</string>
+    <string name="continue_button">Continue</string>
+
 </resources>

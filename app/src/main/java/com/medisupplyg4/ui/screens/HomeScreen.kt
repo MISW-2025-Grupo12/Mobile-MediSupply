@@ -13,7 +13,7 @@ import com.medisupplyg4.R
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.screens.driver.DriverRoutesScreen
 import com.medisupplyg4.ui.screens.driver.DriverDeliveriesScreen
-import com.medisupplyg4.ui.screens.seller.SellerRoutesScreen
+import com.medisupplyg4.ui.screens.seller.SellerNavigationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +75,7 @@ fun HomeScreen(
                 }
                 UserRole.SELLER -> {
                     when (selectedTabIndex) {
-                        0 -> SellerRoutesScreen(navController = navController)
+                        0 -> SellerNavigationScreen()
                         1 -> {
                             // Clientes - no implementado aún
                             Box(

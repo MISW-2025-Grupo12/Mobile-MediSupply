@@ -172,10 +172,49 @@
         <!-- Date Header -->
         <string name="date_header_today">Hoy</string>
 
-        <!-- SimplePeriodTabs -->
-        <string name="period_tab_day">Día</string>
-        <string name="period_tab_week">Semana</string>
-        <string name="period_tab_month">Mes</string>
+    <!-- SimplePeriodTabs -->
+    <string name="period_tab_day">Día</string>
+    <string name="period_tab_week">Semana</string>
+    <string name="period_tab_month">Mes</string>
 
+    <!-- Visit Record -->
+    <string name="visit_record_title">Registro de visita</string>
+    <string name="visit_record_date">Fecha</string>
+    <string name="visit_record_time">Hora</string>
+    <string name="visit_record_client">Cliente</string>
+    <string name="visit_record_notes">Novedades</string>
+    <string name="visit_record_order_generated">¿Se generó pedido?</string>
+    <string name="visit_record_save">Guardar</string>
+    <string name="visit_record_back">Volver</string>
+    <string name="visit_record_select_date">Seleccionar</string>
+    <string name="visit_record_select_time">Seleccionar</string>
+    <string name="visit_record_select_client">Seleccionar cliente</string>
+    <string name="visit_record_write_notes">Escriba aqui...</string>
+    <string name="visit_record_yes">Sí</string>
+    <string name="visit_record_no">No</string>
+    
+    <!-- Validation Messages -->
+    <string name="validation_date_required">La fecha es obligatoria</string>
+    <string name="validation_time_required">La hora es obligatoria</string>
+    <string name="validation_client_required">Debe seleccionar un cliente</string>
+    <string name="validation_date_format">Formato de fecha incorrecto. Use dd/MM/yyyy</string>
+    <string name="validation_time_format">Formato de hora incorrecto. Use HH:mm</string>
+    <string name="validation_future_date">No se permiten fechas futuras</string>
+    <string name="validation_notes_max_length">Las novedades no pueden exceder 500 caracteres</string>
+    
+    <!-- Success/Error Messages -->
+    <string name="visit_record_success">Visita registrada exitosamente</string>
+    <string name="visit_record_success_message">La visita ha sido registrada exitosamente</string>
+    <string name="visit_record_error">Error al registrar la visita</string>
+    <string name="visit_record_network_error">Error de conexión. Intente nuevamente</string>
+    
+    <!-- Content Descriptions -->
+    <string name="select_date_description">Seleccionar fecha</string>
+    <string name="select_time_description">Seleccionar hora</string>
+    
+    <!-- Loading States -->
+    <string name="recording_visit">Registrando...</string>
+    <string name="visit_recorded">¡Registrado!</string>
+    <string name="continue_button">Continuar</string>
 
 </resources>
