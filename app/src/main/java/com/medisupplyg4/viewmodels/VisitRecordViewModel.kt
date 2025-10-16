@@ -24,6 +24,17 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
         private const val DATE_FORMAT = "dd/MM/yyyy"
         private const val TIME_FORMAT = "HH:mm"
         private const val MAX_NOTES_LENGTH = 500
+        
+        // Error messages - these should be replaced with string resources in the UI layer
+        const val ERROR_RECORDING_VISIT = "ERROR_RECORDING_VISIT"
+        const val ERROR_NETWORK_CONNECTION = "ERROR_NETWORK_CONNECTION"
+        const val ERROR_DATE_REQUIRED = "ERROR_DATE_REQUIRED"
+        const val ERROR_TIME_REQUIRED = "ERROR_TIME_REQUIRED"
+        const val ERROR_CLIENT_REQUIRED = "ERROR_CLIENT_REQUIRED"
+        const val ERROR_DATE_FORMAT = "ERROR_DATE_FORMAT"
+        const val ERROR_TIME_FORMAT = "ERROR_TIME_FORMAT"
+        const val ERROR_FUTURE_DATE = "ERROR_FUTURE_DATE"
+        const val ERROR_NOTES_MAX_LENGTH = "ERROR_NOTES_MAX_LENGTH"
     }
     
     private val repository = SellerRepository()
@@ -163,12 +174,12 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
                     _success.value = true
                     Log.d(TAG, "Visita registrada exitosamente: ${response.message}")
                 } else {
-                    _error.value = "Error al registrar la visita"
+                    _error.value = ERROR_RECORDING_VISIT
                 }
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Error al registrar visita", e)
-                _error.value = "Error de conexión. Intente nuevamente"
+                _error.value = ERROR_NETWORK_CONNECTION
             } finally {
                 _isLoading.value = false
             }
@@ -253,17 +264,17 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      * Gets validation error message for date
      */
     fun getFechaErrorMessage(fecha: String): String? {
-        if (fecha.isEmpty()) return "La fecha es obligatoria"
+        if (fecha.isEmpty()) return ERROR_DATE_REQUIRED
         
         return try {
             LocalDate.parse(fecha, DateTimeFormatter.ofPattern(DATE_FORMAT))
             val parsedDate = LocalDate.parse(fecha, DateTimeFormatter.ofPattern(DATE_FORMAT))
             val today = LocalDate.now()
             if (parsedDate.isAfter(today)) {
-                "No se permiten fechas futuras"
+                ERROR_FUTURE_DATE
             } else null
         } catch (e: DateTimeParseException) {
-            "Formato de fecha incorrecto. Use dd/MM/yyyy"
+            ERROR_DATE_FORMAT
         }
     }
     
@@ -271,13 +282,13 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      * Gets validation error message for time
      */
     fun getHoraErrorMessage(hora: String): String? {
-        if (hora.isEmpty()) return "La hora es obligatoria"
+        if (hora.isEmpty()) return ERROR_TIME_REQUIRED
         
         return try {
             LocalTime.parse(hora, DateTimeFormatter.ofPattern(TIME_FORMAT))
             null
         } catch (e: DateTimeParseException) {
-            "Formato de hora incorrecto. Use HH:mm"
+            ERROR_TIME_FORMAT
         }
     }
     
@@ -286,7 +297,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      */
     fun getNovedadesErrorMessage(novedades: String): String? {
         return if (novedades.length > MAX_NOTES_LENGTH) {
-            "Las novedades no pueden exceder 500 caracteres"
+            ERROR_NOTES_MAX_LENGTH
         } else null
     }
     

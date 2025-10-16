@@ -416,6 +416,19 @@ fun VisitRecordScreen(
         
         // Error Message
         error?.let { errorMessage ->
+            val localizedErrorMessage = when (errorMessage) {
+                VisitRecordViewModel.ERROR_RECORDING_VISIT -> stringResource(R.string.visit_record_error)
+                VisitRecordViewModel.ERROR_NETWORK_CONNECTION -> stringResource(R.string.visit_record_network_error)
+                VisitRecordViewModel.ERROR_DATE_REQUIRED -> stringResource(R.string.validation_date_required)
+                VisitRecordViewModel.ERROR_TIME_REQUIRED -> stringResource(R.string.validation_time_required)
+                VisitRecordViewModel.ERROR_CLIENT_REQUIRED -> stringResource(R.string.validation_client_required)
+                VisitRecordViewModel.ERROR_DATE_FORMAT -> stringResource(R.string.validation_date_format)
+                VisitRecordViewModel.ERROR_TIME_FORMAT -> stringResource(R.string.validation_time_format)
+                VisitRecordViewModel.ERROR_FUTURE_DATE -> stringResource(R.string.validation_future_date)
+                VisitRecordViewModel.ERROR_NOTES_MAX_LENGTH -> stringResource(R.string.validation_notes_max_length)
+                else -> errorMessage
+            }
+            
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -435,7 +448,7 @@ fun VisitRecordScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = errorMessage,
+                        text = localizedErrorMessage,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
