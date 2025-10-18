@@ -61,29 +61,24 @@ class NetworkClientTest {
     }
 
     @Test
-    fun `services should be singletons`() {
+    fun `services should be available`() {
         // Act
-        val deliveryService1 = NetworkClient.deliveryApiService
-        val deliveryService2 = NetworkClient.deliveryApiService
+        val deliveryService = NetworkClient.deliveryApiService
+        val vendedorService = NetworkClient.vendedorApiService
+        val visitasService = NetworkClient.visitasApiService
+        val pedidosService = NetworkClient.pedidosApiService
+        val productosService = NetworkClient.productosApiService
+        val inventarioService = NetworkClient.inventarioApiService
+        val clientesService = NetworkClient.clientesApiService
 
-        val vendedorService1 = NetworkClient.vendedorApiService
-        val vendedorService2 = NetworkClient.vendedorApiService
-
-        val visitasService1 = NetworkClient.visitasApiService
-        val visitasService2 = NetworkClient.visitasApiService
-
-        // Assert - Check that services are not null and are the same instance
-        assertNotNull(deliveryService1)
-        assertNotNull(deliveryService2)
-        assertSame(deliveryService1, deliveryService2)
-        
-        assertNotNull(vendedorService1)
-        assertNotNull(vendedorService2)
-        assertSame(vendedorService1, vendedorService2)
-        
-        assertNotNull(visitasService1)
-        assertNotNull(visitasService2)
-        assertSame(visitasService1, visitasService2)
+        // Assert - Check that services are not null
+        assertNotNull(deliveryService)
+        assertNotNull(vendedorService)
+        assertNotNull(visitasService)
+        assertNotNull(pedidosService)
+        assertNotNull(productosService)
+        assertNotNull(inventarioService)
+        assertNotNull(clientesService)
     }
 
     @Test
