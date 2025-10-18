@@ -8,10 +8,6 @@ plugins {
     id("jacoco")
 }
 
-jacoco {
-
-}
-
 android {
     namespace = "com.medisupplyg4"
     compileSdk = 36

@@ -1,6 +1,7 @@
 package com.medisupplyg4.repositories
 
 import android.util.Log
+import com.medisupplyg4.config.ApiConfig
 import com.medisupplyg4.models.SellerAPI
 import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.models.VisitRecordRequest
@@ -29,6 +30,8 @@ class SellerRepository {
     suspend fun getCurrentSeller(): SellerAPI? {
         return try {
             Log.d(TAG, "Obteniendo lista de vendedores...")
+            Log.d(TAG, "URL base del servicio de vendedores: ${ApiConfig.USUARIOS_BASE_URL}")
+            Log.d(TAG, "URL completa esperada: ${ApiConfig.USUARIOS_BASE_URL}usuarios/api/vendedores/")
             val response = vendedorApiService.getVendedores()
             
             if (response.isSuccessful) {
@@ -40,6 +43,8 @@ class SellerRepository {
                 vendedores?.firstOrNull()
             } else {
                 Log.e(TAG, "Error al obtener vendedores: ${response.code()} - ${response.message()}")
+                Log.e(TAG, "Response body: ${response.errorBody()?.string()}")
+                Log.e(TAG, "Headers: ${response.headers()}")
                 null
             }
         } catch (e: Exception) {

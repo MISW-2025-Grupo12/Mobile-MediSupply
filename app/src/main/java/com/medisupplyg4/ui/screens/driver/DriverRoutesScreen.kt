@@ -41,6 +41,11 @@ fun DriverRoutesScreen(
     LaunchedEffect(selectedPeriod, selectedDate) {
         viewModel.loadRoutes()
     }
+    
+    // Scroll al inicio cuando cambie el período
+    LaunchedEffect(selectedPeriod) {
+        groupedListState.animateScrollToItem(0)
+    }
 
     Column(
         modifier = Modifier

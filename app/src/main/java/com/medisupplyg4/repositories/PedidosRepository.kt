@@ -150,22 +150,51 @@ class PedidosRepository {
                     val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
                     if (errorResponse.detalle != null) {
                         Log.e(TAG, "Error detalle: ${errorResponse.detalle}")
-                        // Store the detail in a way that can be accessed by the ViewModel
-                        // We'll throw an exception with the detail as message
-                        throw Exception(errorResponse.detalle)
+                        // Create a detailed error message
+                        val detailedMessage = buildDetailedErrorMessage(errorResponse)
+                        throw Exception(detailedMessage)
                     }
                 } catch (e: Exception) {
-                    if (e.message?.contains("Error inesperado") == true) {
+                    if (e.message?.contains("No se puede crear el pedido") == true || 
+                        e.message?.contains("Problemas con productos") == true) {
                         // Re-throw with the detail message
                         throw e
                     }
-                    // If parsing fails, continue with normal error handling
+                    // If parsing fails, throw a generic error
+                    throw Exception("Error al crear el pedido: ${response.code()}")
                 }
-                null
+                // If no error detail found, throw generic error
+                throw Exception("Error al crear el pedido: ${response.code()}")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al crear pedido", e)
-            null
+            // Re-throw the exception so the ViewModel can handle it
+            throw e
         }
+    }
+    
+    /**
+     * Builds a detailed error message from the error response
+     */
+    private fun buildDetailedErrorMessage(errorResponse: ErrorResponse): String {
+        val message = StringBuilder()
+        
+        // Add main error message
+        message.append(errorResponse.detalle ?: errorResponse.error)
+        
+        // Add details about problematic items
+        errorResponse.itemsConProblemas?.let { items ->
+            if (items.isNotEmpty()) {
+                message.append("\n\nProductos con problemas:")
+                items.forEach { item ->
+                    message.append("\n• ${item.nombre}: ${item.mensaje}")
+                    if (item.problema == "no_existe_inventario") {
+                        message.append(" (Solicitado: ${item.cantidadSolicitada}, Disponible: ${item.cantidadDisponible})")
+                    }
+                }
+            }
+        }
+        
+        return message.toString()
     }
 }
