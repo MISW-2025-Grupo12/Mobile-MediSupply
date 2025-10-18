@@ -11,75 +11,96 @@ import java.util.concurrent.TimeUnit
  */
 object NetworkClient {
     
-    private val okHttpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .connectTimeout(ApiConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(ApiConfig.READ_TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(ApiConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
-            .build()
+    private var okHttpClient: OkHttpClient? = null
+    private var logisticaRetrofit: Retrofit? = null
+    private var usuariosRetrofit: Retrofit? = null
+    private var ventasRetrofit: Retrofit? = null
+    private var productosRetrofit: Retrofit? = null
+    
+    private fun getOkHttpClient(): OkHttpClient {
+        if (okHttpClient == null) {
+            okHttpClient = OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .build()
+        }
+        return okHttpClient!!
     }
     
-    // Retrofit para el servicio de logística (entregas)
-    private val logisticaRetrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(ApiConfig.LOGISTICA_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getLogisticaRetrofit(): Retrofit {
+        if (logisticaRetrofit == null) {
+            logisticaRetrofit = Retrofit.Builder()
+                .baseUrl(ApiConfig.LOGISTICA_BASE_URL)
+                .client(getOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return logisticaRetrofit!!
     }
     
-    // Retrofit para el servicio de usuarios (vendedores)
-    private val usuariosRetrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(ApiConfig.USUARIOS_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getUsuariosRetrofit(): Retrofit {
+        if (usuariosRetrofit == null) {
+            usuariosRetrofit = Retrofit.Builder()
+                .baseUrl(ApiConfig.USUARIOS_BASE_URL)
+                .client(getOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return usuariosRetrofit!!
     }
     
-    // Retrofit para el servicio de ventas (visitas)
-    private val ventasRetrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(ApiConfig.VENTAS_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getVentasRetrofit(): Retrofit {
+        if (ventasRetrofit == null) {
+            ventasRetrofit = Retrofit.Builder()
+                .baseUrl(ApiConfig.VENTAS_BASE_URL)
+                .client(getOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return ventasRetrofit!!
     }
     
-    // Retrofit para el servicio de productos
-    private val productosRetrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(ApiConfig.PRODUCTOS_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private fun getProductosRetrofit(): Retrofit {
+        if (productosRetrofit == null) {
+            productosRetrofit = Retrofit.Builder()
+                .baseUrl(ApiConfig.PRODUCTOS_BASE_URL)
+                .client(getOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return productosRetrofit!!
     }
     
-    val deliveryApiService: DeliveryApiService by lazy {
-        logisticaRetrofit.create(DeliveryApiService::class.java)
-    }
+    val deliveryApiService: DeliveryApiService
+        get() = getLogisticaRetrofit().create(DeliveryApiService::class.java)
     
-    val vendedorApiService: VendedorApiService by lazy {
-        usuariosRetrofit.create(VendedorApiService::class.java)
-    }
+    val vendedorApiService: VendedorApiService
+        get() = getUsuariosRetrofit().create(VendedorApiService::class.java)
     
-    val visitasApiService: VisitasApiService by lazy {
-        ventasRetrofit.create(VisitasApiService::class.java)
-    }
+    val visitasApiService: VisitasApiService
+        get() = getVentasRetrofit().create(VisitasApiService::class.java)
     
-    val clientesApiService: ClientesApiService by lazy {
-        usuariosRetrofit.create(ClientesApiService::class.java)
-    }
+    val clientesApiService: ClientesApiService
+        get() = getUsuariosRetrofit().create(ClientesApiService::class.java)
     
-    val productosApiService: ProductosApiService by lazy {
-        productosRetrofit.create(ProductosApiService::class.java)
-    }
+    val productosApiService: ProductosApiService
+        get() = getProductosRetrofit().create(ProductosApiService::class.java)
     
-    val pedidosApiService: PedidosApiService by lazy {
-        ventasRetrofit.create(PedidosApiService::class.java)
-    }
+    val pedidosApiService: PedidosApiService
+        get() = getVentasRetrofit().create(PedidosApiService::class.java)
     
-    val inventarioApiService: InventarioApiService by lazy {
-        logisticaRetrofit.create(InventarioApiService::class.java)
+    val inventarioApiService: InventarioApiService
+        get() = getLogisticaRetrofit().create(InventarioApiService::class.java)
+    
+    /**
+     * Reinicializa todos los clientes de red cuando cambia el ambiente
+     */
+    fun resetClients() {
+        okHttpClient = null
+        logisticaRetrofit = null
+        usuariosRetrofit = null
+        ventasRetrofit = null
+        productosRetrofit = null
     }
 }

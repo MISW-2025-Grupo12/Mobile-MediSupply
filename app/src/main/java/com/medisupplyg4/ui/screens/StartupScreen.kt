@@ -16,8 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.medisupplyg4.R
+import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
+import com.medisupplyg4.ui.components.EnvironmentSelector
 import com.medisupplyg4.ui.components.LanguageSelector
 import com.medisupplyg4.ui.components.RoleSelector
 
@@ -26,6 +28,8 @@ fun StartupScreen(
     selectedLanguage: Language,
     onLanguageSelected: (Language) -> Unit,
     onRoleSelected: (UserRole) -> Unit,
+    selectedEnvironment: Environment,
+    onEnvironmentSelected: (Environment) -> Unit,
     modifier: Modifier = Modifier
 ) {
     
@@ -117,6 +121,15 @@ fun StartupScreen(
         // Selector de roles
         RoleSelector(
             onRoleSelected = onRoleSelected,
+            modifier = Modifier.fillMaxWidth()
+        )
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Selector de ambiente
+        EnvironmentSelector(
+            selectedEnvironment = selectedEnvironment,
+            onEnvironmentSelected = onEnvironmentSelected,
             modifier = Modifier.fillMaxWidth()
         )
     }

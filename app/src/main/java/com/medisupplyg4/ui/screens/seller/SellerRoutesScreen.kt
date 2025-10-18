@@ -41,7 +41,19 @@ fun SellerRoutesScreen(
     val startDate by viewModel.startDate.observeAsState(LocalDate.now())
     val endDate by viewModel.endDate.observeAsState(LocalDate.now().plusDays(7))
 
-    LocalContext.current
+    val context = LocalContext.current
+
+    // Función para traducir mensajes de error
+    fun getLocalizedErrorMessage(errorMessage: String?): String {
+        return when {
+            errorMessage == "No se pudo obtener el vendedor actual" -> context.getString(R.string.seller_not_found)
+            errorMessage?.startsWith("Error al cargar vendedor:") == true -> {
+                val errorDetail = errorMessage.substringAfter(": ")
+                context.getString(R.string.seller_load_error, errorDetail)
+            }
+            else -> errorMessage ?: context.getString(R.string.unknown_error)
+        }
+    }
 
     // Estados para los DatePickers
     var showDatePickerInicio by remember { mutableStateOf(false) }
@@ -233,14 +245,14 @@ fun SellerRoutesScreen(
                             tint = MaterialTheme.colorScheme.error
                         )
                         Text(
-                            text = error ?: "Error desconocido",
+                            text = getLocalizedErrorMessage(error),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error
                         )
                         Button(
                             onClick = { viewModel.clearError(); viewModel.loadVisits() }
                         ) {
-                            Text("Reintentar")
+                            Text(stringResource(R.string.retry))
                         }
                     }
                 }

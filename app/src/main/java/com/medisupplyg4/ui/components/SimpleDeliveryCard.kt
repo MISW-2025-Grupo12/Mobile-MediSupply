@@ -66,7 +66,7 @@ fun SimpleDeliveryCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = delivery.nombreCliente,
+                    text = delivery.getNombreCliente(context),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -79,7 +79,7 @@ fun SimpleDeliveryCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = delivery.telefonoCliente,
+                    text = delivery.getTelefonoCliente(context),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )

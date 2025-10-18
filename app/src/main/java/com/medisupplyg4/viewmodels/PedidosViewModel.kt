@@ -138,7 +138,9 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
 
                 val productosConInventario = repository.getProductosConInventario()
                 _productosConInventario.value = productosConInventario ?: emptyList()
-                _productosFiltrados.value = productosConInventario ?: emptyList()
+                
+                // Apply stock filter after loading
+                filterProductos(_searchQuery.value ?: "")
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading products with inventory", e)
                 _error.value = ERROR_NETWORK_CONNECTION
@@ -301,9 +303,10 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                     _error.value = ERROR_CREATING_ORDER
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Excepción al crear pedido", e)
+                Log.e(TAG, "Excepción al crear pedido: ${e.message}", e)
                 // Check if the exception contains a detail message from the API
-                if (e.message?.contains("Error inesperado") == true) {
+                if (e.message?.contains("No se puede crear el pedido") == true || 
+                    e.message?.contains("Problemas con productos") == true) {
                     _error.value = e.message ?: ERROR_CREATING_ORDER
                 } else {
                     _error.value = ERROR_NETWORK_CONNECTION
@@ -348,11 +351,17 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
      */
     private fun filterProductos(query: String) {
         val allProductos = _productosConInventario.value ?: emptyList()
+        
+        // First filter by stock availability (only products with stock > 0)
+        val productosConStock = allProductos.filter { productoConInventario ->
+            productoConInventario.cantidadDisponible > 0
+        }
+        
         if (query.isEmpty()) {
-            _productosFiltrados.value = allProductos
+            _productosFiltrados.value = productosConStock
         } else {
             val normalizedQuery = normalizeString(query)
-            val filtered = allProductos.filter { productoConInventario ->
+            val filtered = productosConStock.filter { productoConInventario ->
                 normalizeString(productoConInventario.nombre).contains(normalizedQuery, ignoreCase = true) ||
                 normalizeString(productoConInventario.descripcion).contains(normalizedQuery, ignoreCase = true) ||
                 normalizeString(productoConInventario.categoria.nombre).contains(normalizedQuery, ignoreCase = true)

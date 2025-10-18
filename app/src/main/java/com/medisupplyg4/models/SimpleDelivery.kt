@@ -1,6 +1,8 @@
 package com.medisupplyg4.models
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.medisupplyg4.R
 import java.time.LocalDateTime
 
 /**
@@ -10,7 +12,7 @@ data class SimpleDelivery(
     val id: String,
     val direccion: String,
     @SerializedName("fecha_entrega") val fechaEntregaString: String,
-    val cliente: ClienteAPI,
+    val cliente: ClienteAPI?,
     val productos: List<ItemPedido>
 ) {
     /**
@@ -26,14 +28,16 @@ data class SimpleDelivery(
     /**
      * Obtiene el nombre del cliente
      */
-    val nombreCliente: String
-        get() = cliente.nombre
+    fun getNombreCliente(context: Context): String {
+        return cliente?.nombre ?: context.getString(R.string.client_not_available)
+    }
     
     /**
      * Obtiene el teléfono del cliente
      */
-    val telefonoCliente: String
-        get() = cliente.telefono
+    fun getTelefonoCliente(context: Context): String {
+        return cliente?.telefono ?: context.getString(R.string.phone_not_available)
+    }
 
     /**
      * Obtiene el avatar del cliente (placeholder)

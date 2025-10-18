@@ -102,7 +102,7 @@ fun HomeScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Funcionalidad no implementada para este rol",
+                            text = stringResource(R.string.section_not_implemented),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }

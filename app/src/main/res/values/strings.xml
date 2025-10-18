@@ -160,6 +160,21 @@
     <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
     <string name="startup_expand">Desplegar</string>
     
+    <!-- Environment Selector -->
+    <string name="environment_selector_title">🌐 Ambiente</string>
+    <string name="environment_selector_label">Seleccionar ambiente</string>
+    <string name="environment_selector_info">Selecciona el ambiente de la API que deseas utilizar</string>
+    <string name="environment_development">Desarrollo</string>
+    <string name="environment_production">Producción</string>
+    
+    <!-- Fallback messages -->
+    <string name="client_not_available">Cliente no disponible</string>
+    <string name="phone_not_available">Teléfono no disponible</string>
+    <string name="unknown_error">Error desconocido</string>
+    <string name="retry">Reintentar</string>
+    <string name="seller_not_found">No se pudo obtener el vendedor actual</string>
+    <string name="seller_load_error">Error al cargar vendedor: %1$s</string>
+    
     <!-- Settings -->
 
 
