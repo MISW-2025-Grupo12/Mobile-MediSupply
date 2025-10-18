@@ -12,6 +12,7 @@ import com.medisupplyg4.R
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.repositories.DeliveryRouteRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -27,6 +28,9 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
     private val _isLoading = MutableLiveData(false)
     private val _selectedPeriod = MutableLiveData(RoutePeriod.DAY)
     private val _selectedDate = MutableLiveData(LocalDate.now())
+
+    // Job para cancelar llamadas anteriores
+    private var loadRoutesJob: Job? = null
 
     val deliveries: LiveData<List<SimpleDelivery>>
         get() = _deliveries
@@ -50,11 +54,16 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun loadRoutes() {
-        viewModelScope.launch {
+        // Cancelar llamada anterior si existe
+        loadRoutesJob?.cancel()
+        
+        loadRoutesJob = viewModelScope.launch {
             try {
                 _isLoading.value = true
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
+                
+                // Log.d(TAG, "loadRoutes() llamado - Período: $period, Fecha: $date")
 
                 val fetchedDeliveries = deliveryRouteRepository.getDeliveries(date, period)
 
@@ -63,8 +72,11 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
                 _eventNetworkError.value = false
                 _isLoading.value = false
             } catch (error: Exception) {
-                Log.d(TAG, error.toString())
-                _eventNetworkError.value = true
+                // Solo logear errores reales, no cancelaciones
+                if (error !is kotlinx.coroutines.CancellationException) {
+                    Log.d(TAG, error.toString())
+                    _eventNetworkError.value = true
+                }
                 _isLoading.value = false
             }
         }

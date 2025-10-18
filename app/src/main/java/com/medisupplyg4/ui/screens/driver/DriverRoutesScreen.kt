@@ -40,10 +40,7 @@ fun DriverRoutesScreen(
     // Cargar datos cuando cambie el período o fecha
     LaunchedEffect(selectedPeriod, selectedDate) {
         viewModel.loadRoutes()
-    }
-    
-    // Scroll al inicio cuando cambie el período
-    LaunchedEffect(selectedPeriod) {
+        // Scroll al inicio cuando cambie el período
         groupedListState.animateScrollToItem(0)
     }
 
