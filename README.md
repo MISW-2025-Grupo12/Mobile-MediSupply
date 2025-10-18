@@ -1,4 +1,4 @@
-# MediSupply G4 - Mobile Application
+# MediSupply G12 - Mobile Application
 
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
@@ -6,7 +6,17 @@
 
 ## 📱 Descripción
 
-MediSupply G4 es una aplicación móvil desarrollada en Android que facilita la gestión de suministros médicos. La aplicación permite a diferentes tipos de usuarios (vendedores, repartidores y clientes) interactuar con un sistema de gestión de inventario, pedidos y entregas.
+MediSupply G12 es una aplicación móvil desarrollada en Android que facilita la gestión de suministros médicos. La aplicación permite a diferentes tipos de usuarios (vendedores, repartidores y clientes) interactuar con un sistema de gestión de inventario, pedidos y entregas.
+
+## 👥 Equipo de Desarrollo
+
+**MISO GRUPO 12:**
+- Manuel Sanchez
+- Jairo Reyes
+- Nicolas Malagon
+- Sergio Perez
+
+**Curso**: Proyecto Final 2 - MISO 2025-15  
 
 ## ✨ Características Principales
 
@@ -78,10 +88,10 @@ MediSupply G4 es una aplicación móvil desarrollada en Android que facilita la 
 ### Opción 1: APK Pre-compilado (Recomendado)
 ```bash
 # El APK ya está disponible en la raíz del proyecto
-MediSupplyG4-v1.0.0.apk
+MediSupplyG12-v1.0.0.apk
 
 # Instalar en dispositivo Android
-adb install MediSupplyG4-v1.0.0.apk
+adb install MediSupplyG12-v1.0.0.apk
 ```
 
 ### Opción 2: Compilación desde Código Fuente
@@ -217,27 +227,8 @@ export ANDROID_HOME=/path/to/android-sdk
 - Verificar permisos de internet en AndroidManifest.xml
 - Comprobar configuración de red en dispositivo
 
-## 📊 Métricas del Proyecto
-
-- **Líneas de código**: ~3,500+ líneas
-- **Archivos Kotlin**: 60+ archivos
-- **Cobertura de pruebas**: 85%+
-- **Tamaño del APK**: ~66MB
-- **Tiempo de compilación**: ~30 segundos
-
-## 👥 Equipo de Desarrollo
-
-**MISO GRUPO 12:**
-- Manuel Sanchez
-- Jairo Reyes
-- Nicolas Malagon
-- Sergio Perez
-
-**Curso**: MISO 2025-15  
-**Proyecto**: Final de Semestre 2
-
 ---
 
 **Versión**: 1.0.0  
-**Última actualización**: Octubre 2025  
+**Última actualización**: 18 de Octubre de 2025  
 **Estado**: ✅ Estable y listo para producción
