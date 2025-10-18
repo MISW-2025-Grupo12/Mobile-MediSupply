@@ -21,7 +21,7 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
         private const val TAG = "DeliveryRouteViewModel"
     }
 
-    private val deliveryRouteRepository = DeliveryRouteRepository(application)
+    private val deliveryRouteRepository = DeliveryRouteRepository()
 
     private val _deliveries = MutableLiveData<List<SimpleDelivery>>()
     private val _isLoading = MutableLiveData(false)

@@ -13,9 +13,9 @@ object LocaleHelper {
     
     private fun updateResources(context: Context, language: String): Context {
         val locale = when (language) {
-            "es" -> Locale("es", "CO") // Español Colombia
-            "en" -> Locale("en", "US") // Inglés USA
-            else -> Locale(language)
+            "es" -> Locale.Builder().setLanguage("es").setRegion("CO").build() // Español Colombia
+            "en" -> Locale.Builder().setLanguage("en").setRegion("US").build() // Inglés USA
+            else -> Locale.Builder().setLanguage(language).build()
         }
         Locale.setDefault(locale)
         

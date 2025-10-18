@@ -8,8 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.medisupplyg4.base.BaseActivity
+import com.medisupplyg4.config.ApiConfig
+import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
+import com.medisupplyg4.network.NetworkClient
 
 class StartupViewModel(application: Application) : AndroidViewModel(application) {
     
@@ -18,6 +21,7 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
         private const val PREFS_NAME = "MediSupplyPrefs"
         private const val KEY_SELECTED_LANGUAGE = "selected_language"
         private const val KEY_SELECTED_ROLE = "selected_role"
+        private const val KEY_SELECTED_ENVIRONMENT = "selected_environment"
         private const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
     }
     
@@ -27,12 +31,17 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
     val selectedLanguage: LiveData<Language> = _selectedLanguage
     
     private val _selectedRole = MutableLiveData<UserRole?>()
+    val selectedRole: LiveData<UserRole?> = _selectedRole
+    
+    private val _selectedEnvironment = MutableLiveData<Environment>()
+    val selectedEnvironment: LiveData<Environment> = _selectedEnvironment
 
     private val _isFirstLaunch = MutableLiveData<Boolean>()
     
     init {
         loadSavedLanguage()
         loadSavedRole()
+        loadSavedEnvironment()
         checkFirstLaunch()
     }
     
@@ -95,5 +104,34 @@ class StartupViewModel(application: Application) : AndroidViewModel(application)
         } else {
             _selectedRole.value = null
         }
+    }
+    
+    private fun loadSavedEnvironment() {
+        val savedEnvironmentName = prefs.getString(KEY_SELECTED_ENVIRONMENT, Environment.getDefault().name)
+        try {
+            val environment = Environment.valueOf(savedEnvironmentName ?: Environment.getDefault().name)
+            _selectedEnvironment.value = environment
+            ApiConfig.setEnvironment(environment)
+            Log.d(TAG, "Loading saved environment: $savedEnvironmentName -> $environment")
+        } catch (e: IllegalArgumentException) {
+            Log.w(TAG, "Invalid environment saved: $savedEnvironmentName, using default")
+            val defaultEnvironment = Environment.getDefault()
+            _selectedEnvironment.value = defaultEnvironment
+            ApiConfig.setEnvironment(defaultEnvironment)
+        }
+    }
+    
+    fun selectEnvironment(environment: Environment) {
+        Log.d(TAG, "Selecting environment: $environment")
+        _selectedEnvironment.value = environment
+        ApiConfig.setEnvironment(environment)
+        NetworkClient.resetClients() // Reinicializar clientes de red
+        saveEnvironment(environment)
+    }
+    
+    private fun saveEnvironment(environment: Environment) {
+        prefs.edit()
+            .putString(KEY_SELECTED_ENVIRONMENT, environment.name)
+            .apply()
     }
 }

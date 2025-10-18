@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class DeliveryRouteRepository(private val application: Application) {
+class DeliveryRouteRepository() {
     
     companion object {
         private const val TAG = "DeliveryRouteRepository"

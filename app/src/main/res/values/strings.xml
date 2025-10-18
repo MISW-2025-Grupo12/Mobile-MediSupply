@@ -7,6 +7,34 @@
     <string name="nav_deliveries">Entregas</string>
     <string name="nav_profile">Perfil</string>
     
+    <!-- Role-specific navigation -->
+    <string name="routes">Rutas</string>
+    <string name="deliveries">Entregas</string>
+    <string name="profile">Perfil</string>
+    <string name="orders">Pedidos</string>
+    <string name="clients">Clientes</string>
+    <string name="history">Historial</string>
+    
+    <!-- Seller Routes -->
+    <string name="visit_routes">Visitas</string>
+    <string name="filters">Filtros</string>
+    <string name="start_date">Fecha inicio</string>
+    <string name="end_date">Fecha fin</string>
+    <string name="filter">Filtrar</string>
+    <string name="no_visits_found">No se encontraron visitas</string>
+    
+    <!-- DatePicker -->
+    <string name="select_date">Seleccionar fecha</string>
+    <string name="cancel">Cancelar</string>
+    
+    <!-- Visit Details -->
+    <string name="address">Dirección</string>
+    <string name="description">Descripción</string>
+    <string name="time">Hora</string>
+    
+    <!-- Not Implemented -->
+    <string name="section_not_implemented">Sección no implementada aún</string>
+    
     <!-- Period Tabs -->
     <string name="period_day">Día</string>
     <string name="period_week">Semana</string>
@@ -28,6 +56,38 @@
     <string name="delivery_time">Hora</string>
     <string name="delivery_estimated_time">Entrega: %1$s</string>
     <string name="delivery_products">Productos:</string>
+    
+    <!-- Profile Screen -->
+    <string name="deliveries_today">Entregas hoy</string>
+    <string name="rating">Calificación</string>
+    <string name="total_deliveries">Total entregas</string>
+    <string name="settings">Configuración</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="edit_profile_subtitle">Actualiza tu información personal</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="notifications_subtitle">Configura tus preferencias</string>
+    <string name="privacy">Privacidad</string>
+    <string name="privacy_subtitle">Configura tu privacidad</string>
+    <string name="help_support">Ayuda y soporte</string>
+    <string name="help_support_subtitle">Obtén ayuda cuando la necesites</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="logout_subtitle">Salir de tu cuenta</string>
+    
+    <!-- Common -->
+    <string name="all">Todos</string>
+    <string name="pending">Pendiente</string>
+    <string name="completed">Completado</string>
+    <string name="confirmed">Confirmado</string>
+    <string name="delivered">Entregado</string>
+    <string name="add_client">Agregar cliente</string>
+    <string name="view_details">Ver detalles</string>
+    <string name="new_order">Nuevo pedido</string>
+    <string name="my_orders">Mis pedidos</string>
+    <string name="order_history">Historial de pedidos</string>
+    <string name="total_orders">Total pedidos</string>
+    <string name="total_spent">Total gastado</string>
+    <string name="avg_rating">Calificación promedio</string>
+    <string name="no_deliveries">Sin entregas</string>
     <string name="delivery_product_item">• %1$s (%2$d %3$s)</string>
     <string name="delivery_priority">Prioridad</string>
     <string name="delivery_special_instructions">Instrucciones especiales</string>
@@ -54,6 +114,7 @@
     <string name="date_format_short">dd/MM/yyyy HH:mm</string>
     <string name="date_format_time">HH:mm</string>
     <string name="date_format_day_month">%1$d/%2$d</string>
+    <string name="date_format_long_date">EEEE, d \'de\' MMMM \'de\' yyyy</string>
     
     <!-- API Configuration -->
     <string name="api_content_type">application/json</string>
@@ -99,8 +160,22 @@
     <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
     <string name="startup_expand">Desplegar</string>
     
+    <!-- Environment Selector -->
+    <string name="environment_selector_title">🌐 Ambiente</string>
+    <string name="environment_selector_label">Seleccionar ambiente</string>
+    <string name="environment_selector_info">Selecciona el ambiente de la API que deseas utilizar</string>
+    <string name="environment_development">Desarrollo</string>
+    <string name="environment_production">Producción</string>
+    
+    <!-- Fallback messages -->
+    <string name="client_not_available">Cliente no disponible</string>
+    <string name="phone_not_available">Teléfono no disponible</string>
+    <string name="unknown_error">Error desconocido</string>
+    <string name="retry">Reintentar</string>
+    <string name="seller_not_found">No se pudo obtener el vendedor actual</string>
+    <string name="seller_load_error">Error al cargar vendedor: %1$s</string>
+    
     <!-- Settings -->
-    <string name="settings">Configuración</string>
 
 
         <!-- Working Routes Screen -->
@@ -111,10 +186,86 @@
         <!-- Date Header -->
         <string name="date_header_today">Hoy</string>
 
-        <!-- SimplePeriodTabs -->
-        <string name="period_tab_day">Día</string>
-        <string name="period_tab_week">Semana</string>
-        <string name="period_tab_month">Mes</string>
+    <!-- SimplePeriodTabs -->
+    <string name="period_tab_day">Día</string>
+    <string name="period_tab_week">Semana</string>
+    <string name="period_tab_month">Mes</string>
 
+    <!-- Visit Record -->
+    <string name="visit_record_title">Registro de visita</string>
+    <string name="visit_record_date">Fecha</string>
+    <string name="visit_record_time">Hora</string>
+    <string name="visit_record_client">Cliente</string>
+    <string name="visit_record_notes">Novedades</string>
+    <string name="visit_record_order_generated">¿Se generó pedido?</string>
+    <string name="visit_record_save">Guardar</string>
+    <string name="visit_record_back">Volver</string>
+    <string name="visit_record_select_date">Seleccionar</string>
+    <string name="visit_record_select_time">Seleccionar</string>
+    <string name="visit_record_select_client">Seleccionar cliente</string>
+    <string name="visit_record_write_notes">Escriba aqui...</string>
+    <string name="visit_record_yes">Sí</string>
+    <string name="visit_record_no">No</string>
+    
+    <!-- Validation Messages -->
+    <string name="validation_date_required">La fecha es obligatoria</string>
+    <string name="validation_time_required">La hora es obligatoria</string>
+    <string name="validation_client_required">Debe seleccionar un cliente</string>
+    <string name="validation_date_format">Formato de fecha incorrecto. Use dd/MM/yyyy</string>
+    <string name="validation_time_format">Formato de hora incorrecto. Use HH:mm</string>
+    <string name="validation_future_date">No se permiten fechas futuras</string>
+    <string name="validation_notes_max_length">Las novedades no pueden exceder 500 caracteres</string>
+    
+    <!-- Success/Error Messages -->
+    <string name="visit_record_success">Visita registrada exitosamente</string>
+    <string name="visit_record_success_message">La visita ha sido registrada exitosamente</string>
+    <string name="visit_record_error">Error al registrar la visita</string>
+    <string name="visit_record_network_error">Error de conexión. Intente nuevamente</string>
+    
+    <!-- Content Descriptions -->
+    <string name="select_date_description">Seleccionar fecha</string>
+    <string name="select_time_description">Seleccionar hora</string>
+    
+    <!-- Loading States -->
+    <string name="recording_visit">Registrando...</string>
+    <string name="visit_recorded">¡Registrado!</string>
+    <string name="continue_button">Continuar</string>
+
+    <!-- Orders -->
+    <string name="orders_title">Pedidos</string>
+    <string name="new_order_title">Nuevo pedido</string>
+    <string name="order_summary_title">Resumen del pedido</string>
+    <string name="client_field">Cliente</string>
+    <string name="select_client">Seleccionar cliente</string>
+    <string name="search_products">Buscar productos...</string>
+    <string name="no_products_found">No se encontraron productos</string>
+    <string name="units_available">unidades disponibles</string>
+    <string name="view_order_summary">Ver resumen del pedido</string>
+    <string name="confirm_order">Confirmar pedido</string>
+    <string name="total">Total:</string>
+    <string name="order_created_success">Pedido creado exitosamente</string>
+    <string name="order_created_message">El pedido ha sido creado exitosamente</string>
+    <string name="order_error">Error al crear el pedido</string>
+    <string name="order_network_error">Error de conexión. Intente nuevamente</string>
+    <string name="creating_order">Creando pedido...</string>
+    <string name="order_created">¡Creado!</string>
+    
+    <!-- Order Validation Messages -->
+    <string name="validation_client_required_order">Debe seleccionar un cliente</string>
+    <string name="validation_search_too_long">La búsqueda no puede exceder 100 caracteres</string>
+    <string name="validation_no_products_in_order">Debe agregar al menos un producto al pedido</string>
+    <string name="validation_insufficient_inventory">No hay suficiente inventario disponible</string>
+    <string name="validation_minimum_quantity">La cantidad mínima es 1 unidad</string>
+    <string name="validation_maximum_quantity">La cantidad no puede exceder el inventario disponible</string>
+    <string name="no_products_added_to_order">No se agregaron productos al pedido</string>
+    <string name="search_clients">Buscar clientes</string>
+    <string name="no_clients_found">No se encontraron clientes</string>
+    
+    <!-- Common UI strings -->
+    <string name="back">Volver</string>
+    <string name="ok">Aceptar</string>
+    <string name="add">Agregar</string>
+    <string name="remove">Quitar</string>
+    <string name="error">Error</string>
 
 </resources>

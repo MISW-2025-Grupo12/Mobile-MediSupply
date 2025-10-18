@@ -7,6 +7,34 @@
     <string name="nav_deliveries">Deliveries</string>
     <string name="nav_profile">Profile</string>
     
+    <!-- Role-specific navigation -->
+    <string name="routes">Routes</string>
+    <string name="deliveries">Deliveries</string>
+    <string name="profile">Profile</string>
+    <string name="orders">Orders</string>
+    <string name="clients">Clients</string>
+    <string name="history">History</string>
+    
+    <!-- Seller Routes -->
+    <string name="visit_routes">Visits</string>
+    <string name="filters">Filters</string>
+    <string name="start_date">Start date</string>
+    <string name="end_date">End date</string>
+    <string name="filter">Filter</string>
+    <string name="no_visits_found">No visits found</string>
+    
+    <!-- DatePicker -->
+    <string name="select_date">Select date</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Visit Details -->
+    <string name="address">Address</string>
+    <string name="description">Description</string>
+    <string name="time">Time</string>
+    
+    <!-- Not Implemented -->
+    <string name="section_not_implemented">Section not implemented yet</string>
+    
     <!-- Period Tabs -->
     <string name="period_day">Day</string>
     <string name="period_week">Week</string>
@@ -28,6 +56,38 @@
     <string name="delivery_time">Time</string>
     <string name="delivery_estimated_time">Delivery: %1$s</string>
     <string name="delivery_products">Products:</string>
+    
+    <!-- Profile Screen -->
+    <string name="deliveries_today">Deliveries today</string>
+    <string name="rating">Rating</string>
+    <string name="total_deliveries">Total deliveries</string>
+    <string name="settings">Settings</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="edit_profile_subtitle">Update your personal information</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_subtitle">Configure your preferences</string>
+    <string name="privacy">Privacy</string>
+    <string name="privacy_subtitle">Configure your privacy</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="help_support_subtitle">Get help when you need it</string>
+    <string name="logout">Logout</string>
+    <string name="logout_subtitle">Sign out of your account</string>
+    
+    <!-- Common -->
+    <string name="all">All</string>
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="delivered">Delivered</string>
+    <string name="add_client">Add client</string>
+    <string name="view_details">View details</string>
+    <string name="new_order">New order</string>
+    <string name="my_orders">My orders</string>
+    <string name="order_history">Order history</string>
+    <string name="total_orders">Total orders</string>
+    <string name="total_spent">Total spent</string>
+    <string name="avg_rating">Average rating</string>
+    <string name="no_deliveries">No deliveries</string>
     <string name="delivery_product_item">• %1$s (%2$d %3$s)</string>
     <string name="delivery_priority">Priority</string>
     <string name="delivery_special_instructions">Special instructions</string>
@@ -54,6 +114,7 @@
     <string name="date_format_short">MM/dd/yyyy HH:mm</string>
     <string name="date_format_time">HH:mm</string>
     <string name="date_format_day_month">%1$d/%2$d</string>
+    <string name="date_format_long_date">EEEE, MMMM d, yyyy</string>
     
     <!-- API Configuration -->
     <string name="api_content_type">application/json</string>
@@ -99,8 +160,22 @@
     <string name="startup_info_english">Date and monetary value formats will be displayed according to US format.</string>
     <string name="startup_expand">Expand</string>
     
+    <!-- Environment Selector -->
+    <string name="environment_selector_title">🌐 Environment</string>
+    <string name="environment_selector_label">Select environment</string>
+    <string name="environment_selector_info">Select the API environment you want to use</string>
+    <string name="environment_development">Development</string>
+    <string name="environment_production">Production</string>
+    
+    <!-- Fallback messages -->
+    <string name="client_not_available">Client not available</string>
+    <string name="phone_not_available">Phone not available</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="retry">Retry</string>
+    <string name="seller_not_found">Could not get current seller</string>
+    <string name="seller_load_error">Error loading seller: %1$s</string>
+    
     <!-- Settings -->
-    <string name="settings">Settings</string>
 
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
@@ -114,5 +189,82 @@
     <string name="period_tab_day">Day</string>
     <string name="period_tab_week">Week</string>
     <string name="period_tab_month">Month</string>
+
+    <!-- Visit Record -->
+    <string name="visit_record_title">Visit record</string>
+    <string name="visit_record_date">Date</string>
+    <string name="visit_record_time">Time</string>
+    <string name="visit_record_client">Client</string>
+    <string name="visit_record_notes">Notes</string>
+    <string name="visit_record_order_generated">order generated?</string>
+    <string name="visit_record_save">Save</string>
+    <string name="visit_record_back">Back</string>
+    <string name="visit_record_select_date">Select</string>
+    <string name="visit_record_select_time">Select</string>
+    <string name="visit_record_select_client">Select client</string>
+    <string name="visit_record_write_notes">Write here...</string>
+    <string name="visit_record_yes">Yes</string>
+    <string name="visit_record_no">No</string>
+    
+    <!-- Validation Messages -->
+    <string name="validation_date_required">Date is required</string>
+    <string name="validation_time_required">Time is required</string>
+    <string name="validation_client_required">You must select a client</string>
+    <string name="validation_date_format">Incorrect date format. Use MM/dd/yyyy</string>
+    <string name="validation_time_format">Incorrect time format. Use HH:mm</string>
+    <string name="validation_future_date">Future dates are not allowed</string>
+    <string name="validation_notes_max_length">Notes cannot exceed 500 characters</string>
+    
+    <!-- Success/Error Messages -->
+    <string name="visit_record_success">Visit recorded successfully</string>
+    <string name="visit_record_success_message">The visit has been recorded successfully</string>
+    <string name="visit_record_error">Error recording the visit</string>
+    <string name="visit_record_network_error">Connection error. Please try again</string>
+    
+    <!-- Content Descriptions -->
+    <string name="select_date_description">Select date</string>
+    <string name="select_time_description">Select time</string>
+    
+    <!-- Loading States -->
+    <string name="recording_visit">Recording...</string>
+    <string name="visit_recorded">Recorded!</string>
+    <string name="continue_button">Continue</string>
+
+    <!-- Orders -->
+    <string name="orders_title">Orders</string>
+    <string name="new_order_title">New order</string>
+    <string name="order_summary_title">Order summary</string>
+    <string name="client_field">Client</string>
+    <string name="select_client">Select client</string>
+    <string name="search_products">Search products...</string>
+    <string name="no_products_found">No products found</string>
+    <string name="units_available">units available</string>
+    <string name="view_order_summary">View order summary</string>
+    <string name="confirm_order">Confirm order</string>
+    <string name="total">Total:</string>
+    <string name="order_created_success">Order created successfully</string>
+    <string name="order_created_message">The order has been created successfully</string>
+    <string name="order_error">Error creating the order</string>
+    <string name="order_network_error">Connection error. Please try again</string>
+    <string name="creating_order">Creating order...</string>
+    <string name="order_created">Created!</string>
+    
+    <!-- Order Validation Messages -->
+    <string name="validation_client_required_order">You must select a client</string>
+    <string name="validation_search_too_long">Search cannot exceed 100 characters</string>
+    <string name="validation_no_products_in_order">You must add at least one product to the order</string>
+    <string name="validation_insufficient_inventory">Insufficient inventory available</string>
+    <string name="validation_minimum_quantity">Minimum quantity is 1 unit</string>
+    <string name="validation_maximum_quantity">Quantity cannot exceed available inventory</string>
+    <string name="no_products_added_to_order">No products added to order</string>
+    <string name="search_clients">Search clients</string>
+    <string name="no_clients_found">No clients found</string>
+    
+    <!-- Common UI strings -->
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="error">Error</string>
 
 </resources>

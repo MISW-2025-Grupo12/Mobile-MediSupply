@@ -8,18 +8,14 @@ plugins {
     id("jacoco")
 }
 
-jacoco {
-
-}
-
 android {
     namespace = "com.medisupplyg4"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.medisupplyg4"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -73,12 +69,16 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
     
     // MVVM and Navigation
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.livedata.compose)
     implementation(libs.androidx.navigation.compose)
+    
+    // Image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
     
     // Network
     implementation(libs.retrofit)
@@ -104,6 +104,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
 
 tasks.withType<Test> {

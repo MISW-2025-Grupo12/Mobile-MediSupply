@@ -1,6 +1,8 @@
 package com.medisupplyg4.models
 
+import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.medisupplyg4.R
 import java.time.LocalDateTime
 
 /**
@@ -10,7 +12,8 @@ data class SimpleDelivery(
     val id: String,
     val direccion: String,
     @SerializedName("fecha_entrega") val fechaEntregaString: String,
-    val pedido: PedidoAPI
+    val cliente: ClienteAPI?,
+    val productos: List<ItemPedido>
 ) {
     /**
      * Convierte la fecha string a LocalDateTime
@@ -25,42 +28,21 @@ data class SimpleDelivery(
     /**
      * Obtiene el nombre del cliente
      */
-    val nombreCliente: String
-        get() = pedido.cliente.nombre
+    fun getNombreCliente(context: Context): String {
+        return cliente?.nombre ?: context.getString(R.string.client_not_available)
+    }
     
     /**
      * Obtiene el teléfono del cliente
      */
-    val telefonoCliente: String
-        get() = pedido.cliente.telefono
-    
+    fun getTelefonoCliente(context: Context): String {
+        return cliente?.telefono ?: context.getString(R.string.phone_not_available)
+    }
+
     /**
-     * Obtiene la dirección del cliente
-     */
-    val direccionCliente: String
-        get() = pedido.cliente.direccion
-    
-    /**
-     * Obtiene el avatar del cliente
+     * Obtiene el avatar del cliente (placeholder)
      */
     val avatarCliente: String
-        get() = pedido.cliente.avatar
-    
-    /**
-     * Obtiene la lista de productos
-     */
-    val productos: List<ProductoAPI>
-        get() = pedido.productos
-    
-    /**
-     * Obtiene el total del pedido
-     */
-    val totalPedido: Int
-        get() = pedido.productos.sumOf { it.subtotal }
-    
-    /**
-     * Obtiene la cantidad total de productos
-     */
-    val cantidadTotalProductos: Int
-        get() = pedido.productos.sumOf { it.cantidad }
+        get() = "" // TODO: Add avatar field to ClienteAPI if needed
+
 }

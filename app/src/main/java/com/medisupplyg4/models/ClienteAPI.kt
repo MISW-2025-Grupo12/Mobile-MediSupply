@@ -1,11 +1,12 @@
 package com.medisupplyg4.models
 
 /**
- * Modelo para el cliente que viene del API
+ * Model to represent a client from the API
  */
 data class ClienteAPI(
+    val id: String,
     val nombre: String,
+    val email: String,
     val telefono: String,
-    val direccion: String,
-    val avatar: String
+    val direccion: String
 )

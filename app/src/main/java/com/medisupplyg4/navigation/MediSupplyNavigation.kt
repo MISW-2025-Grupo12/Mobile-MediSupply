@@ -18,13 +18,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.medisupplyg4.base.BaseActivity
+import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.R
 import com.medisupplyg4.ui.screens.StartupScreen
-import com.medisupplyg4.ui.screens.WorkingRoutesScreen
-import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.medisupplyg4.ui.screens.HomeScreen
 import com.medisupplyg4.viewmodels.StartupViewModel
 
 @Composable
@@ -35,6 +34,8 @@ fun MediSupplyNavigation(
 ) {
     val context = LocalContext.current
     val selectedLanguage by startupViewModel.selectedLanguage.observeAsState(Language.SPANISH)
+    val selectedRole by startupViewModel.selectedRole.observeAsState(UserRole.DRIVER)
+    val selectedEnvironment by startupViewModel.selectedEnvironment.observeAsState(Environment.getDefault())
     val snackbarHostState = remember { SnackbarHostState() }
     var showNotImplementedSnackbar by remember { mutableStateOf(false) }
     
@@ -68,26 +69,29 @@ fun MediSupplyNavigation(
                     },
                     onRoleSelected = { role: UserRole ->
                         when (role) {
-                            UserRole.DRIVER -> {
+                            UserRole.DRIVER, UserRole.SELLER -> {
                                 startupViewModel.selectRole(role)
                                 startupViewModel.markAsCompleted()
-                                navController.navigate("routes")
+                                navController.navigate("home")
                             }
-                            UserRole.CLIENT, UserRole.SELLER -> {
+                            UserRole.CLIENT -> {
                                 // Activar snackbar para roles no implementados
                                 showNotImplementedSnackbar = true
                             }
                         }
+                    },
+                    selectedEnvironment = selectedEnvironment,
+                    onEnvironmentSelected = { environment: Environment ->
+                        startupViewModel.selectEnvironment(environment)
                     },
                     modifier = Modifier.padding(paddingValues)
                 )
             }
         }
         
-        composable("routes") {
-            val deliveryRouteViewModel: DeliveryRouteViewModel = viewModel()
-            WorkingRoutesScreen(
-                viewModel = deliveryRouteViewModel,
+        composable("home") {
+            HomeScreen(
+                userRole = selectedRole ?: UserRole.DRIVER,
                 navController = navController
             )
         }
