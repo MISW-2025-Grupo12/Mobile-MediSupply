@@ -2,9 +2,11 @@ package com.medisupplyg4.repositories
 
 import android.app.Application
 import android.util.Log
+import com.medisupplyg4.models.ClienteAPI
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.network.NetworkClient
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -32,18 +34,86 @@ class DeliveryRouteRepository() {
                 )
                 
                 if (response.isSuccessful) {
-                    val deliveries = response.body() ?: emptyList()
-                    Log.d(TAG, "Datos recibidos: ${deliveries.size} entregas")
-                    deliveries
+                    val deliveryResponses = response.body() ?: emptyList()
+                    Log.d(TAG, "Datos recibidos: ${deliveryResponses.size} entregas")
+                    
+                    // Convertir a SimpleDelivery estándar
+                    val deliveries = deliveryResponses.map { it.toSimpleDelivery() }
+                    
+                    // Si no hay información de cliente, intentar obtenerla
+                    val deliveriesWithClientInfo = if (deliveries.any { it.cliente == null }) {
+                        enrichDeliveriesWithClientInfo(deliveries)
+                    } else {
+                        deliveries
+                    }
+                    
+                    deliveriesWithClientInfo
                 } else {
                     Log.w(TAG, "Error del backend: ${response.code()}")
+                    Log.w(TAG, "Response body: ${response.errorBody()?.string()}")
                     emptyList()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error de red: ${e.message}", e)
+                // Solo logear errores reales, no cancelaciones
+                if (e !is kotlinx.coroutines.CancellationException) {
+                    Log.e(TAG, "Error de red: ${e.message}", e)
+                }
                 emptyList()
             }
         }
+    }
+    
+    /**
+     * Enriquece las entregas con información de cliente obtenida de la API de usuarios
+     */
+    private suspend fun enrichDeliveriesWithClientInfo(deliveries: List<SimpleDelivery>): List<SimpleDelivery> {
+        return try {
+            // Obtener todos los clientes de la API de usuarios
+            val clientesResponse = NetworkClient.clientesApiService.getClientes()
+            
+            if (clientesResponse.isSuccessful) {
+                val clientes = clientesResponse.body() ?: emptyList()
+                
+                // Crear un mapa de clientes por ID para búsqueda rápida
+                val clientesMap = clientes.associateBy { it.id }
+                
+                // Enriquecer las entregas con información de cliente
+                deliveries.map { delivery ->
+                    if (delivery.cliente == null) {
+                        // Intentar encontrar el cliente por ID en la dirección o usar un cliente genérico
+                        val clienteEncontrado = findClienteByAddress(delivery.direccion, clientesMap)
+                        
+                        delivery.copy(cliente = clienteEncontrado)
+                    } else {
+                        delivery
+                    }
+                }
+            } else {
+                Log.w(TAG, "Error al obtener clientes: ${clientesResponse.code()}")
+                deliveries
+            }
+        } catch (e: Exception) {
+            // Solo logear errores reales, no cancelaciones
+            if (e !is CancellationException) {
+                Log.e(TAG, "Error al enriquecer entregas con información de cliente", e)
+            }
+            deliveries
+        }
+    }
+    
+    /**
+     * Busca un cliente por dirección (método de fallback)
+     */
+    private fun findClienteByAddress(direccion: String, clientesMap: Map<String, ClienteAPI>): ClienteAPI? {
+        // Buscar cliente que tenga una dirección similar
+        val clienteEncontrado = clientesMap.values.find { cliente: ClienteAPI ->
+            cliente.direccion.contains(direccion.substringBefore(" #"), ignoreCase = true) ||
+            direccion.contains(cliente.direccion.substringBefore(" #"), ignoreCase = true)
+        }
+        
+        // Cliente encontrado o no encontrado
+        
+        return clienteEncontrado
     }
     
     /**
