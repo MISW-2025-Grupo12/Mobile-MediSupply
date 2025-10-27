@@ -293,5 +293,23 @@
     <string name="identification">Identificación</string>
     <string name="identification_hint">Ej. 1234567890</string>
     <string name="address_hint">Ej. Calle 123 #45-67</string>
+    
+    <!-- Registration Validation Messages -->
+    <string name="error_name_required">El nombre es requerido</string>
+    <string name="error_email_required">El email es requerido y debe ser válido</string>
+    <string name="error_identification_required">La identificación es requerida</string>
+    <string name="error_identification_numbers_only">La identificación debe contener solo números</string>
+    <string name="error_identification_length">La identificación debe tener entre 6 y 15 dígitos</string>
+    <string name="error_phone_required">El teléfono es requerido</string>
+    <string name="error_phone_numbers_only">El teléfono debe contener solo números</string>
+    <string name="error_phone_length">El teléfono debe tener entre 7 y 15 dígitos</string>
+    <string name="error_address_required">La dirección es requerida</string>
+    <string name="error_password_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_confirm_password_required">Debe confirmar la contraseña</string>
+    <string name="error_passwords_no_match">Las contraseñas no coinciden</string>
+    <string name="error_server_empty_response">Respuesta vacía del servidor</string>
+    <string name="error_server_error">Error del servidor: %1$d - %2$s</string>
+    <string name="error_connection_error">Error de conexión: %1$s</string>
+    <string name="error_unknown">Error desconocido</string>
 
 </resources>

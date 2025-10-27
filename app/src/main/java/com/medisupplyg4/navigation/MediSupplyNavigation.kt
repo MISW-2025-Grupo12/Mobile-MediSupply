@@ -59,7 +59,7 @@ fun MediSupplyNavigation(
                 navController = navController,
                 onRegisterSuccess = { userRole ->
                     startupViewModel.selectRole(userRole)
-                    navController.navigate("home")
+                    navController.navigate("login")
                 },
                 onNavigateBack = {
                     navController.popBackStack()
