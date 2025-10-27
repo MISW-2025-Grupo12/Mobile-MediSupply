@@ -107,6 +107,9 @@ object NetworkClient {
     
     val clientRegistrationApiService: ClientRegistrationApiService
         get() = getClientRegistrationRetrofit().create(ClientRegistrationApiService::class.java)
+
+    val loginApiService: LoginApiService
+        get() = getClientRegistrationRetrofit().create(LoginApiService::class.java)
     
     /**
      * Reinicializa todos los clientes de red cuando cambia el ambiente

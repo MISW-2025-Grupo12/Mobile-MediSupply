@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -21,12 +22,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.R
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.components.CompactLanguageSelector
+import com.medisupplyg4.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,19 +38,48 @@ fun LoginScreen(
     onLoginSuccess: (UserRole) -> Unit = {},
     onNavigateToRegister: () -> Unit = {},
     selectedLanguage: Language = Language.SPANISH,
-    onLanguageSelected: (Language) -> Unit = {}
+    onLanguageSelected: (Language) -> Unit = {},
+    viewModel: LoginViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    // Observar el estado del ViewModel
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val error by viewModel.error.observeAsState()
+    val loginResult by viewModel.loginResult.observeAsState()
+
+    // Manejar resultado del login
+    LaunchedEffect(loginResult) {
+        loginResult?.let { result ->
+            if (result.isSuccess) {
+                val userRole = viewModel.getUserRoleFromTipoUsuario(result.getOrNull()?.user_info?.tipo_usuario ?: "CLIENTE")
+                onLoginSuccess(userRole)
+            }
+        }
+    }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Mostrar errores en Snackbar
+    LaunchedEffect(error) {
+        error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(errorMessage)
+            viewModel.clearError()
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
         // Language selector (top right)
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -129,10 +161,7 @@ fun LoginScreen(
         // Login button
         Button(
             onClick = {
-                isLoading = true
-                // TODO: Implement login logic - determine user role from API response
-                // For now, defaulting to CLIENT
-                onLoginSuccess(UserRole.CLIENT)
+                viewModel.login(email, password)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,4 +205,5 @@ fun LoginScreen(
             }
         }
     }
+}
 }
