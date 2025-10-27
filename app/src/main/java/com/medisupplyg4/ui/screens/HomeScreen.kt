@@ -1,12 +1,15 @@
 package com.medisupplyg4.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.R
@@ -35,6 +38,11 @@ fun HomeScreen(
             Triple(R.drawable.map, stringResource(R.string.visit_routes), "routes"),
             Triple(R.drawable.inventory, stringResource(R.string.orders_title), "orders"),
             Triple(R.drawable.group_people, stringResource(R.string.clients), "clients"),
+            Triple(R.drawable.person, stringResource(R.string.profile), "profile")
+        )
+        UserRole.CLIENT -> listOf(
+            Triple(R.drawable.inventory, stringResource(R.string.orders_title), "orders"),
+            Triple(R.drawable.history, stringResource(R.string.history), "history"),
             Triple(R.drawable.person, stringResource(R.string.profile), "profile")
         )
         else -> {
@@ -93,6 +101,30 @@ fun HomeScreen(
                             }
                         }
                         3 -> ProfileScreen(navController = navController)
+                    }
+                }
+                UserRole.CLIENT -> {
+                    // Cliente no implementado aún - mostrar mensaje
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = stringResource(R.string.role_not_implemented),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
                 else -> {

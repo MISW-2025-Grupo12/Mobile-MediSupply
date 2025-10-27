@@ -267,4 +267,30 @@
     <string name="remove">Remove</string>
     <string name="error">Error</string>
 
+    <!-- Authentication -->
+    <string name="welcome_message">Welcome! Please log in or register</string>
+    <string name="email">Email</string>
+    <string name="email_hint">example@medisupply.com</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login">Log in</string>
+    <string name="no_account">Don\'t have an account yet?</string>
+    <string name="register_link">Register</string>
+    <string name="register">Registration</string>
+    <string name="name">Name</string>
+    <string name="name_hint">Ex. John Doe</string>
+    <string name="phone">Phone</string>
+    <string name="phone_hint">Ex. 3125559944</string>
+    <string name="user_type">User type</string>
+    <string name="user_type_hint">Select user type</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter your password</string>
+    <string name="register_button">Register</string>
+    <string name="client">Client</string>
+    <string name="seller">Seller</string>
+    <string name="driver">Driver</string>
+    <string name="identification">Identification</string>
+    <string name="identification_hint">Ex. 1234567890</string>
+    <string name="address_hint">Ex. 123 Main St</string>
+
 </resources>
