@@ -95,19 +95,12 @@ fun LoginScreen(
 
         // Logo
         Image(
-            painter = painterResource(R.drawable.app_logo),
-            contentDescription = null,
+            painter = painterResource(id = R.drawable.app_logo),
+            contentDescription = stringResource(R.string.app_name),
             modifier = Modifier
-                .size(120.dp)
-                .padding(16.dp),
+                .fillMaxWidth(0.5f)
+                .padding(bottom = 16.dp),
             contentScale = ContentScale.Fit
-        )
-
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -115,10 +108,10 @@ fun LoginScreen(
         // Welcome message
         Text(
             text = stringResource(R.string.welcome_message),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(40.dp))
