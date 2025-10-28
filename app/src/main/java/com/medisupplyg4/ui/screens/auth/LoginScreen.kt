@@ -13,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +30,7 @@ import com.medisupplyg4.R
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.components.CompactLanguageSelector
+import com.medisupplyg4.utils.SessionManager
 import com.medisupplyg4.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,12 +51,22 @@ fun LoginScreen(
     val isLoading by viewModel.isLoading.observeAsState(false)
     val error by viewModel.error.observeAsState()
     val loginResult by viewModel.loginResult.observeAsState()
+    val context = LocalContext.current
 
     // Manejar resultado del login
     LaunchedEffect(loginResult) {
         loginResult?.let { result ->
             if (result.isSuccess) {
-                val userRole = viewModel.getUserRoleFromTipoUsuario(result.getOrNull()?.user_info?.tipo_usuario ?: "CLIENTE")
+                val loginResponse = result.getOrNull()
+                val userRole = viewModel.getUserRoleFromTipoUsuario(loginResponse?.user_info?.tipo_usuario ?: "CLIENTE")
+                
+                // Guardar token y datos del usuario
+                loginResponse?.let { response ->
+                    SessionManager.saveToken(context, response.access_token)
+                    SessionManager.saveUserRole(context, response.user_info.tipo_usuario)
+                    SessionManager.saveUserEmail(context, response.user_info.email)
+                }
+                
                 onLoginSuccess(userRole)
             }
         }

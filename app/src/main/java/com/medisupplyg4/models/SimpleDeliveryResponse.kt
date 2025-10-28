@@ -69,8 +69,10 @@ data class SimpleDeliveryResponse(
                     id = clienteId,
                     nombre = clienteNombre,
                     email = getEmailCliente() ?: "",
+                    identificacion = "", // Valor por defecto
                     telefono = getTelefonoCliente() ?: "",
-                    direccion = direccion
+                    direccion = direccion,
+                    estado = "ACTIVO" // Valor por defecto
                 )
             }
             else -> null

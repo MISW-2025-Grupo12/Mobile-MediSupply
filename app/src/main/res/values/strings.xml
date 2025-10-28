@@ -259,7 +259,15 @@
     <string name="validation_maximum_quantity">La cantidad no puede exceder el inventario disponible</string>
     <string name="no_products_added_to_order">No se agregaron productos al pedido</string>
     <string name="search_clients">Buscar clientes</string>
-    <string name="no_clients_found">No se encontraron clientes</string>
+    <string name="no_clients_found">No se encontraron clientes con los criterios seleccionados</string>
+    <string name="search_clients_placeholder">Buscar por nombre o por NIT</string>
+    <string name="search">Buscar</string>
+    <string name="nit">NIT</string>
+    <string name="status">Estado</string>
+    <string name="expand">Desplegar</string>
+    <string name="all_status">TODOS</string>
+    <string name="active_status">ACTIVO</string>
+    <string name="inactive_status">INACTIVO</string>
     
     <!-- Common UI strings -->
     <string name="back">Volver</string>

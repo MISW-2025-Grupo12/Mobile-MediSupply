@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,8 @@ import com.medisupplyg4.ui.screens.driver.DriverRoutesScreen
 import com.medisupplyg4.ui.screens.driver.DriverDeliveriesScreen
 import com.medisupplyg4.ui.screens.seller.SellerNavigationScreen
 import com.medisupplyg4.ui.screens.seller.SellerOrdersNavigationScreen
+import com.medisupplyg4.ui.screens.seller.ClientesScreen
+import com.medisupplyg4.utils.SessionManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +29,10 @@ fun HomeScreen(
     navController: NavController = rememberNavController()
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    
+    // Obtener token del usuario logueado
+    val token = SessionManager.getToken(context) ?: ""
     
     // Definir tabs según el rol del usuario
     val tabs = when (userRole) {
@@ -87,19 +94,10 @@ fun HomeScreen(
                     when (selectedTabIndex) {
                         0 -> SellerNavigationScreen()
                         1 -> SellerOrdersNavigationScreen()
-                        2 -> {
-                            // Clientes - no implementado aún
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.section_not_implemented),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
+                        2 -> ClientesScreen(
+                            navController = navController,
+                            token = token
+                        )
                         3 -> ProfileScreen(navController = navController)
                     }
                 }
