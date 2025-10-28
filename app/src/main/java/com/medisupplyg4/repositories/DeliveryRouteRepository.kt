@@ -69,7 +69,7 @@ class DeliveryRouteRepository() {
     private suspend fun enrichDeliveriesWithClientInfo(deliveries: List<SimpleDelivery>): List<SimpleDelivery> {
         return try {
             // Obtener todos los clientes de la API de usuarios
-            val clientesResponse = NetworkClient.clientesApiService.getClientes()
+            val clientesResponse = NetworkClient.clientesApiService.getClientes("")
             
             if (clientesResponse.isSuccessful) {
                 val clientes = clientesResponse.body() ?: emptyList()

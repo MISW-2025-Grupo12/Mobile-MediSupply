@@ -45,7 +45,7 @@ class PedidosRepository {
         return try {
             Log.d(TAG, "Obteniendo lista de clientes")
 
-            val response = clientesApiService.getClientes()
+            val response = clientesApiService.getClientes("")
 
             if (response.isSuccessful) {
                 val clientes = response.body()
