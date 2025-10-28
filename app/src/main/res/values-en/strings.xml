@@ -267,4 +267,48 @@
     <string name="remove">Remove</string>
     <string name="error">Error</string>
 
+    <!-- Authentication -->
+    <string name="welcome_message">Welcome! Please log in or register</string>
+    <string name="email">Email</string>
+    <string name="email_hint">example@medisupply.com</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login">Log in</string>
+    <string name="no_account">Don\'t have an account yet?</string>
+    <string name="register_link">Register</string>
+    <string name="register">Registration</string>
+    <string name="name">Name</string>
+    <string name="name_hint">Ex. John Doe</string>
+    <string name="phone">Phone</string>
+    <string name="phone_hint">Ex. 3125559944</string>
+    <string name="user_type">User type</string>
+    <string name="user_type_hint">Select user type</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter your password</string>
+    <string name="register_button">Register</string>
+    <string name="client">Client</string>
+    <string name="seller">Seller</string>
+    <string name="driver">Driver</string>
+    <string name="identification">Identification</string>
+    <string name="identification_hint">Ex. 1234567890</string>
+    <string name="address_hint">Ex. 123 Main St</string>
+    
+    <!-- Registration Validation Messages -->
+    <string name="error_name_required">Name is required</string>
+    <string name="error_email_required">Email is required and must be valid</string>
+    <string name="error_identification_required">Identification is required</string>
+    <string name="error_identification_numbers_only">Identification must contain only numbers</string>
+    <string name="error_identification_length">Identification must have between 6 and 15 digits</string>
+    <string name="error_phone_required">Phone is required</string>
+    <string name="error_phone_numbers_only">Phone must contain only numbers</string>
+    <string name="error_phone_length">Phone must have between 7 and 15 digits</string>
+    <string name="error_address_required">Address is required</string>
+    <string name="error_password_length">Password must have at least 6 characters</string>
+    <string name="error_confirm_password_required">Password confirmation is required</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_server_empty_response">Empty server response</string>
+    <string name="error_server_error">Server error: %1$d - %2$s</string>
+    <string name="error_connection_error">Connection error: %1$s</string>
+    <string name="error_unknown">Unknown error</string>
+
 </resources>

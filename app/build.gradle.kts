@@ -97,6 +97,7 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlin.test)
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
     
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

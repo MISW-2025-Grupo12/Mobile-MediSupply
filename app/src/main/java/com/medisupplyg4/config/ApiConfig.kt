@@ -29,6 +29,12 @@ object ApiConfig {
             Environment.PRODUCTION -> "${currentEnvironment.baseUrl}/"
         }
     
+    val CLIENT_REGISTRATION_BASE_URL: String
+        get() = when (currentEnvironment) {
+            Environment.DEVELOPMENT -> "https://api.medisupplyg4.online/"
+            Environment.PRODUCTION -> "https://api.medisupplyg4.online/"
+        }
+    
     val PRODUCTOS_BASE_URL: String
         get() = when (currentEnvironment) {
             Environment.DEVELOPMENT -> "http://10.0.2.2:5000/"
