@@ -21,28 +21,32 @@ class DeliveryRouteRepository() {
     /**
      * Obtiene entregas según el período seleccionado
      */
-    suspend fun getDeliveries(selectedDate: LocalDate, selectedPeriod: RoutePeriod): List<SimpleDelivery> {
+    suspend fun getDeliveries(token: String, selectedDate: LocalDate, selectedPeriod: RoutePeriod, page: Int = 1, pageSize: Int = 20): List<SimpleDelivery> {
         return withContext(Dispatchers.IO) {
             try {
                 val (fechaInicio, fechaFin) = calculateDateRange(selectedDate, selectedPeriod)
                 
-                Log.d(TAG, "Obteniendo entregas desde $fechaInicio hasta $fechaFin")
+                Log.d(TAG, "Obteniendo entregas desde $fechaInicio hasta $fechaFin (página $page, tamaño $pageSize)")
                 
                 val response = NetworkClient.deliveryApiService.getDeliveries(
+                    token = "Bearer $token",
                     fechaInicio = fechaInicio,
-                    fechaFin = fechaFin
+                    fechaFin = fechaFin,
+                    page = page,
+                    pageSize = pageSize
                 )
                 
                 if (response.isSuccessful) {
-                    val deliveryResponses = response.body() ?: emptyList()
-                    Log.d(TAG, "Datos recibidos: ${deliveryResponses.size} entregas")
+                    val paginatedResponse = response.body()
+                    val deliveryResponses = paginatedResponse?.items ?: emptyList()
+                    Log.d(TAG, "Datos recibidos: ${deliveryResponses.size} entregas de ${paginatedResponse?.pagination?.totalItems ?: 0}")
                     
                     // Convertir a SimpleDelivery estándar
                     val deliveries = deliveryResponses.map { it.toSimpleDelivery() }
                     
                     // Si no hay información de cliente, intentar obtenerla
                     val deliveriesWithClientInfo = if (deliveries.any { it.cliente == null }) {
-                        enrichDeliveriesWithClientInfo(deliveries)
+                        enrichDeliveriesWithClientInfo(token, deliveries)
                     } else {
                         deliveries
                     }
@@ -66,13 +70,14 @@ class DeliveryRouteRepository() {
     /**
      * Enriquece las entregas con información de cliente obtenida de la API de usuarios
      */
-    private suspend fun enrichDeliveriesWithClientInfo(deliveries: List<SimpleDelivery>): List<SimpleDelivery> {
+    private suspend fun enrichDeliveriesWithClientInfo(token: String, deliveries: List<SimpleDelivery>): List<SimpleDelivery> {
         return try {
             // Obtener todos los clientes de la API de usuarios
-            val clientesResponse = NetworkClient.clientesApiService.getClientes("")
+            val clientesResponse = NetworkClient.clientesApiService.getClientes("Bearer $token", 1, 20)
             
             if (clientesResponse.isSuccessful) {
-                val clientes = clientesResponse.body() ?: emptyList()
+                val paginatedResponse = clientesResponse.body()
+                val clientes = paginatedResponse?.items ?: emptyList()
                 
                 // Crear un mapa de clientes por ID para búsqueda rápida
                 val clientesMap = clientes.associateBy { it.id }

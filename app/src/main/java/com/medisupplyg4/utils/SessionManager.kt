@@ -8,6 +8,10 @@ object SessionManager {
     private const val KEY_ACCESS_TOKEN = "access_token"
     private const val KEY_USER_ROLE = "user_role"
     private const val KEY_USER_EMAIL = "user_email"
+    private const val KEY_USER_ID = "user_id"
+    private const val KEY_USER_NAME = "user_name"
+    private const val KEY_USER_PHONE = "user_phone"
+    private const val KEY_USER_ADDRESS = "user_address"
 
     private fun getSharedPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -41,6 +45,46 @@ object SessionManager {
 
     fun getUserEmail(context: Context): String? {
         return getSharedPreferences(context).getString(KEY_USER_EMAIL, null)
+    }
+
+    fun saveUserId(context: Context, userId: String) {
+        getSharedPreferences(context).edit()
+            .putString(KEY_USER_ID, userId)
+            .apply()
+    }
+
+    fun getUserId(context: Context): String? {
+        return getSharedPreferences(context).getString(KEY_USER_ID, null)
+    }
+
+    fun saveUserName(context: Context, name: String) {
+        getSharedPreferences(context).edit()
+            .putString(KEY_USER_NAME, name)
+            .apply()
+    }
+
+    fun getUserName(context: Context): String? {
+        return getSharedPreferences(context).getString(KEY_USER_NAME, null)
+    }
+
+    fun saveUserPhone(context: Context, phone: String) {
+        getSharedPreferences(context).edit()
+            .putString(KEY_USER_PHONE, phone)
+            .apply()
+    }
+
+    fun getUserPhone(context: Context): String? {
+        return getSharedPreferences(context).getString(KEY_USER_PHONE, null)
+    }
+
+    fun saveUserAddress(context: Context, address: String) {
+        getSharedPreferences(context).edit()
+            .putString(KEY_USER_ADDRESS, address)
+            .apply()
+    }
+
+    fun getUserAddress(context: Context): String? {
+        return getSharedPreferences(context).getString(KEY_USER_ADDRESS, null)
     }
 
     fun clearSession(context: Context) {

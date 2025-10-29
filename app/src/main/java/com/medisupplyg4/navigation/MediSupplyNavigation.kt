@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.medisupplyg4.base.BaseActivity
+import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.screens.HomeScreen
@@ -28,6 +29,7 @@ fun MediSupplyNavigation(
     val context = LocalContext.current
     val selectedLanguage by startupViewModel.selectedLanguage.observeAsState(Language.SPANISH)
     val selectedRole by startupViewModel.selectedRole.observeAsState(UserRole.CLIENT)
+    val selectedEnvironment by startupViewModel.selectedEnvironment.observeAsState(Environment.getDefault())
     
     NavHost(
         navController = navController,
@@ -50,6 +52,10 @@ fun MediSupplyNavigation(
                     if (context is BaseActivity) {
                         startupViewModel.applyLanguageChange(context, language)
                     }
+                },
+                selectedEnvironment = selectedEnvironment,
+                onEnvironmentSelected = { environment: Environment ->
+                    startupViewModel.selectEnvironment(environment)
                 }
             )
         }

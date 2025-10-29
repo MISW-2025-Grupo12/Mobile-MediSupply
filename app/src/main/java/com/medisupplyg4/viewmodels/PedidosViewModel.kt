@@ -11,6 +11,7 @@ import com.medisupplyg4.models.ItemPedido
 import com.medisupplyg4.models.PedidoCompletoRequest
 import com.medisupplyg4.models.ProductoConInventario
 import com.medisupplyg4.repositories.PedidosRepository
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
 
 /**
@@ -109,13 +110,15 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
     /**
      * Loads all available clients
      */
-    fun loadClientes() {
+    fun loadClientes(page: Int = 1, pageSize: Int = 20) {
         viewModelScope.launch {
             try {
                 _isLoadingClientes.value = true
                 _error.value = null
 
-                val clientes = repository.getClientes()
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val clientes = repository.getClientes(token, page, pageSize)
                 _clientes.value = clientes ?: emptyList()
                 _clientesFiltrados.value = clientes ?: emptyList()
             } catch (e: Exception) {
@@ -130,13 +133,15 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
     /**
      * Loads all available products with inventory
      */
-    fun loadProductosConInventario() {
+    fun loadProductosConInventario(page: Int = 1, pageSize: Int = 20) {
         viewModelScope.launch {
             try {
                 _isLoadingProductos.value = true
                 _error.value = null
 
-                val productosConInventario = repository.getProductosConInventario()
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val productosConInventario = repository.getProductosConInventario(token, page, pageSize)
                 _productosConInventario.value = productosConInventario ?: emptyList()
                 
                 // Apply stock filter after loading
@@ -294,7 +299,9 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                     Log.d(TAG, "    item[$index]: productoId=${item.productoId}, cantidad=${item.cantidad}")
                 }
 
-                val response = repository.crearPedidoCompleto(request)
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val response = repository.crearPedidoCompleto(token, request)
 
                 if (response != null) {
                     _success.value = true

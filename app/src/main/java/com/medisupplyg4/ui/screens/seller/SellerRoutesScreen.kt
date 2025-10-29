@@ -282,7 +282,11 @@ fun SellerRoutesScreen(
             }
             else -> {
                 // Lista de visitas agrupadas por fecha
-                VisitsGroupedByDate(visits = visits, navController = navController)
+                VisitsGroupedByDate(
+                    visits = visits, 
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
         }
     }
@@ -292,12 +296,16 @@ fun SellerRoutesScreen(
 private fun VisitsGroupedByDate(
     visits: List<VisitAPI>,
     navController: NavController,
+    viewModel: SellerRoutesViewModel,
     modifier: Modifier = Modifier
 ) {
     val groupedVisits = visits
         .sortedBy { it.fechaProgramada }
         .groupBy { it.fechaProgramada.toLocalDate() }
         .toSortedMap()
+
+    val isLoadingMore by viewModel.isLoadingMore.observeAsState(false)
+    val hasMorePages by viewModel.hasMorePages.observeAsState(true)
 
     LazyColumn(
         modifier = modifier,
@@ -317,6 +325,32 @@ private fun VisitsGroupedByDate(
                         navController.navigate("visit_record/${visita.id}/${visita.cliente.id}/$encodedClienteNombre")
                     }
                 )
+            }
+        }
+        
+        // Loading indicator for pagination
+        if (isLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+        
+        // Load more when reaching the end
+        if (hasMorePages && !isLoadingMore) {
+            item {
+                LaunchedEffect(Unit) {
+                    viewModel.loadMoreVisits()
+                }
             }
         }
     }
