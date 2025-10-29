@@ -27,9 +27,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.R
+import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
 import com.medisupplyg4.ui.components.CompactLanguageSelector
+import com.medisupplyg4.ui.components.EnvironmentSelector
 import com.medisupplyg4.utils.SessionManager
 import com.medisupplyg4.viewmodels.LoginViewModel
 
@@ -41,6 +43,8 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit = {},
     selectedLanguage: Language = Language.SPANISH,
     onLanguageSelected: (Language) -> Unit = {},
+    selectedEnvironment: Environment = Environment.getDefault(),
+    onEnvironmentSelected: (Environment) -> Unit = {},
     viewModel: LoginViewModel = viewModel()
 ) {
     var email by remember { mutableStateOf("") }
@@ -65,6 +69,10 @@ fun LoginScreen(
                     SessionManager.saveToken(context, response.access_token)
                     SessionManager.saveUserRole(context, response.user_info.tipo_usuario)
                     SessionManager.saveUserEmail(context, response.user_info.email)
+                    SessionManager.saveUserId(context, response.user_info.entidad_id) // Usar entidad_id en lugar de id
+                    SessionManager.saveUserName(context, response.user_info.nombre ?: "")
+                    SessionManager.saveUserPhone(context, response.user_info.telefono ?: "")
+                    SessionManager.saveUserAddress(context, response.user_info.direccion ?: "")
                 }
                 
                 onLoginSuccess(userRole)
@@ -209,6 +217,15 @@ fun LoginScreen(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Environment selector
+        EnvironmentSelector(
+            selectedEnvironment = selectedEnvironment,
+            onEnvironmentSelected = onEnvironmentSelected,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 }

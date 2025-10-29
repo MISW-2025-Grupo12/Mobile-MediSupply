@@ -194,20 +194,12 @@ fun ClientesScreen(
                 }
             }
             else -> {
-                // Lista de clientes
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(clientes) { cliente ->
-                        ClienteCard(
-                            cliente = cliente,
-                            onClick = {
-                                // TODO: Navegar a detalles del cliente
-                                // navController.navigate("client_details/${cliente.id}")
-                            }
-                        )
-                    }
-                }
+                // Lista de clientes con scroll infinito
+                ClientesListWithInfiniteScroll(
+                    clientes = clientes,
+                    viewModel = viewModel,
+                    token = token
+                )
             }
         }
     }
@@ -389,5 +381,57 @@ private fun getLocalizedStatusString(estado: String): String {
         "INACTIVO" -> stringResource(R.string.inactive_status)
         "TODOS" -> stringResource(R.string.all_status)
         else -> estado // Fallback al original si no se reconoce
+    }
+}
+
+@Composable
+private fun ClientesListWithInfiniteScroll(
+    clientes: List<ClienteAPI>,
+    viewModel: ClientesViewModel,
+    token: String,
+    modifier: Modifier = Modifier
+) {
+    val isLoadingMore by viewModel.isLoadingMore.observeAsState(false)
+    val hasMorePages by viewModel.hasMorePages.observeAsState(true)
+
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(clientes) { cliente ->
+            ClienteCard(
+                cliente = cliente,
+                onClick = {
+                    // TODO: Navegar a detalles del cliente
+                    // navController.navigate("client_details/${cliente.id}")
+                }
+            )
+        }
+        
+        // Loading indicator for pagination
+        if (isLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+        
+        // Load more when reaching the end
+        if (hasMorePages && !isLoadingMore) {
+            item {
+                LaunchedEffect(Unit) {
+                    viewModel.loadMoreClientes(token)
+                }
+            }
+        }
     }
 }

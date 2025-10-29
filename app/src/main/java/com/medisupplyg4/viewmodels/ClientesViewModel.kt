@@ -34,6 +34,16 @@ class ClientesViewModel(application: Application) : AndroidViewModel(application
     private val _isEmpty = MutableLiveData<Boolean>()
     val isEmpty: LiveData<Boolean> = _isEmpty
 
+    // Estados de paginación
+    private val _currentPage = MutableLiveData(1)
+    val currentPage: LiveData<Int> = _currentPage
+
+    private val _hasMorePages = MutableLiveData(true)
+    val hasMorePages: LiveData<Boolean> = _hasMorePages
+
+    private val _isLoadingMore = MutableLiveData(false)
+    val isLoadingMore: LiveData<Boolean> = _isLoadingMore
+
     // Filtros
     private val _searchQuery = MutableLiveData<String>()
     val searchQuery: LiveData<String> = _searchQuery
@@ -55,14 +65,25 @@ class ClientesViewModel(application: Application) : AndroidViewModel(application
                 _isLoading.value = true
                 _error.value = null
 
-                Log.d(TAG, "Cargando clientes")
-                val result = repository.getClientes(token, getApplication())
+                // Reset pagination
+                _currentPage.value = 1
+                _hasMorePages.value = true
+                _clientes.value = emptyList()
+
+                Log.d(TAG, "Cargando clientes (página 1)")
+                val result = repository.getClientesPaginated(token, getApplication(), page = 1, pageSize = 10)
 
                 if (result.isSuccess) {
-                    val clientesList = result.getOrNull() ?: emptyList()
+                    val paginatedResponse = result.getOrNull()
+                    val clientesList = paginatedResponse?.items ?: emptyList()
+                    val pagination = paginatedResponse?.pagination
+                    
                     _clientes.value = clientesList.sortedBy { it.nombre } // Ordenar alfabéticamente
+                    _hasMorePages.value = pagination?.hasNext ?: false
+                    _currentPage.value = 1
+                    
                     applyFilters()
-                    Log.d(TAG, "Clientes cargados exitosamente: ${clientesList.size} clientes")
+                    Log.d(TAG, "Clientes cargados exitosamente: ${clientesList.size} de ${pagination?.totalItems ?: 0} clientes")
                 } else {
                     Log.e(TAG, "Error al cargar clientes: ${result.exceptionOrNull()?.message}")
                     _error.value = result.exceptionOrNull()?.message ?: getApplication<Application>().getString(R.string.error_unknown)
@@ -115,6 +136,57 @@ class ClientesViewModel(application: Application) : AndroidViewModel(application
         Log.d(TAG, "Filtros aplicados - Total: ${allClientes.size}, Filtrados: ${filtered.size}")
         _filteredClientes.value = filtered.sortedBy { it.nombre }
         _isEmpty.value = filtered.isEmpty()
+    }
+
+    /**
+     * Loads more clients (next page) for infinite scroll
+     */
+    fun loadMoreClientes(token: String) {
+        val currentPage = _currentPage.value ?: 1
+        val hasMore = _hasMorePages.value ?: false
+        
+        if (!hasMore) {
+            Log.d(TAG, "No hay más páginas para cargar")
+            return
+        }
+        
+        viewModelScope.launch {
+            try {
+                _isLoadingMore.value = true
+                
+                val nextPage = currentPage + 1
+                Log.d(TAG, "Cargando más clientes (página $nextPage)")
+                
+                val result = repository.getClientesPaginated(token, getApplication(), page = nextPage, pageSize = 10)
+                
+                if (result.isSuccess) {
+                    val paginatedResponse = result.getOrNull()
+                    val newClientes = paginatedResponse?.items ?: emptyList()
+                    val pagination = paginatedResponse?.pagination
+                    
+                    // Append new clients to existing list (don't re-sort to maintain pagination order)
+                    val currentClientes = _clientes.value ?: emptyList()
+                    val updatedClientes = currentClientes + newClientes
+                    _clientes.value = updatedClientes
+                    
+                    // Update pagination state
+                    _currentPage.value = nextPage
+                    _hasMorePages.value = pagination?.hasNext ?: false
+                    
+                    // Reapply filters with new data
+                    applyFilters()
+                    
+                    Log.d(TAG, "Más clientes cargados: ${newClientes.size} (página $nextPage)")
+                } else {
+                    Log.e(TAG, "Error al cargar más clientes: ${result.exceptionOrNull()?.message}")
+                }
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Excepción al cargar más clientes", e)
+            } finally {
+                _isLoadingMore.value = false
+            }
+        }
     }
 
     fun refreshClientes(token: String) {

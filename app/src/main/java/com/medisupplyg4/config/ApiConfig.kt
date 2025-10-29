@@ -13,31 +13,31 @@ object ApiConfig {
     // URLs base para diferentes microservicios
     val LOGISTICA_BASE_URL: String
         get() = when (currentEnvironment) {
-            Environment.DEVELOPMENT -> "http://10.0.2.2:5003/logistica/api/"
+            Environment.DEVELOPMENT -> "http://10.0.2.2:8080/logistica/api/"
             Environment.PRODUCTION -> "${currentEnvironment.baseUrl}/logistica/api/"
         }
     
     val USUARIOS_BASE_URL: String
         get() = when (currentEnvironment) {
-            Environment.DEVELOPMENT -> "http://10.0.2.2:5001/"
+            Environment.DEVELOPMENT -> "http://10.0.2.2:8080/"
             Environment.PRODUCTION -> "${currentEnvironment.baseUrl}/"
         }
     
     val VENTAS_BASE_URL: String
         get() = when (currentEnvironment) {
-            Environment.DEVELOPMENT -> "http://10.0.2.2:5002/"
+            Environment.DEVELOPMENT -> "http://10.0.2.2:8080/"
             Environment.PRODUCTION -> "${currentEnvironment.baseUrl}/"
         }
     
     val CLIENT_REGISTRATION_BASE_URL: String
         get() = when (currentEnvironment) {
-            Environment.DEVELOPMENT -> "https://api.medisupplyg4.online/"
+            Environment.DEVELOPMENT -> "http://10.0.2.2:8080/"
             Environment.PRODUCTION -> "https://api.medisupplyg4.online/"
         }
     
     val PRODUCTOS_BASE_URL: String
         get() = when (currentEnvironment) {
-            Environment.DEVELOPMENT -> "http://10.0.2.2:5000/"
+            Environment.DEVELOPMENT -> "http://10.0.2.2:8080/"
             Environment.PRODUCTION -> "${currentEnvironment.baseUrl}/"
         }
 

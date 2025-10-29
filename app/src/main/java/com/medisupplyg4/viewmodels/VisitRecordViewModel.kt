@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.repositories.SellerRepository
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -200,7 +201,9 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
                     pedidoGenerado = _pedidoGenerado.value!!
                 )
                 
-                val response = repository.recordVisit(_visitaId, request)
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val response = repository.recordVisit(token, _visitaId, request)
                 
                 if (response != null) {
                     _success.value = true

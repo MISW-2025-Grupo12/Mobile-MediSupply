@@ -12,5 +12,8 @@ data class UserInfo(
     val entidad_id: String,
     val id: String,
     val identificacion: String,
-    val tipo_usuario: String
+    val tipo_usuario: String,
+    val nombre: String? = null,
+    val telefono: String? = null,
+    val direccion: String? = null
 )
