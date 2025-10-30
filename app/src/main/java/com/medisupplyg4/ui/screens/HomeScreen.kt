@@ -1,8 +1,6 @@
 package com.medisupplyg4.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.R
@@ -20,6 +17,7 @@ import com.medisupplyg4.ui.screens.driver.DriverDeliveriesScreen
 import com.medisupplyg4.ui.screens.seller.SellerNavigationScreen
 import com.medisupplyg4.ui.screens.seller.SellerOrdersNavigationScreen
 import com.medisupplyg4.ui.screens.seller.ClientesScreen
+import com.medisupplyg4.ui.screens.client.ClientOrdersNavigation
 import com.medisupplyg4.utils.SessionManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,17 +58,21 @@ fun HomeScreen(
     
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                tabs.forEachIndexed { index, (iconRes, label) ->
-                    NavigationBarItem(
-                        icon = { Icon(painterResource(iconRes), contentDescription = label) },
-                        label = { Text(label) },
-                        selected = selectedTabIndex == index,
-                        onClick = {
-                            selectedTabIndex = index
-                            // Aquí se manejará la navegación a cada sección
-                        }
-                    )
+            if (tabs.isNotEmpty()) {
+                NavigationBar {
+                    tabs.forEachIndexed { index, triple ->
+                        NavigationBarItem(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            icon = {
+                                Icon(
+                                    painter = painterResource(id = triple.first),
+                                    contentDescription = null
+                                )
+                            },
+                            label = { Text(triple.second) }
+                        )
+                    }
                 }
             }
         }
@@ -102,27 +104,13 @@ fun HomeScreen(
                     }
                 }
                 UserRole.CLIENT -> {
-                    // Cliente no implementado aún - mostrar mensaje
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = stringResource(R.string.role_not_implemented),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                    when (selectedTabIndex) {
+                        0 -> ClientOrdersNavigation()
+                        1 -> {
+                            // Placeholder historial
+                            Text(text = stringResource(R.string.section_not_implemented))
                         }
+                        2 -> ProfileScreen(navController = navController)
                     }
                 }
                 else -> {
