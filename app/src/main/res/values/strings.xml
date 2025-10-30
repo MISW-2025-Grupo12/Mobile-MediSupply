@@ -320,4 +320,18 @@
     <string name="error_connection_error">Error de conexión: %1$s</string>
     <string name="error_unknown">Error desconocido</string>
 
+    <!-- Client Orders (new) -->
+    <string name="orders_detail_title">Detalle del pedido</string>
+    <string name="orders_not_found">No hay pedidos para el criterio seleccionado</string>
+    <string name="orders_order_not_found">Pedido no encontrado</string>
+    <string name="orders_created_at">Creado:</string>
+    <string name="orders_estimated_delivery">Entrega estimada:</string>
+    <string name="orders_delivered_at">Entregado:</string>
+    <string name="orders_products">Productos</string>
+    <string name="orders_total_label">Total</string>
+    <string name="orders_date_range">Rango de fechas: %1$s a %2$s</string>
+    <string name="orders_select">Seleccionar</string>
+    <string name="orders_clear">Limpiar</string>
+    <string name="orders_quantity">Cantidad: %1$d</string>
+    <string name="orders_subtotal">Subtotal: %1$s</string>
 </resources>
