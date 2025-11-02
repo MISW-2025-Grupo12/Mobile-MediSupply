@@ -19,5 +19,6 @@ data class PedidoClienteAPI(
     @SerializedName("cliente_id") val clienteId: String,
     val estado: String,
     val total: Double,
+    @SerializedName("fecha_creacion") val fechaCreacion: String,
     val items: List<PedidoClienteItemAPI>
 )

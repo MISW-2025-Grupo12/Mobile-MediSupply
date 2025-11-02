@@ -7,6 +7,8 @@ import com.medisupplyg4.models.OrderUI
 import com.medisupplyg4.models.PedidoClienteAPI
 import com.medisupplyg4.network.NetworkClient
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ClientOrdersRepository {
 
@@ -46,10 +48,23 @@ private fun PedidoClienteAPI.toOrderUI(): OrderUI {
             unitPrice = it.precioUnitario
         )
     }
+    
+    // Parse fecha_creacion from ISO 8601 format (e.g., "2025-10-29T02:06:19.651168")
+    val createdAt = try {
+        val dateTime = LocalDateTime.parse(
+            fechaCreacion,
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        )
+        dateTime.toLocalDate()
+    } catch (e: Exception) {
+        Log.w("ClientOrdersRepository", "Error parseando fecha_creacion: $fechaCreacion", e)
+        LocalDate.now() // Fallback a fecha actual si hay error
+    }
+    
     return OrderUI(
         id = id,
         number = "Pedido ${id.take(6)}",
-        createdAt = LocalDate.now(),
+        createdAt = createdAt,
         status = mapBackendStatus(estado),
         items = itemsUi
     )
