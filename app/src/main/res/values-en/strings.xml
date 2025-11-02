@@ -175,21 +175,19 @@
     <string name="seller_not_found">Could not get current seller</string>
     <string name="seller_load_error">Error loading seller: %1$s</string>
     
-    <!-- Settings -->
-
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
     <string name="loading_deliveries">Loading deliveries…</string>
     <string name="no_deliveries_found">No deliveries found for the selected date.</string>
-
+    
     <!-- Date Header -->
     <string name="date_header_today">Today</string>
-
+    
     <!-- SimplePeriodTabs -->
     <string name="period_tab_day">Day</string>
     <string name="period_tab_week">Week</string>
     <string name="period_tab_month">Month</string>
-
+    
     <!-- Visit Record -->
     <string name="visit_record_title">Visit record</string>
     <string name="visit_record_date">Date</string>
@@ -229,7 +227,7 @@
     <string name="recording_visit">Recording...</string>
     <string name="visit_recorded">Recorded!</string>
     <string name="continue_button">Continue</string>
-
+    
     <!-- Orders -->
     <string name="orders_title">Orders</string>
     <string name="new_order_title">New order</string>
@@ -274,7 +272,7 @@
     <string name="add">Add</string>
     <string name="remove">Remove</string>
     <string name="error">Error</string>
-
+    
     <!-- Authentication -->
     <string name="welcome_message">Welcome! Please log in or register</string>
     <string name="email">Email</string>
@@ -300,24 +298,6 @@
     <string name="identification">Identification</string>
     <string name="identification_hint">Ex. 1234567890</string>
     <string name="address_hint">Ex. 123 Main St</string>
-    
-    <!-- Registration Validation Messages -->
-    <string name="error_name_required">Name is required</string>
-    <string name="error_email_required">Email is required and must be valid</string>
-    <string name="error_identification_required">Identification is required</string>
-    <string name="error_identification_numbers_only">Identification must contain only numbers</string>
-    <string name="error_identification_length">Identification must have between 6 and 15 digits</string>
-    <string name="error_phone_required">Phone is required</string>
-    <string name="error_phone_numbers_only">Phone must contain only numbers</string>
-    <string name="error_phone_length">Phone must have between 7 and 15 digits</string>
-    <string name="error_address_required">Address is required</string>
-    <string name="error_password_length">Password must have at least 6 characters</string>
-    <string name="error_confirm_password_required">Password confirmation is required</string>
-    <string name="error_passwords_no_match">Passwords do not match</string>
-    <string name="error_server_empty_response">Empty server response</string>
-    <string name="error_server_error">Server error: %1$d - %2$s</string>
-    <string name="error_connection_error">Connection error: %1$s</string>
-    <string name="error_unknown">Unknown error</string>
 
     <!-- Client Orders (new) -->
     <string name="orders_detail_title">Order detail</string>
@@ -333,4 +313,14 @@
     <string name="orders_clear">Clear</string>
     <string name="orders_quantity">Quantity: %1$d</string>
     <string name="orders_subtotal">Subtotal: %1$s</string>
+    <!-- Evidence Upload (new additions) -->
+    <string name="upload_evidence">Upload evidence</string>
+    <string name="select_file">Select file</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="comments">Comments</string>
+    <string name="evidence_section_title">Equipment status</string>
+    <string name="evidence_section_subtitle">Attach photos and/or videos of the equipment to document its current condition.</string>
+    <string name="evidence_attach_title">Attach evidence</string>
+    <string name="evidence_attach_subtitle">Select files from your device</string>
+    <string name="save">Save</string>
 </resources>

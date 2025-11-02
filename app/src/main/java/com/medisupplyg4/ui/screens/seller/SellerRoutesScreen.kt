@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -403,13 +404,21 @@ private fun VisitaCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            // Nombre del cliente
-            Text(
-                text = visita.nombreCliente,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            // Nombre del cliente + chevron
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = visita.nombreCliente,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             
             // Dirección
             Row(
@@ -443,49 +452,27 @@ private fun VisitaCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Tel: ${visita.telefonoCliente}",
+                    text = visita.telefonoCliente,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
-            // Descripción
-            if (visita.descripcion.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.description),
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "${stringResource(R.string.description)}: ${visita.descripcion}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            
-            // Hora programada
+            // Fecha programada
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.schedule),
+                    Icons.Default.Event,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "${stringResource(R.string.time)}: ${visita.fechaProgramada.format(DateTimeFormatter.ofPattern("HH:mm"))}",
+                    text = visita.fechaProgramada.toString(),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

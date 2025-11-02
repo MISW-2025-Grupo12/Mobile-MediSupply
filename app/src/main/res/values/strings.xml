@@ -109,12 +109,12 @@
     <string name="no_routes_message">Intenta más tarde o verifica tu conexión</string>
     
     <!-- Date Formats -->
-    <string name="date_format_day_month_year">d \'de\' MMMM \'de\' yyyy</string>
-    <string name="date_format_day_name">EEEE, d \'de\' MMMM</string>
+    <string name="date_format_day_month_year">dd/MM/yyyy</string>
+    <string name="date_format_day_name">EEEE, dd MMMM</string>
     <string name="date_format_short">dd/MM/yyyy HH:mm</string>
     <string name="date_format_time">HH:mm</string>
     <string name="date_format_day_month">%1$d/%2$d</string>
-    <string name="date_format_long_date">EEEE, d \'de\' MMMM \'de\' yyyy</string>
+    <string name="date_format_long_date">EEEE, dd MMMM yyyy</string>
     
     <!-- API Configuration -->
     <string name="api_content_type">application/json</string>
@@ -176,21 +176,21 @@
     <string name="seller_load_error">Error al cargar vendedor: %1$s</string>
     
     <!-- Settings -->
-
-
+    
+    
         <!-- Working Routes Screen -->
         <string name="screen_title_routes">Rutas</string>
         <string name="loading_deliveries">Cargando entregas…</string>
         <string name="no_deliveries_found">No se encontraron entregas para la fecha seleccionada.</string>
-
+    
         <!-- Date Header -->
         <string name="date_header_today">Hoy</string>
-
+    
     <!-- SimplePeriodTabs -->
     <string name="period_tab_day">Día</string>
     <string name="period_tab_week">Semana</string>
     <string name="period_tab_month">Mes</string>
-
+    
     <!-- Visit Record -->
     <string name="visit_record_title">Registro de visita</string>
     <string name="visit_record_date">Fecha</string>
@@ -230,7 +230,7 @@
     <string name="recording_visit">Registrando...</string>
     <string name="visit_recorded">¡Registrado!</string>
     <string name="continue_button">Continuar</string>
-
+    
     <!-- Orders -->
     <string name="orders_title">Pedidos</string>
     <string name="new_order_title">Nuevo pedido</string>
@@ -275,7 +275,7 @@
     <string name="add">Agregar</string>
     <string name="remove">Quitar</string>
     <string name="error">Error</string>
-
+    
     <!-- Authentication -->
     <string name="welcome_message">¡Bienvenido! Por favor inicie sesión o regístrese</string>
     <string name="email">Correo electrónico</string>
@@ -334,4 +334,15 @@
     <string name="orders_clear">Limpiar</string>
     <string name="orders_quantity">Cantidad: %1$d</string>
     <string name="orders_subtotal">Subtotal: %1$s</string>
+    
+    <!-- Evidence Upload -->
+    <string name="upload_evidence">Subir evidencia</string>
+    <string name="select_file">Seleccionar archivo</string>
+    <string name="no_file_selected">Ningún archivo seleccionado</string>
+    <string name="comments">Comentarios</string>
+    <string name="evidence_section_title">Estado del equipo</string>
+    <string name="evidence_section_subtitle">Adjunta fotos y/o videos del equipo para documentar su estado actual.</string>
+    <string name="evidence_attach_title">Adjuntar evidencia</string>
+    <string name="evidence_attach_subtitle">Selecciona los archivos de tu dispositivo</string>
+    <string name="save">Guardar</string>
 </resources>

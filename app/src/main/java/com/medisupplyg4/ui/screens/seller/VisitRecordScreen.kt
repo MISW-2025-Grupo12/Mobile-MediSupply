@@ -1,9 +1,9 @@
 package com.medisupplyg4.ui.screens.seller
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -15,14 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.medisupplyg4.R
+import com.medisupplyg4.utils.SessionManager
 import com.medisupplyg4.viewmodels.VisitRecordViewModel
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +33,8 @@ fun VisitRecordScreen(
     onVisitRecorded: (() -> Unit)? = null,
     viewModel: VisitRecordViewModel = viewModel()
 ) {
-    LocalContext.current
-    
+    val context = LocalContext.current
+
     // UI State
     val fecha by viewModel.fecha.observeAsState("")
     val hora by viewModel.hora.observeAsState("")
@@ -59,7 +58,6 @@ fun VisitRecordScreen(
     // Handle success
     LaunchedEffect(success) {
         if (success) {
-            // Call callback to refresh visits list
             onVisitRecorded?.invoke()
         }
     }
@@ -179,6 +177,33 @@ fun VisitRecordScreen(
         )
     }
     
+    // Listen for evidence result from UploadEvidenceScreen
+    val evidenceUriFlow = navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<String?>("evidence_uri", null)
+    val evidenceCommentsFlow = navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<String?>("evidence_comments", null)
+    val evidenceUriResult by (evidenceUriFlow?.collectAsState(initial = null) ?: mutableStateOf<String?>(null))
+    val evidenceCommentsResult by (evidenceCommentsFlow?.collectAsState(initial = null) ?: mutableStateOf<String?>(null))
+
+    LaunchedEffect(evidenceUriResult, evidenceCommentsResult) {
+        val uriStr = evidenceUriResult
+        val commentsStr = evidenceCommentsResult
+        if (uriStr != null || (commentsStr != null && commentsStr.isNotBlank())) {
+            val token = SessionManager.getToken(context) ?: ""
+            val vendedorId = SessionManager.getUserId(context) ?: ""
+            val uri = uriStr?.let { Uri.parse(it) }
+            viewModel.uploadEvidenceAndRecord(
+                context = context,
+                visitaId = visitaId,
+                vendedorId = vendedorId,
+                token = token,
+                evidenceUri = uri,
+                evidenceComments = commentsStr ?: ""
+            )
+            // Clear keys to avoid re-trigger
+            navController.currentBackStackEntry?.savedStateHandle?.set("evidence_uri", null)
+            navController.currentBackStackEntry?.savedStateHandle?.set("evidence_comments", null)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -423,7 +448,26 @@ fun VisitRecordScreen(
         }
         
         Spacer(modifier = Modifier.height(24.dp))
-        
+
+        // Subir evidencia button: navigate to full screen
+        OutlinedButton(
+            onClick = {
+                if (isFormValid && !isLoading && !success) {
+                    navController.navigate("upload_evidence")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            enabled = isFormValid && !isLoading && !success
+        ) {
+            Icon(imageVector = Icons.Default.UploadFile, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = stringResource(R.string.upload_evidence))
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         // Save Button
         Button(
             onClick = { viewModel.recordVisit() },
@@ -448,27 +492,8 @@ fun VisitRecordScreen(
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
-            } else if (success) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(R.string.visit_recorded),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
             } else {
-                Text(
-                    text = stringResource(R.string.visit_record_save),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Text(stringResource(R.string.visit_record_save))
             }
         }
         

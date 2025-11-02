@@ -46,6 +46,11 @@ fun SellerNavigationScreen(
                 onVisitRecorded = { refreshVisits = true }
             )
         }
+
+        // Nueva ruta: pantalla completa para subir evidencia
+        composable("upload_evidence") {
+            UploadEvidenceScreen(navController = navController)
+        }
         
         composable("orders_list") {
             OrdersListScreen(
