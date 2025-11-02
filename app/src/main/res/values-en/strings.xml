@@ -283,7 +283,9 @@
     <string name="no_account">Don\'t have an account yet?</string>
     <string name="register_link">Register</string>
     <string name="register">Registration</string>
-    <string name="app_version">Version %1$s</string>
+    <string name="app_version">App Version: %1$s</string>
+    <string name="backend_version">Backend Version: %1$s</string>
+    <string name="backend_version_not_available">Backend Version: Not available</string>
     <string name="name">Name</string>
     <string name="name_hint">Ex. John Doe</string>
     <string name="phone">Phone</string>
