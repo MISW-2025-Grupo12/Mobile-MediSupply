@@ -299,6 +299,20 @@
     <string name="identification_hint">Ex. 1234567890</string>
     <string name="address_hint">Ex. 123 Main St</string>
 
+    <!-- Client Orders (new) -->
+    <string name="orders_detail_title">Order detail</string>
+    <string name="orders_not_found">No orders for the selected criteria</string>
+    <string name="orders_order_not_found">Order not found</string>
+    <string name="orders_created_at">Created:</string>
+    <string name="orders_estimated_delivery">Estimated delivery:</string>
+    <string name="orders_delivered_at">Delivered:</string>
+    <string name="orders_products">Products</string>
+    <string name="orders_total_label">Total</string>
+    <string name="orders_date_range">Date range: %1$s to %2$s</string>
+    <string name="orders_select">Select</string>
+    <string name="orders_clear">Clear</string>
+    <string name="orders_quantity">Quantity: %1$d</string>
+    <string name="orders_subtotal">Subtotal: %1$s</string>
     <!-- Evidence Upload (new additions) -->
     <string name="upload_evidence">Upload evidence</string>
     <string name="select_file">Select file</string>

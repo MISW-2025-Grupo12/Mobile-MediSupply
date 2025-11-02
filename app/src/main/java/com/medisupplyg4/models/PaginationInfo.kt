@@ -13,3 +13,4 @@ data class PaginationInfo(
     @SerializedName("has_next") val hasNext: Boolean,
     @SerializedName("has_prev") val hasPrev: Boolean
 )
+
