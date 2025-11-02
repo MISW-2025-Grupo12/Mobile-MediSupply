@@ -14,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
 import retrofit2.Response
+import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
 class ClientOrdersRepositoryTest {
@@ -25,9 +26,11 @@ class ClientOrdersRepositoryTest {
     fun setUp() {
         // Mock Log methods to avoid not mocked errors
         mockkStatic("android.util.Log")
-        every { android.util.Log.d(any(), any()) } returns 0
-        every { android.util.Log.e(any(), any()) } returns 0
-        every { android.util.Log.e(any(), any(), any()) } returns 0
+        every { android.util.Log.d(any<String>(), any<String>()) } returns 0
+        every { android.util.Log.e(any<String>(), any<String>()) } returns 0
+        every { android.util.Log.e(any<String>(), any<String>(), any<Throwable>()) } returns 0
+        every { android.util.Log.w(any<String>(), any<String>()) } returns 0
+        every { android.util.Log.w(any<String>(), any<String>(), any<Throwable>()) } returns 0
 
         mockApi = mockk()
         mockkObject(NetworkClient)
@@ -68,6 +71,7 @@ class ClientOrdersRepositoryTest {
                 clienteId = clienteId,
                 estado = "confirmado",
                 total = 1000.0,
+                fechaCreacion = "2025-10-29T02:06:19.651168",
                 items = listOf(
                     PedidoClienteItemAPI(
                         id = "it1",
@@ -94,6 +98,65 @@ class ClientOrdersRepositoryTest {
         assertEquals("Pedido abc123", first.number) // built from id.take(6)
         assertEquals(1, first.items.size)
         assertEquals("Prod 1", first.items.first().name)
+        assertEquals(LocalDate.of(2025, 10, 29), first.createdAt)
+    }
+
+    @Test
+    fun `getPedidosCliente correctly parses fecha_creacion from ISO format`() = runTest {
+        // Given
+        val token = "tkn"
+        val clienteId = "client-1"
+        val apiResponse = createPaginatedResponse(
+            PedidoClienteAPI(
+                id = "test123",
+                vendedorId = "vend-1",
+                clienteId = clienteId,
+                estado = "entregado",
+                total = 2000.0,
+                fechaCreacion = "2025-09-15T10:30:45.123456",
+                items = emptyList()
+            )
+        )
+        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+
+        // When
+        val result = repository.getPedidosCliente(token, clienteId)
+
+        // Then
+        assertTrue(result.isSuccess)
+        val order = result.getOrNull()?.first()
+        assertNotNull(order)
+        assertEquals(LocalDate.of(2025, 9, 15), order!!.createdAt)
+    }
+
+    @Test
+    fun `getPedidosCliente uses current date as fallback when fecha_creacion is invalid`() = runTest {
+        // Given
+        val token = "tkn"
+        val clienteId = "client-1"
+        val apiResponse = createPaginatedResponse(
+            PedidoClienteAPI(
+                id = "test123",
+                vendedorId = "vend-1",
+                clienteId = clienteId,
+                estado = "borrador",
+                total = 500.0,
+                fechaCreacion = "invalid-date-format",
+                items = emptyList()
+            )
+        )
+        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+
+        // When
+        val result = repository.getPedidosCliente(token, clienteId)
+
+        // Then
+        assertTrue(result.isSuccess)
+        val order = result.getOrNull()?.first()
+        assertNotNull(order)
+        // Should fallback to current date (within today)
+        val today = LocalDate.now()
+        assertEquals(today, order!!.createdAt)
     }
 
     @Test
