@@ -2,7 +2,9 @@ package com.medisupplyg4.ui.screens.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
@@ -16,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import android.content.pm.PackageManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,10 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import android.util.Log
 import com.medisupplyg4.R
+import com.medisupplyg4.config.ApiConfig
 import com.medisupplyg4.models.Environment
 import com.medisupplyg4.models.Language
 import com.medisupplyg4.models.UserRole
+import com.medisupplyg4.network.NetworkClient
 import com.medisupplyg4.ui.components.CompactLanguageSelector
 import com.medisupplyg4.ui.components.EnvironmentSelector
 import com.medisupplyg4.utils.SessionManager
@@ -90,6 +96,55 @@ fun LoginScreen(
         }
     }
 
+    // App version
+    val versionName = remember {
+        try {
+            @Suppress("DEPRECATION")
+            val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            packageInfo.versionName ?: "1.0.1"
+        } catch (e: Exception) {
+            "1.0.1" // Fallback version
+        }
+    }
+
+    // Backend version - null = cargando, "NOT_AVAILABLE" = no disponible, otro valor = versión
+    var backendVersion by remember { mutableStateOf<String?>(null) }
+    
+    // Reiniciar clientes cuando cambie el ambiente y obtener versión
+    LaunchedEffect(selectedEnvironment) {
+        // Actualizar configuración de ambiente
+        ApiConfig.setEnvironment(selectedEnvironment)
+        
+        // Reiniciar clientes de red cuando cambia el ambiente
+        NetworkClient.resetClients()
+        
+        // Resetear versión mientras se obtiene la nueva
+        backendVersion = null
+        
+        try {
+            Log.d("LoginScreen", "Obteniendo versión del backend desde ambiente: ${selectedEnvironment.name}...")
+            Log.d("LoginScreen", "URL base: ${ApiConfig.CLIENT_REGISTRATION_BASE_URL}")
+            val response = NetworkClient.loginApiService.getVersion()
+            Log.d("LoginScreen", "Respuesta del backend - código: ${response.code()}, exitosa: ${response.isSuccessful}")
+            if (response.isSuccessful) {
+                val versionResponse = response.body()
+                Log.d("LoginScreen", "Versión del backend recibida: ${versionResponse?.version}")
+                backendVersion = versionResponse?.version
+            } else {
+                Log.w("LoginScreen", "Error al obtener versión del backend: código ${response.code()}, mensaje: ${response.message()}")
+                val errorBody = response.errorBody()?.string()
+                Log.w("LoginScreen", "Cuerpo del error: $errorBody")
+                // Marcar como no disponible cuando hay error
+                backendVersion = "NOT_AVAILABLE"
+            }
+        } catch (e: Exception) {
+            Log.e("LoginScreen", "Excepción al obtener versión del backend", e)
+            Log.e("LoginScreen", "Mensaje de excepción: ${e.message}")
+            // Marcar como no disponible cuando hay excepción
+            backendVersion = "NOT_AVAILABLE"
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
@@ -97,7 +152,8 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp),
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
         // Language selector (top right)
@@ -218,7 +274,7 @@ fun LoginScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Environment selector
         EnvironmentSelector(
@@ -226,6 +282,32 @@ fun LoginScreen(
             onEnvironmentSelected = onEnvironmentSelected,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Version display
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.app_version, versionName),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = if (backendVersion == null) {
+                    "" // Aún cargando, no mostrar nada
+                } else if (backendVersion == "NOT_AVAILABLE") {
+                    stringResource(R.string.backend_version_not_available)
+                } else {
+                    stringResource(R.string.backend_version, backendVersion!!)
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+        }
     }
-}
+    }
 }
