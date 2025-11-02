@@ -1,6 +1,8 @@
 package com.medisupplyg4.repositories
 
 import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.Log
 import com.medisupplyg4.config.ApiConfig
 import com.medisupplyg4.models.PaginatedResponse
@@ -10,8 +12,16 @@ import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.models.VisitRecordResponse
 import com.medisupplyg4.network.NetworkClient
 import com.medisupplyg4.utils.SessionManager
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.io.FileOutputStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import android.webkit.MimeTypeMap
 
 /**
  * Repository to handle seller and visit data
@@ -20,6 +30,7 @@ class SellerRepository {
     
     companion object {
         private const val TAG = "SellerRepository"
+        private const val MAX_FILE_SIZE_BYTES = 100L * 1024L * 1024L // 100 MB
     }
     
     private val vendedorApiService = NetworkClient.vendedorApiService
@@ -182,6 +193,85 @@ class SellerRepository {
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al registrar visita", e)
             null
+        }
+    }
+
+    /**
+     * Sube evidencia de visita
+     */
+    suspend fun uploadEvidence(
+        context: Context,
+        token: String,
+        visitaId: String,
+        vendedorId: String,
+        comentarios: String,
+        fileUri: Uri
+    ): Boolean {
+        return try {
+            val resolver = context.contentResolver
+            val type = resolver.getType(fileUri) ?: "application/octet-stream"
+            // Validate allowed types
+            val allowed = type.startsWith("image/") || type.startsWith("video/")
+            if (!allowed) {
+                Log.w(TAG, "Tipo de archivo no permitido: $type")
+                return false
+            }
+            // Validate size
+            resolver.openFileDescriptor(fileUri, "r")?.use { pfd ->
+                if (pfd.statSize > 0 && pfd.statSize > MAX_FILE_SIZE_BYTES) {
+                    Log.w(TAG, "Archivo excede tamaño permitido: ${pfd.statSize}")
+                    return false
+                }
+            }
+
+            // Resolve original display name (with extension) if available
+            var displayName: String? = null
+            resolver.query(fileUri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+                val idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (idx >= 0 && cursor.moveToFirst()) {
+                    displayName = cursor.getString(idx)
+                }
+            }
+            // Fallback: build a name with proper extension derived from MIME
+            val extFromMime = MimeTypeMap.getSingleton().getExtensionFromMimeType(type)
+            val safeFileName = when {
+                !displayName.isNullOrBlank() -> displayName!!
+                !extFromMime.isNullOrBlank() -> "evidencia.$extFromMime"
+                else -> "evidencia.bin"
+            }
+
+            // Copy to temp file while preserving extension
+            val suffix = if (safeFileName.contains('.')) safeFileName.substringAfterLast('.', missingDelimiterValue = "") else ""
+            val tempFile = if (suffix.isNotBlank()) File.createTempFile("evidencia_", ".${suffix}", context.cacheDir) else File.createTempFile("evidencia_", null, context.cacheDir)
+            resolver.openInputStream(fileUri)?.use { input ->
+                FileOutputStream(tempFile).use { out -> input.copyTo(out) }
+            } ?: run {
+                Log.e(TAG, "No se pudo abrir InputStream del Uri")
+                return false
+            }
+
+            val requestFile: RequestBody = tempFile.asRequestBody(type.toMediaTypeOrNull())
+            val filePart = MultipartBody.Part.createFormData("archivo", safeFileName, requestFile)
+            val comentariosBody = comentarios.toRequestBody("text/plain".toMediaTypeOrNull())
+            val vendedorBody = vendedorId.toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val resp = visitasApiService.uploadEvidencia(
+                token = "Bearer $token",
+                visitaId = visitaId,
+                archivo = filePart,
+                comentarios = comentariosBody,
+                vendedorId = vendedorBody
+            )
+            val ok = resp.isSuccessful
+            if (!ok) {
+                Log.e(TAG, "Error subiendo evidencia: ${resp.code()} - ${resp.message()}")
+            }
+            // Cleanup temp file
+            tempFile.delete()
+            ok
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción subiendo evidencia", e)
+            false
         }
     }
 }
