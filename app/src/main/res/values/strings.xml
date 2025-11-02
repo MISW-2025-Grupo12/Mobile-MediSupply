@@ -295,6 +295,7 @@
     <string name="confirm_password">Confirmar Contraseña</string>
     <string name="confirm_password_hint">Vuelva a escribir su contraseña</string>
     <string name="register_button">Registrarse</string>
+    <string name="app_version">Versión %1$s</string>
     <string name="client">Cliente</string>
     <string name="seller">Vendedor</string>
     <string name="driver">Repartidor</string>
