@@ -41,15 +41,16 @@ class PedidosRepository {
     /**
      * Gets all available clients
      */
-    suspend fun getClientes(): List<ClienteAPI>? {
+    suspend fun getClientes(token: String, page: Int = 1, pageSize: Int = 20): List<ClienteAPI>? {
         return try {
-            Log.d(TAG, "Obteniendo lista de clientes")
+            Log.d(TAG, "Obteniendo lista de clientes (página $page, tamaño $pageSize)")
 
-            val response = clientesApiService.getClientes()
+            val response = clientesApiService.getClientes("Bearer $token", page, pageSize)
 
             if (response.isSuccessful) {
-                val clientes = response.body()
-                Log.d(TAG, "Clientes obtenidos exitosamente: ${clientes?.size ?: 0}")
+                val paginatedResponse = response.body()
+                val clientes = paginatedResponse?.items ?: emptyList()
+                Log.d(TAG, "Clientes obtenidos exitosamente: ${clientes.size} de ${paginatedResponse?.pagination?.totalItems ?: 0}")
                 clientes
             } else {
                 Log.e(TAG, "Error al obtener clientes: ${response.code()} - ${response.message()}")
@@ -64,28 +65,58 @@ class PedidosRepository {
     /**
      * Gets all available products with inventory
      */
-    suspend fun getProductosConInventario(): List<ProductoConInventario>? {
+    suspend fun getProductosConInventario(token: String, page: Int = 1, pageSize: Int = 20): List<ProductoConInventario>? {
         return try {
-            Log.d(TAG, "Obteniendo lista de productos con inventario")
+            Log.d(TAG, "Obteniendo lista de productos con inventario (página $page, tamaño $pageSize)")
 
             // Get products first
-            val productosResponse = productosApiService.getProductos()
+            val productosResponse = productosApiService.getProductos("Bearer $token", page, pageSize)
             
             if (!productosResponse.isSuccessful) {
                 Log.e(TAG, "Error al obtener productos: ${productosResponse.code()}")
                 return null
             }
             
-            val productos = productosResponse.body() ?: emptyList()
-            Log.d(TAG, "Productos obtenidos exitosamente: ${productos.size}")
+            val productosPaginated = productosResponse.body()
+            val productos = productosPaginated?.items ?: emptyList()
+            Log.d(TAG, "Productos obtenidos exitosamente: ${productos.size} de ${productosPaginated?.pagination?.totalItems ?: 0}")
             
-            // Try to get inventory
-            val inventarioResponse = inventarioApiService.getInventario()
-            val inventario = if (inventarioResponse.isSuccessful) {
-                Log.d(TAG, "Inventario obtenido exitosamente: ${inventarioResponse.body()?.size ?: 0}")
-                inventarioResponse.body() ?: emptyList()
-            } else {
-                Log.w(TAG, "Inventario no disponible (${inventarioResponse.code()}), usando inventario por defecto")
+            // Try to get inventory - first try paginated, then fallback to array
+            val inventario = try {
+                // First try paginated format
+                try {
+                    val inventarioResponse = inventarioApiService.getInventario("Bearer $token", page, pageSize)
+                    if (inventarioResponse.isSuccessful) {
+                        val inventarioPaginated = inventarioResponse.body()
+                        val inventarioItems = inventarioPaginated?.items ?: emptyList()
+                        Log.d(TAG, "Inventario paginado obtenido exitosamente: ${inventarioItems.size} de ${inventarioPaginated?.pagination?.totalItems ?: 0}")
+                        inventarioItems
+                    } else {
+                        Log.w(TAG, "Inventario paginado no disponible (${inventarioResponse.code()}), intentando array directo")
+                        null
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Error al obtener inventario paginado: ${e.message}, intentando array directo")
+                    null
+                } ?: run {
+                    // Fallback to array format
+                    try {
+                        val inventarioArrayResponse = inventarioApiService.getInventarioArray("Bearer $token")
+                        if (inventarioArrayResponse.isSuccessful) {
+                            val inventarioItems = inventarioArrayResponse.body() ?: emptyList()
+                            Log.d(TAG, "Inventario array obtenido exitosamente: ${inventarioItems.size} items")
+                            inventarioItems
+                        } else {
+                            Log.w(TAG, "Inventario array no disponible (${inventarioArrayResponse.code()}), usando inventario por defecto")
+                            emptyList()
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Error al obtener inventario array: ${e.message}, usando inventario por defecto")
+                        emptyList()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Error general al obtener inventario, usando inventario por defecto: ${e.message}")
                 emptyList()
             }
             
@@ -117,7 +148,7 @@ class PedidosRepository {
     /**
      * Creates a complete order
      */
-    suspend fun crearPedidoCompleto(request: PedidoCompletoRequest): PedidoCompletoResponse? {
+    suspend fun crearPedidoCompleto(token: String, request: PedidoCompletoRequest): PedidoCompletoResponse? {
         return try {
             Log.d(TAG, "Creando pedido completo para cliente: ${request.clienteId}")
             Log.d(TAG, "Request details:")
@@ -133,7 +164,7 @@ class PedidosRepository {
             val jsonRequest = gson.toJson(request)
             Log.d(TAG, "JSON Request: $jsonRequest")
 
-            val response = pedidosApiService.crearPedidoCompleto(request)
+            val response = pedidosApiService.crearPedidoCompleto("Bearer $token", request)
 
             if (response.isSuccessful) {
                 val result = response.body()

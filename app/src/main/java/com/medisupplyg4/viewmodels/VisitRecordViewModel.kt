@@ -1,6 +1,8 @@
 package com.medisupplyg4.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -8,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.repositories.SellerRepository
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -180,6 +183,46 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
     }
     
     /**
+     * Uploads evidence (if provided) and then records the visit using viewModelScope
+     */
+    fun uploadEvidenceAndRecord(
+        context: Context,
+        visitaId: String,
+        vendedorId: String,
+        token: String,
+        evidenceUri: Uri?,
+        evidenceComments: String
+    ) {
+        if (!isFormValid.value!!) return
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                var ok = true
+                if (evidenceUri != null || evidenceComments.isNotBlank()) {
+                    ok = repository.uploadEvidence(
+                        context = context,
+                        token = token,
+                        visitaId = visitaId,
+                        vendedorId = vendedorId,
+                        comentarios = evidenceComments,
+                        fileUri = evidenceUri ?: Uri.EMPTY
+                    )
+                }
+                if (ok) {
+                    recordVisit()
+                } else {
+                    _error.value = ERROR_RECORDING_VISIT
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error en uploadEvidenceAndRecord", e)
+                _error.value = ERROR_NETWORK_CONNECTION
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+    
+    /**
      * Records the visit
      */
     fun recordVisit() {
@@ -200,7 +243,9 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
                     pedidoGenerado = _pedidoGenerado.value!!
                 )
                 
-                val response = repository.recordVisit(_visitaId, request)
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val response = repository.recordVisit(token, _visitaId, request)
                 
                 if (response != null) {
                     _success.value = true

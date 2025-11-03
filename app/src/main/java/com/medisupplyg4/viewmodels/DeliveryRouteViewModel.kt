@@ -12,6 +12,7 @@ import com.medisupplyg4.R
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.repositories.DeliveryRouteRepository
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -53,7 +54,7 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
         loadRoutes()
     }
 
-    fun loadRoutes() {
+    fun loadRoutes(page: Int = 1, pageSize: Int = 20) {
         // Cancelar llamada anterior si existe
         loadRoutesJob?.cancel()
         
@@ -63,9 +64,11 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
                 
-                // Log.d(TAG, "loadRoutes() llamado - Período: $period, Fecha: $date")
+                // Log.d(TAG, "loadRoutes() llamado - Período: $period, Fecha: $date, Página: $page")
 
-                val fetchedDeliveries = deliveryRouteRepository.getDeliveries(date, period)
+                // Obtener token de autenticación
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val fetchedDeliveries = deliveryRouteRepository.getDeliveries(token, date, period, page, pageSize)
 
                 // Ordenar entregas por fecha de entrega
                 _deliveries.value = fetchedDeliveries.sortedBy { delivery -> delivery.fechaEntrega }

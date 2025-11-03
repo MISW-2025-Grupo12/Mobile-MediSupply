@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.models.SellerAPI
 import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.repositories.SellerRepository
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -30,6 +31,16 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
     // Visits state
     private val _visits = MutableLiveData<List<VisitAPI>>()
     val visits: LiveData<List<VisitAPI>> = _visits
+    
+    // Pagination state
+    private val _currentPage = MutableLiveData(1)
+    val currentPage: LiveData<Int> = _currentPage
+
+    private val _hasMorePages = MutableLiveData(true)
+    val hasMorePages: LiveData<Boolean> = _hasMorePages
+
+    private val _isLoadingMore = MutableLiveData(false)
+    val isLoadingMore: LiveData<Boolean> = _isLoadingMore
     
     // Loading state
     private val _isLoading = MutableLiveData<Boolean>()
@@ -65,7 +76,8 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
                 _isLoading.value = true
                 _error.value = null
                 
-                val seller = repository.getCurrentSeller()
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val seller = repository.getCurrentSeller(token, getApplication())
                 _currentSeller.value = seller
                 
                 if (seller != null) {
@@ -85,7 +97,7 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
     }
     
     /**
-     * Loads visits for the current seller with selected dates
+     * Loads visits for the current seller with selected dates (resets pagination)
      */
     fun loadVisits() {
         val seller = _currentSeller.value
@@ -97,25 +109,100 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
             return
         }
         
+        // Reset pagination
+        _currentPage.value = 1
+        _hasMorePages.value = true
+        _visits.value = emptyList()
+        
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 _error.value = null
                 
-                val visits = repository.getSellerVisits(
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val result = repository.getSellerVisitsPaginated(
+                    token = token,
                     vendedorId = seller.id,
                     fechaInicio = startDate,
-                    fechaFin = endDate
+                    fechaFin = endDate,
+                    page = 1,
+                    pageSize = 10
                 )
                 
-                _visits.value = visits
-                Log.d(TAG, "Visitas cargadas: ${visits.size}")
+                if (result.isSuccess) {
+                    val paginatedResponse = result.getOrNull()
+                    val visits = paginatedResponse?.items ?: emptyList()
+                    val pagination = paginatedResponse?.pagination
+                    
+                    _visits.value = visits
+                    _hasMorePages.value = pagination?.hasNext ?: false
+                    _currentPage.value = 1
+                    
+                    Log.d(TAG, "Visitas cargadas: ${visits.size} de ${pagination?.totalItems ?: 0}")
+                } else {
+                    _error.value = "Error al cargar visitas: ${result.exceptionOrNull()?.message}"
+                }
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Error al cargar visitas", e)
                 _error.value = "Error al cargar visitas: ${e.message}"
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    /**
+     * Loads more visits (next page) for infinite scroll
+     */
+    fun loadMoreVisits() {
+        val seller = _currentSeller.value
+        val startDate = _startDate.value
+        val endDate = _endDate.value
+        val currentPage = _currentPage.value ?: 1
+        val hasMore = _hasMorePages.value ?: false
+        
+        if (seller == null || startDate == null || endDate == null || !hasMore) {
+            Log.d(TAG, "No se pueden cargar más visitas: vendedor nulo, fechas nulas o no hay más páginas")
+            return
+        }
+        
+        viewModelScope.launch {
+            try {
+                _isLoadingMore.value = true
+                
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val nextPage = currentPage + 1
+                
+                val result = repository.getSellerVisitsPaginated(
+                    token = token,
+                    vendedorId = seller.id,
+                    fechaInicio = startDate,
+                    fechaFin = endDate,
+                    page = nextPage,
+                    pageSize = 10
+                )
+                
+                if (result.isSuccess) {
+                    val paginatedResponse = result.getOrNull()
+                    val newVisits = paginatedResponse?.items ?: emptyList()
+                    val pagination = paginatedResponse?.pagination
+                    
+                    // Append new visits to existing list
+                    val currentVisits = _visits.value ?: emptyList()
+                    _visits.value = currentVisits + newVisits
+                    _hasMorePages.value = pagination?.hasNext ?: false
+                    _currentPage.value = nextPage
+                    
+                    Log.d(TAG, "Más visitas cargadas: ${newVisits.size} (página $nextPage)")
+                } else {
+                    Log.e(TAG, "Error al cargar más visitas: ${result.exceptionOrNull()?.message}")
+                }
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al cargar más visitas", e)
+            } finally {
+                _isLoadingMore.value = false
             }
         }
     }

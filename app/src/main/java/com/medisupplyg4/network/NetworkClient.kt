@@ -16,6 +16,7 @@ object NetworkClient {
     private var usuariosRetrofit: Retrofit? = null
     private var ventasRetrofit: Retrofit? = null
     private var productosRetrofit: Retrofit? = null
+    private var clientRegistrationRetrofit: Retrofit? = null
     
     private fun getOkHttpClient(): OkHttpClient {
         if (okHttpClient == null) {
@@ -72,6 +73,17 @@ object NetworkClient {
         return productosRetrofit!!
     }
     
+    private fun getClientRegistrationRetrofit(): Retrofit {
+        if (clientRegistrationRetrofit == null) {
+            clientRegistrationRetrofit = Retrofit.Builder()
+                .baseUrl(ApiConfig.CLIENT_REGISTRATION_BASE_URL)
+                .client(getOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        return clientRegistrationRetrofit!!
+    }
+    
     val deliveryApiService: DeliveryApiService
         get() = getLogisticaRetrofit().create(DeliveryApiService::class.java)
     
@@ -93,6 +105,12 @@ object NetworkClient {
     val inventarioApiService: InventarioApiService
         get() = getLogisticaRetrofit().create(InventarioApiService::class.java)
     
+    val clientRegistrationApiService: ClientRegistrationApiService
+        get() = getClientRegistrationRetrofit().create(ClientRegistrationApiService::class.java)
+
+    val loginApiService: LoginApiService
+        get() = getClientRegistrationRetrofit().create(LoginApiService::class.java)
+    
     /**
      * Reinicializa todos los clientes de red cuando cambia el ambiente
      */
@@ -102,5 +120,6 @@ object NetworkClient {
         usuariosRetrofit = null
         ventasRetrofit = null
         productosRetrofit = null
+        clientRegistrationRetrofit = null
     }
 }

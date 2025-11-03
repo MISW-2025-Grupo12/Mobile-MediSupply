@@ -175,21 +175,19 @@
     <string name="seller_not_found">Could not get current seller</string>
     <string name="seller_load_error">Error loading seller: %1$s</string>
     
-    <!-- Settings -->
-
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
     <string name="loading_deliveries">Loading deliveries…</string>
     <string name="no_deliveries_found">No deliveries found for the selected date.</string>
-
+    
     <!-- Date Header -->
     <string name="date_header_today">Today</string>
-
+    
     <!-- SimplePeriodTabs -->
     <string name="period_tab_day">Day</string>
     <string name="period_tab_week">Week</string>
     <string name="period_tab_month">Month</string>
-
+    
     <!-- Visit Record -->
     <string name="visit_record_title">Visit record</string>
     <string name="visit_record_date">Date</string>
@@ -229,7 +227,7 @@
     <string name="recording_visit">Recording...</string>
     <string name="visit_recorded">Recorded!</string>
     <string name="continue_button">Continue</string>
-
+    
     <!-- Orders -->
     <string name="orders_title">Orders</string>
     <string name="new_order_title">New order</string>
@@ -258,7 +256,15 @@
     <string name="validation_maximum_quantity">Quantity cannot exceed available inventory</string>
     <string name="no_products_added_to_order">No products added to order</string>
     <string name="search_clients">Search clients</string>
-    <string name="no_clients_found">No clients found</string>
+    <string name="no_clients_found">No clients found with the selected criteria</string>
+    <string name="search_clients_placeholder">Search by name or EIN</string>
+    <string name="search">Search</string>
+    <string name="nit">EIN</string>
+    <string name="status">Status</string>
+    <string name="expand">Expand</string>
+    <string name="all_status">ALL</string>
+    <string name="active_status">ACTIVE</string>
+    <string name="inactive_status">INACTIVE</string>
     
     <!-- Common UI strings -->
     <string name="back">Back</string>
@@ -266,5 +272,58 @@
     <string name="add">Add</string>
     <string name="remove">Remove</string>
     <string name="error">Error</string>
+    
+    <!-- Authentication -->
+    <string name="welcome_message">Welcome! Please log in or register</string>
+    <string name="email">Email</string>
+    <string name="email_hint">example@medisupply.com</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login">Log in</string>
+    <string name="no_account">Don\'t have an account yet?</string>
+    <string name="register_link">Register</string>
+    <string name="register">Registration</string>
+    <string name="app_version">App Version: %1$s</string>
+    <string name="backend_version">Backend Version: %1$s</string>
+    <string name="backend_version_not_available">Backend Version: Not available</string>
+    <string name="name">Name</string>
+    <string name="name_hint">Ex. John Doe</string>
+    <string name="phone">Phone</string>
+    <string name="phone_hint">Ex. 3125559944</string>
+    <string name="user_type">User type</string>
+    <string name="user_type_hint">Select user type</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_password_hint">Re-enter your password</string>
+    <string name="register_button">Register</string>
+    <string name="client">Client</string>
+    <string name="seller">Seller</string>
+    <string name="driver">Driver</string>
+    <string name="identification">Identification</string>
+    <string name="identification_hint">Ex. 1234567890</string>
+    <string name="address_hint">Ex. 123 Main St</string>
 
+    <!-- Client Orders (new) -->
+    <string name="orders_detail_title">Order detail</string>
+    <string name="orders_not_found">No orders for the selected criteria</string>
+    <string name="orders_order_not_found">Order not found</string>
+    <string name="orders_created_at">Created:</string>
+    <string name="orders_estimated_delivery">Estimated delivery:</string>
+    <string name="orders_delivered_at">Delivered:</string>
+    <string name="orders_products">Products</string>
+    <string name="orders_total_label">Total</string>
+    <string name="orders_date_range">Date range: %1$s to %2$s</string>
+    <string name="orders_select">Select</string>
+    <string name="orders_clear">Clear</string>
+    <string name="orders_quantity">Quantity: %1$d</string>
+    <string name="orders_subtotal">Subtotal: %1$s</string>
+    <!-- Evidence Upload (new additions) -->
+    <string name="upload_evidence">Upload evidence</string>
+    <string name="select_file">Select file</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="comments">Comments</string>
+    <string name="evidence_section_title">Equipment status</string>
+    <string name="evidence_section_subtitle">Attach photos and/or videos of the equipment to document its current condition.</string>
+    <string name="evidence_attach_title">Attach evidence</string>
+    <string name="evidence_attach_subtitle">Select files from your device</string>
+    <string name="save">Save</string>
 </resources>

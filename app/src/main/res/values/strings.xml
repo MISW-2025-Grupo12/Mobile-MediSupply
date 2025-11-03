@@ -109,12 +109,12 @@
     <string name="no_routes_message">Intenta más tarde o verifica tu conexión</string>
     
     <!-- Date Formats -->
-    <string name="date_format_day_month_year">d \'de\' MMMM \'de\' yyyy</string>
-    <string name="date_format_day_name">EEEE, d \'de\' MMMM</string>
+    <string name="date_format_day_month_year">dd/MM/yyyy</string>
+    <string name="date_format_day_name">EEEE, dd MMMM</string>
     <string name="date_format_short">dd/MM/yyyy HH:mm</string>
     <string name="date_format_time">HH:mm</string>
     <string name="date_format_day_month">%1$d/%2$d</string>
-    <string name="date_format_long_date">EEEE, d \'de\' MMMM \'de\' yyyy</string>
+    <string name="date_format_long_date">EEEE, dd MMMM yyyy</string>
     
     <!-- API Configuration -->
     <string name="api_content_type">application/json</string>
@@ -176,21 +176,21 @@
     <string name="seller_load_error">Error al cargar vendedor: %1$s</string>
     
     <!-- Settings -->
-
-
+    
+    
         <!-- Working Routes Screen -->
         <string name="screen_title_routes">Rutas</string>
         <string name="loading_deliveries">Cargando entregas…</string>
         <string name="no_deliveries_found">No se encontraron entregas para la fecha seleccionada.</string>
-
+    
         <!-- Date Header -->
         <string name="date_header_today">Hoy</string>
-
+    
     <!-- SimplePeriodTabs -->
     <string name="period_tab_day">Día</string>
     <string name="period_tab_week">Semana</string>
     <string name="period_tab_month">Mes</string>
-
+    
     <!-- Visit Record -->
     <string name="visit_record_title">Registro de visita</string>
     <string name="visit_record_date">Fecha</string>
@@ -230,7 +230,7 @@
     <string name="recording_visit">Registrando...</string>
     <string name="visit_recorded">¡Registrado!</string>
     <string name="continue_button">Continuar</string>
-
+    
     <!-- Orders -->
     <string name="orders_title">Pedidos</string>
     <string name="new_order_title">Nuevo pedido</string>
@@ -259,7 +259,15 @@
     <string name="validation_maximum_quantity">La cantidad no puede exceder el inventario disponible</string>
     <string name="no_products_added_to_order">No se agregaron productos al pedido</string>
     <string name="search_clients">Buscar clientes</string>
-    <string name="no_clients_found">No se encontraron clientes</string>
+    <string name="no_clients_found">No se encontraron clientes con los criterios seleccionados</string>
+    <string name="search_clients_placeholder">Buscar por nombre o por NIT</string>
+    <string name="search">Buscar</string>
+    <string name="nit">NIT</string>
+    <string name="status">Estado</string>
+    <string name="expand">Desplegar</string>
+    <string name="all_status">TODOS</string>
+    <string name="active_status">ACTIVO</string>
+    <string name="inactive_status">INACTIVO</string>
     
     <!-- Common UI strings -->
     <string name="back">Volver</string>
@@ -267,5 +275,77 @@
     <string name="add">Agregar</string>
     <string name="remove">Quitar</string>
     <string name="error">Error</string>
+    
+    <!-- Authentication -->
+    <string name="welcome_message">¡Bienvenido! Por favor inicie sesión o regístrese</string>
+    <string name="email">Correo electrónico</string>
+    <string name="email_hint">ejemplo@medisupply.com</string>
+    <string name="password">Contraseña</string>
+    <string name="password_hint">Escriba su contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="no_account">¿Aún no tiene una cuenta?</string>
+    <string name="register_link">Registrarse</string>
+    <string name="register">Registro</string>
+    <string name="name">Nombre</string>
+    <string name="name_hint">Ej. Juan Pérez</string>
+    <string name="phone">Teléfono</string>
+    <string name="phone_hint">Ej. 3125559944</string>
+    <string name="user_type">Tipo de usuario</string>
+    <string name="user_type_hint">Seleccione tipo de usuario</string>
+    <string name="confirm_password">Confirmar Contraseña</string>
+    <string name="confirm_password_hint">Vuelva a escribir su contraseña</string>
+    <string name="register_button">Registrarse</string>
+    <string name="app_version">Versión App: %1$s</string>
+    <string name="backend_version">Versión Backend: %1$s</string>
+    <string name="backend_version_not_available">Versión Backend: No disponible</string>
+    <string name="client">Cliente</string>
+    <string name="seller">Vendedor</string>
+    <string name="driver">Repartidor</string>
+    <string name="identification">Identificación</string>
+    <string name="identification_hint">Ej. 1234567890</string>
+    <string name="address_hint">Ej. Calle 123 #45-67</string>
+    
+    <!-- Registration Validation Messages -->
+    <string name="error_name_required">El nombre es requerido</string>
+    <string name="error_email_required">El email es requerido y debe ser válido</string>
+    <string name="error_identification_required">La identificación es requerida</string>
+    <string name="error_identification_numbers_only">La identificación debe contener solo números</string>
+    <string name="error_identification_length">La identificación debe tener entre 6 y 15 dígitos</string>
+    <string name="error_phone_required">El teléfono es requerido</string>
+    <string name="error_phone_numbers_only">El teléfono debe contener solo números</string>
+    <string name="error_phone_length">El teléfono debe tener entre 7 y 15 dígitos</string>
+    <string name="error_address_required">La dirección es requerida</string>
+    <string name="error_password_length">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="error_confirm_password_required">Debe confirmar la contraseña</string>
+    <string name="error_passwords_no_match">Las contraseñas no coinciden</string>
+    <string name="error_server_empty_response">Respuesta vacía del servidor</string>
+    <string name="error_server_error">Error del servidor: %1$d - %2$s</string>
+    <string name="error_connection_error">Error de conexión: %1$s</string>
+    <string name="error_unknown">Error desconocido</string>
 
+    <!-- Client Orders (new) -->
+    <string name="orders_detail_title">Detalle del pedido</string>
+    <string name="orders_not_found">No hay pedidos para el criterio seleccionado</string>
+    <string name="orders_order_not_found">Pedido no encontrado</string>
+    <string name="orders_created_at">Creado:</string>
+    <string name="orders_estimated_delivery">Entrega estimada:</string>
+    <string name="orders_delivered_at">Entregado:</string>
+    <string name="orders_products">Productos</string>
+    <string name="orders_total_label">Total</string>
+    <string name="orders_date_range">Rango de fechas: %1$s a %2$s</string>
+    <string name="orders_select">Seleccionar</string>
+    <string name="orders_clear">Limpiar</string>
+    <string name="orders_quantity">Cantidad: %1$d</string>
+    <string name="orders_subtotal">Subtotal: %1$s</string>
+    
+    <!-- Evidence Upload -->
+    <string name="upload_evidence">Subir evidencia</string>
+    <string name="select_file">Seleccionar archivo</string>
+    <string name="no_file_selected">Ningún archivo seleccionado</string>
+    <string name="comments">Comentarios</string>
+    <string name="evidence_section_title">Estado del equipo</string>
+    <string name="evidence_section_subtitle">Adjunta fotos y/o videos del equipo para documentar su estado actual.</string>
+    <string name="evidence_attach_title">Adjuntar evidencia</string>
+    <string name="evidence_attach_subtitle">Selecciona los archivos de tu dispositivo</string>
+    <string name="save">Guardar</string>
 </resources>
