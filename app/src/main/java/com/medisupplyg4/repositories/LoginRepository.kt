@@ -12,12 +12,12 @@ class LoginRepository {
         private const val TAG = "LoginRepository"
     }
 
-    private val loginApiService = NetworkClient.loginApiService
-
     suspend fun login(request: LoginRequest, context: Context): Result<LoginResponse> {
         return try {
             Log.d(TAG, "Iniciando login para: ${request.email}")
             
+            // Obtener el servicio dinámicamente para asegurar que usa la configuración actual
+            val loginApiService = NetworkClient.loginApiService
             val response = loginApiService.login(request)
             
             if (response.isSuccessful) {
