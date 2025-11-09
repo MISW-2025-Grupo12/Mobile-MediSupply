@@ -18,12 +18,14 @@ import com.medisupplyg4.ui.components.DateRangePickerModal
 import com.medisupplyg4.viewmodels.ClientOrdersViewModel
 import java.time.LocalDate
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClientOrdersScreen(
     onOrderSelected: (String) -> Unit,
+    onCreateOrderClick: () -> Unit = {},
     viewModel: ClientOrdersViewModel = viewModel()
 ) {
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -36,6 +38,17 @@ fun ClientOrdersScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text(stringResource(R.string.orders_title)) })
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onCreateOrderClick,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.new_order)
+                )
+            }
         }
     ) { padding ->
         Column(
