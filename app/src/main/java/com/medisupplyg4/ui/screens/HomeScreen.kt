@@ -47,7 +47,7 @@ fun HomeScreen(
         )
         UserRole.CLIENT -> listOf(
             Triple(R.drawable.inventory, stringResource(R.string.orders_title), "orders"),
-            Triple(R.drawable.history, stringResource(R.string.history), "history"),
+            Triple(R.drawable.local_shipping, stringResource(R.string.deliveries), "deliveries"),
             Triple(R.drawable.person, stringResource(R.string.profile), "profile")
         )
         else -> {
@@ -106,10 +106,7 @@ fun HomeScreen(
                 UserRole.CLIENT -> {
                     when (selectedTabIndex) {
                         0 -> ClientOrdersNavigation()
-                        1 -> {
-                            // Placeholder historial
-                            Text(text = stringResource(R.string.section_not_implemented))
-                        }
+                        1 -> com.medisupplyg4.ui.screens.client.ClientDeliveriesNavigation()
                         2 -> ProfileScreen(navController = navController)
                     }
                 }

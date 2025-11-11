@@ -21,4 +21,14 @@ interface DeliveryApiService {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 20
     ): Response<PaginatedResponse<SimpleDeliveryResponse>>
+    
+    @GET("entregas")
+    suspend fun getDeliveriesByClienteId(
+        @Header("Authorization") token: String,
+        @Query("cliente_id") clienteId: String,
+        @Query("fecha_inicio") fechaInicio: String? = null,
+        @Query("fecha_fin") fechaFin: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 100
+    ): Response<PaginatedResponse<SimpleDeliveryResponse>>
 }

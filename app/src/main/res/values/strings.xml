@@ -103,6 +103,11 @@
     <string name="customer_id">Cliente %1$s</string>
     <string name="product_id">Producto: %1$s</string>
     <string name="delivery_date">Entrega: %1$s</string>
+    <string name="delivery_detail_title">Detalle de Entrega</string>
+    <string name="delivery_information">Información de Entrega</string>
+    <string name="order_information">Información del Pedido</string>
+    <string name="order_id">ID: %1$s</string>
+    <string name="order_confirmation_date">Fecha de Confirmación</string>
     
     <!-- Empty States -->
     <string name="no_routes_available">No hay rutas disponibles</string>
@@ -183,7 +188,8 @@
         <!-- Working Routes Screen -->
         <string name="screen_title_routes">Rutas</string>
         <string name="loading_deliveries">Cargando entregas…</string>
-        <string name="no_deliveries_found">No se encontraron entregas para la fecha seleccionada.</string>
+        <string name="no_deliveries_found">No se encontraron entregas.</string>
+        <string name="dismiss">Descartar</string>
     
         <!-- Date Header -->
         <string name="date_header_today">Hoy</string>
@@ -324,6 +330,8 @@
     <string name="error_server_empty_response">Respuesta vacía del servidor</string>
     <string name="error_server_error">Error del servidor: %1$d - %2$s</string>
     <string name="error_connection_error">Error de conexión: %1$s</string>
+    <string name="error_token_not_found">No se encontró token de autenticación</string>
+    <string name="error_load_deliveries">Error al cargar entregas: %1$d</string>
     <string name="error_unknown">Error desconocido</string>
 
     <!-- Client Orders (new) -->
@@ -335,6 +343,12 @@
     <string name="orders_delivered_at">Entregado:</string>
     <string name="orders_products">Productos</string>
     <string name="orders_total_label">Total</string>
+    
+    <!-- Order Status -->
+    <string name="order_status_draft">Borrador</string>
+    <string name="order_status_confirmed">Confirmado</string>
+    <string name="order_status_in_transit">En tránsito</string>
+    <string name="order_status_delivered">Entregado</string>
     <string name="orders_date_range">Rango de fechas: %1$s a %2$s</string>
     <string name="orders_select">Seleccionar</string>
     <string name="orders_clear">Limpiar</string>
