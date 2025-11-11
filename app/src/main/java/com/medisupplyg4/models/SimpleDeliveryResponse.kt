@@ -30,8 +30,24 @@ data class SimpleDeliveryResponse(
      */
     data class PedidoResponse(
         val id: String,
+        val total: Double,
+        val estado: String,
+        @SerializedName("fecha_confirmacion") val fechaConfirmacion: String? = null,
+        @SerializedName("vendedor_id") val vendedorId: String? = null,
         val cliente: ClienteAPI,
-        val productos: List<ItemPedido>
+        val productos: List<ItemPedidoEntrega>
+    )
+    
+    /**
+     * Modelo para los productos en la respuesta de entregas
+     */
+    data class ItemPedidoEntrega(
+        @SerializedName("producto_id") val productoId: String,
+        val nombre: String,
+        val cantidad: Int,
+        @SerializedName("precio_unitario") val precioUnitario: Double,
+        val subtotal: Double,
+        val avatar: String? = null
     )
     /**
      * Obtiene el nombre del cliente desde cualquier estructura
@@ -78,15 +94,44 @@ data class SimpleDeliveryResponse(
             else -> null
         }
         
-        // Usar productos del pedido si están disponibles, sino los directos
-        val productosFinales = pedido?.productos ?: productos ?: emptyList()
+        // Convertir productos de la respuesta a ItemPedido
+        // Primero intentar usar productos del pedido (ItemPedidoEntrega)
+        val productosFinales = when {
+            pedido?.productos != null -> {
+                // Convertir ItemPedidoEntrega a ItemPedido
+                pedido.productos.map { itemEntrega ->
+                    // Crear un ProductoAPI mínimo desde ItemPedidoEntrega
+                    val productoAPI = ProductoAPI(
+                        id = itemEntrega.productoId,
+                        nombre = itemEntrega.nombre,
+                        descripcion = "",
+                        precio = itemEntrega.precioUnitario,
+                        avatar = itemEntrega.avatar,
+                        categoria = CategoriaAPI("", "", ""),
+                        proveedor = ProveedorAPI("", "", "", ""),
+                        inventarioDisponible = 0
+                    )
+                    ItemPedido(
+                        producto = productoAPI,
+                        cantidad = itemEntrega.cantidad
+                    )
+                }
+            }
+            productos != null -> productos
+            else -> emptyList()
+        }
         
         return SimpleDelivery(
             id = id,
             direccion = direccion,
             fechaEntregaString = fechaEntregaString,
             cliente = clienteAPI,
-            productos = productosFinales
+            productos = productosFinales,
+            pedidoId = pedido?.id,
+            pedidoTotal = pedido?.total,
+            pedidoEstado = pedido?.estado,
+            pedidoFechaConfirmacion = pedido?.fechaConfirmacion,
+            pedidoVendedorId = pedido?.vendedorId
         )
     }
 }

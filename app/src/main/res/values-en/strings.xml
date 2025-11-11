@@ -103,6 +103,11 @@
     <string name="customer_id">Customer %1$s</string>
     <string name="product_id">Product: %1$s</string>
     <string name="delivery_date">Delivery: %1$s</string>
+    <string name="delivery_detail_title">Delivery Details</string>
+    <string name="delivery_information">Delivery Information</string>
+    <string name="order_information">Order Information</string>
+    <string name="order_id">ID: %1$s</string>
+    <string name="order_confirmation_date">Confirmation Date</string>
     
     <!-- Empty States -->
     <string name="no_routes_available">No routes available</string>
@@ -180,7 +185,8 @@
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
     <string name="loading_deliveries">Loading deliveries…</string>
-    <string name="no_deliveries_found">No deliveries found for the selected date.</string>
+        <string name="no_deliveries_found">No deliveries found.</string>
+        <string name="dismiss">Dismiss</string>
     
     <!-- Date Header -->
     <string name="date_header_today">Today</string>
@@ -321,6 +327,8 @@
     <string name="error_server_empty_response">Empty response from server</string>
     <string name="error_server_error">Server error: %1$d - %2$s</string>
     <string name="error_connection_error">Connection error: %1$s</string>
+    <string name="error_token_not_found">Authentication token not found</string>
+    <string name="error_load_deliveries">Error loading deliveries: %1$d</string>
     <string name="error_unknown">Unknown error</string>
 
     <!-- Client Orders (new) -->
@@ -332,6 +340,12 @@
     <string name="orders_delivered_at">Delivered:</string>
     <string name="orders_products">Products</string>
     <string name="orders_total_label">Total</string>
+    
+    <!-- Order Status -->
+    <string name="order_status_draft">Draft</string>
+    <string name="order_status_confirmed">Confirmed</string>
+    <string name="order_status_in_transit">In Transit</string>
+    <string name="order_status_delivered">Delivered</string>
     <string name="orders_date_range">Date range: %1$s to %2$s</string>
     <string name="orders_select">Select</string>
     <string name="orders_clear">Clear</string>

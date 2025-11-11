@@ -10,5 +10,6 @@ data class ClienteAPI(
     val identificacion: String, // NIT
     val telefono: String,
     val direccion: String,
-    val estado: String
+    val estado: String,
+    val avatar: String? = null
 )

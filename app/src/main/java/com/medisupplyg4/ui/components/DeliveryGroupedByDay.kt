@@ -19,13 +19,14 @@ import java.time.LocalDate
 @Composable
 fun DeliveryGroupedByDay(
     deliveries: List<SimpleDelivery>,
+    onDeliveryClick: (SimpleDelivery) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Agrupar entregas por día
     val groupedDeliveries = deliveries
-        .sortedBy { it.fechaEntrega } // Ordenar por fecha de entrega
+        .sortedBy { it.fechaEntrega } // Ordenar por fecha de entrega (más antiguas primero)
         .groupBy { it.fechaEntrega.toLocalDate() }
-        .toSortedMap() // Ordenar los días
+        .toSortedMap(compareBy { it }) // Ordenar los días (más antiguos primero)
 
     Column(
         modifier = modifier,
@@ -38,9 +39,12 @@ fun DeliveryGroupedByDay(
             // Espaciado adicional
             Spacer(modifier = Modifier.height(8.dp))
             
-            // Entregas del día
-            dayDeliveries.forEach { delivery ->
-                SimpleDeliveryCard(delivery = delivery)
+            // Entregas del día (ordenadas por fecha ascendente - más antiguas primero)
+            dayDeliveries.sortedBy { it.fechaEntrega }.forEach { delivery ->
+                SimpleDeliveryCard(
+                    delivery = delivery,
+                    onClick = { onDeliveryClick(delivery) }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }

@@ -45,7 +45,7 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
                 val clienteId = SessionManager.getUserId(getApplication()) ?: ""
                 val result = repository.getPedidosCliente(token, clienteId, page, pageSize)
                 if (result.isSuccess) {
-                    _orders.value = result.getOrNull()?.sortedByDescending { it.createdAt } ?: emptyList()
+                    _orders.value = result.getOrNull()?.sortedBy { it.createdAt } ?: emptyList()
                 } else {
                     Log.w(TAG, "Fallo cargando pedidos desde API: ${result.exceptionOrNull()?.message}")
                     _orders.value = emptyList()
@@ -82,6 +82,6 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
             start != null && end != null -> list.filter { !it.createdAt.isBefore(start) && !it.createdAt.isAfter(end) }
             else -> list
         }
-        _filteredOrders.value = filtered.sortedByDescending { it.createdAt }
+        _filteredOrders.value = filtered.sortedBy { it.createdAt }
     }
 }
