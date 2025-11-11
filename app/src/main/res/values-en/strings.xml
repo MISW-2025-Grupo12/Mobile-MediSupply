@@ -170,10 +170,12 @@
     <!-- Fallback messages -->
     <string name="client_not_available">Client not available</string>
     <string name="phone_not_available">Phone not available</string>
+    <string name="not_available">Not available</string>
     <string name="unknown_error">Unknown error</string>
     <string name="retry">Retry</string>
     <string name="seller_not_found">Could not get current seller</string>
     <string name="seller_load_error">Error loading seller: %1$s</string>
+    <string name="error_load_profile">Error loading profile</string>
     
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
@@ -224,6 +226,7 @@
     <string name="select_time_description">Select time</string>
     
     <!-- Loading States -->
+    <string name="loading">Loading...</string>
     <string name="recording_visit">Recording...</string>
     <string name="visit_recorded">Recorded!</string>
     <string name="continue_button">Continue</string>
@@ -301,6 +304,24 @@
     <string name="identification">Identification</string>
     <string name="identification_hint">Ex. 1234567890</string>
     <string name="address_hint">Ex. 123 Main St</string>
+    
+    <!-- Registration Validation Messages -->
+    <string name="error_name_required">Name is required</string>
+    <string name="error_email_required">Email is required and must be valid</string>
+    <string name="error_identification_required">Identification is required</string>
+    <string name="error_identification_numbers_only">Identification must contain only numbers</string>
+    <string name="error_identification_length">Identification must be between 6 and 15 digits</string>
+    <string name="error_phone_required">Phone is required</string>
+    <string name="error_phone_numbers_only">Phone must contain only numbers</string>
+    <string name="error_phone_length">Phone must be between 7 and 15 digits</string>
+    <string name="error_address_required">Address is required</string>
+    <string name="error_password_length">Password must be at least 6 characters</string>
+    <string name="error_confirm_password_required">You must confirm the password</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_server_empty_response">Empty response from server</string>
+    <string name="error_server_error">Server error: %1$d - %2$s</string>
+    <string name="error_connection_error">Connection error: %1$s</string>
+    <string name="error_unknown">Unknown error</string>
 
     <!-- Client Orders (new) -->
     <string name="orders_detail_title">Order detail</string>

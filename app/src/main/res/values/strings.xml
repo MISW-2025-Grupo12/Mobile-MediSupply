@@ -170,10 +170,12 @@
     <!-- Fallback messages -->
     <string name="client_not_available">Cliente no disponible</string>
     <string name="phone_not_available">Teléfono no disponible</string>
+    <string name="not_available">No disponible</string>
     <string name="unknown_error">Error desconocido</string>
     <string name="retry">Reintentar</string>
     <string name="seller_not_found">No se pudo obtener el vendedor actual</string>
     <string name="seller_load_error">Error al cargar vendedor: %1$s</string>
+    <string name="error_load_profile">Error al cargar perfil</string>
     
     <!-- Settings -->
     
@@ -227,6 +229,7 @@
     <string name="select_time_description">Seleccionar hora</string>
     
     <!-- Loading States -->
+    <string name="loading">Cargando...</string>
     <string name="recording_visit">Registrando...</string>
     <string name="visit_recorded">¡Registrado!</string>
     <string name="continue_button">Continuar</string>
