@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.medisupplyg4.R
 import com.medisupplyg4.utils.SessionManager
 import com.medisupplyg4.viewmodels.VisitRecordViewModel
@@ -42,9 +45,15 @@ fun VisitRecordScreen(
     val novedades by viewModel.novedades.observeAsState("")
     val pedidoGenerado by viewModel.pedidoGenerado.observeAsState(false)
     val isLoading by viewModel.isLoading.observeAsState(false)
+    val isLoadingEvidence by viewModel.isLoadingEvidence.observeAsState(false)
     val error by viewModel.error.observeAsState()
     val success by viewModel.success.observeAsState(false)
     val isFormValid by viewModel.isFormValid.observeAsState(false)
+    
+    // Suggestions state
+    val isLoadingSuggestions by viewModel.isLoadingSuggestions.observeAsState(false)
+    val suggestions by viewModel.suggestions.observeAsState()
+    val suggestionsError by viewModel.suggestionsError.observeAsState()
     
     // Date picker state
     var showDatePicker by remember { mutableStateOf(false) }
@@ -164,17 +173,139 @@ fun VisitRecordScreen(
                 }
             },
             confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.clearFormAndReset()
-                        navController.popBackStack()
-                    }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(stringResource(R.string.continue_button))
+                    Button(
+                        onClick = {
+                            viewModel.clearFormAndReset()
+                            navController.popBackStack()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.continue_button))
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.getVisitSuggestions()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoadingSuggestions
+                    ) {
+                        Text(stringResource(R.string.get_suggestions))
+                    }
                 }
             },
             dismissButton = null
         )
+    }
+    
+    // Loading dialog for evidence upload
+    if (isLoadingEvidence) {
+        AlertDialog(
+            onDismissRequest = { /* No se puede cerrar mientras carga */ },
+            title = {
+                Text(
+                    text = stringResource(R.string.uploading_evidence),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.uploading_evidence_message),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {},
+            dismissButton = null
+        )
+    }
+    
+    // Loading dialog for suggestions
+    if (isLoadingSuggestions) {
+        AlertDialog(
+            onDismissRequest = { /* No se puede cerrar mientras carga */ },
+            title = {
+                Text(
+                    text = stringResource(R.string.loading_suggestions),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.loading_suggestions_message),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {},
+            dismissButton = null
+        )
+    }
+    
+    // Navigate to suggestions screen when loaded
+    LaunchedEffect(suggestions) {
+        suggestions?.let { sugg ->
+            // Pass suggestions as JSON string through savedStateHandle
+            val gson = Gson()
+            val suggestionsJson = gson.toJson(sugg)
+            // Store suggestions in current entry before navigation
+            navController.currentBackStackEntry?.savedStateHandle?.set("suggestions_json", suggestionsJson)
+            // Navigate to suggestions screen
+            navController.navigate("visit_suggestions/${visitaId}") {
+                // Don't pop immediately - let the destination read the data first
+                // We'll handle the back navigation in the destination
+            }
+            // Clear suggestions after navigation
+            viewModel.clearSuggestions()
+        }
+    }
+    
+    // Show error snackbar if suggestions failed
+    val snackbarHostState = remember { SnackbarHostState() }
+    var lastError by remember { mutableStateOf<String?>(null) }
+    
+    suggestionsError?.let { errorMsg ->
+        if (errorMsg != lastError) {
+            LaunchedEffect(errorMsg) {
+                lastError = errorMsg
+                snackbarHostState.showSnackbar(
+                    message = errorMsg,
+                    duration = SnackbarDuration.Long
+                )
+                // Clear error after showing
+                viewModel.clearSuggestions()
+            }
+        }
     }
     
     // Listen for evidence result from UploadEvidenceScreen
@@ -204,11 +335,17 @@ fun VisitRecordScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
         // Header
         Row(
             modifier = Modifier
@@ -471,7 +608,7 @@ fun VisitRecordScreen(
         // Save Button
         Button(
             onClick = { viewModel.recordVisit() },
-            enabled = isFormValid && !isLoading && !success,
+            enabled = isFormValid && !isLoading && !isLoadingEvidence && !success,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -537,6 +674,7 @@ fun VisitRecordScreen(
                     )
                 }
             }
+        }
         }
     }
 }

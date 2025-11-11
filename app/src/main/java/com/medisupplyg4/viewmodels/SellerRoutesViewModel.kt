@@ -58,10 +58,12 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
     val endDate: LiveData<LocalDate> = _endDate
     
     init {
-        // Initialize with current date
+        // Initialize with current month (first day to last day)
         val today = LocalDate.now()
-        _startDate.value = today
-        _endDate.value = today
+        val firstDayOfMonth = today.withDayOfMonth(1)
+        val lastDayOfMonth = today.withDayOfMonth(today.lengthOfMonth())
+        _startDate.value = firstDayOfMonth
+        _endDate.value = lastDayOfMonth
         
         // Load current seller
         loadCurrentSeller()

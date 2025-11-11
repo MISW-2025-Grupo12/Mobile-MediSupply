@@ -10,6 +10,7 @@ import com.medisupplyg4.models.SellerAPI
 import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.models.VisitRecordResponse
+import com.medisupplyg4.models.VisitSuggestionsResponse
 import com.medisupplyg4.network.NetworkClient
 import com.medisupplyg4.utils.SessionManager
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -272,6 +273,27 @@ class SellerRepository {
         } catch (e: Exception) {
             Log.e(TAG, "Excepción subiendo evidencia", e)
             false
+        }
+    }
+    
+    /**
+     * Obtiene las sugerencias de una visita
+     */
+    suspend fun getVisitSuggestions(token: String, visitaId: String): VisitSuggestionsResponse? {
+        return try {
+            val response = visitasApiService.getVisitSuggestions(
+                token = "Bearer $token",
+                visitaId = visitaId
+            )
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                Log.e(TAG, "Error obteniendo sugerencias: ${response.code()} - ${response.message()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción obteniendo sugerencias", e)
+            null
         }
     }
 }
