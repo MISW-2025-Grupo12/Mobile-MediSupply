@@ -7,6 +7,7 @@ data class SellerAPI(
     val id: String,
     val nombre: String,
     val email: String,
+    val identificacion: String? = null,
     val telefono: String,
     val direccion: String
 )

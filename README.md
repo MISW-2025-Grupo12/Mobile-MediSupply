@@ -26,9 +26,9 @@ MediSupply G12 es una aplicación móvil desarrollada en Android que facilita la
 - **Persistencia**: Recuerda la configuración seleccionada
 
 ### 👥 Roles de Usuario
-- **Vendedor**: Gestión de rutas de visitas y creación de pedidos
+- **Vendedor**: Gestión de rutas de visitas, creación de pedidos y subida de evidencia visual
 - **Repartidor**: Visualización de rutas de entrega por día/semana/mes
-- **Cliente**: Funcionalidad en desarrollo
+- **Cliente**: Visualización de pedidos con seguimiento de estado y filtros de fecha
 
 ### 🌐 Internacionalización
 - **Español**: Idioma por defecto
@@ -88,13 +88,26 @@ MediSupply G12 es una aplicación móvil desarrollada en Android que facilita la
 ### Opción 1: APK Pre-compilado (Recomendado)
 ```bash
 # El APK ya está disponible en la raíz del proyecto
-MediSupplyG12-v1.0.1.apk
+MediSupplyG12-v2.0.0.apk
 
 # Instalar en dispositivo Android
-adb install MediSupplyG12-v1.0.1.apk
+adb install MediSupplyG12-v2.0.0.apk
 ```
 
 ## 📋 Changelog
+
+### v2.0.0 (2025-11-02)
+- ✅ **Paginación infinita**: Implementada paginación con scroll infinito para visitas del vendedor y listado de clientes
+- ✅ **Visualización de pedidos de cliente**: Los clientes institucionales pueden visualizar sus pedidos con estado actualizado (Borrador, Confirmado, En tránsito, Entregado)
+- ✅ **Filtros de fecha**: Implementado selector de rango de fechas para pedidos de cliente y visitas de vendedor
+- ✅ **Subida de evidencia**: Los vendedores pueden capturar evidencia visual (imágenes/videos) durante el registro de visitas
+- ✅ **Optimización de autenticación**: Eliminada consulta innecesaria a la API de vendedores, usando datos del login directamente
+- ✅ **Versión del backend**: Visualización de la versión del backend en la pantalla de login
+- ✅ **Versión de la app**: Visualización de la versión de la aplicación en la pantalla de login
+- ✅ **Mejoras de UI**: Pantalla de login ahora es scrolleable para dispositivos pequeños
+- ✅ **Corrección de ID de vendedor**: Uso correcto de `entidad_id` en lugar de `id` durante el login
+- ✅ **Manejo de errores**: Mejor manejo de respuestas de API (soporte para arrays y objetos paginados)
+- ✅ **Pruebas unitarias**: Agregadas pruebas unitarias para nuevas funcionalidades
 
 ### v1.0.1 (2025-10-18)
 - ✅ **Corrección de información de clientes**: Los nombres y teléfonos de clientes ahora se muestran correctamente en las rutas de repartidor
@@ -150,6 +163,12 @@ export JAVA_HOME=/snap/android-studio/209/jbr
 - **Rutas de entrega**: Organizadas por día, semana o mes
 - **Información de clientes**: Direcciones y datos de contacto
 - **Navegación optimizada**: Scroll automático entre períodos
+
+### Para Clientes
+- **Visualización de pedidos**: Lista completa de pedidos con estado actualizado
+- **Detalle de pedidos**: Información detallada de productos, cantidades y precios
+- **Filtros de fecha**: Selección de rango de fechas para filtrar pedidos
+- **Estados de pedido**: Visualización clara del estado (Borrador, Confirmado, En tránsito, Entregado)
 
 ## 🧪 Testing
 
@@ -244,6 +263,6 @@ export ANDROID_HOME=/path/to/android-sdk
 
 ---
 
-**Versión**: 1.0.0  
-**Última actualización**: 18 de Octubre de 2025  
+**Versión**: 2.0.0  
+**Última actualización**: 2 de Noviembre de 2025  
 **Estado**: ✅ Estable y listo para producción

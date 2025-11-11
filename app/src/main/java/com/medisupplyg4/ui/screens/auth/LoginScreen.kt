@@ -230,6 +230,10 @@ fun LoginScreen(
         // Login button
         Button(
             onClick = {
+                // Asegurar que el ambiente esté sincronizado antes de hacer login
+                ApiConfig.setEnvironment(selectedEnvironment)
+                NetworkClient.resetClients()
+                Log.d("LoginScreen", "Ambiente sincronizado antes de login: ${selectedEnvironment.name}, URL: ${ApiConfig.CLIENT_REGISTRATION_BASE_URL}")
                 viewModel.login(email, password)
             },
             modifier = Modifier
