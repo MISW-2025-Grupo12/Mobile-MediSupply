@@ -4,6 +4,7 @@ import com.medisupplyg4.models.PaginatedResponse
 import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.models.VisitRecordResponse
+import com.medisupplyg4.models.VisitSuggestionsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -65,4 +66,13 @@ interface VisitasApiService {
         @Part("comentarios") comentarios: RequestBody,
         @Part("vendedor_id") vendedorId: RequestBody
     ): Response<Unit>
+    
+    /**
+     * Obtiene las sugerencias de una visita
+     */
+    @POST("ventas/api/visitas/{visita_id}/sugerencias")
+    suspend fun getVisitSuggestions(
+        @Header("Authorization") token: String,
+        @Path("visita_id") visitaId: String
+    ): Response<VisitSuggestionsResponse>
 }

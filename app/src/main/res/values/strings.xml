@@ -365,4 +365,18 @@
     <string name="evidence_attach_title">Adjuntar evidencia</string>
     <string name="evidence_attach_subtitle">Selecciona los archivos de tu dispositivo</string>
     <string name="save">Guardar</string>
+    <string name="get_suggestions">Obtener sugerencias de la visita</string>
+    <string name="visit_suggestions_title">Sugerencias de la visita</string>
+    <string name="close">Cerrar</string>
+    <string name="loading_suggestions">Cargando sugerencias</string>
+    <string name="loading_suggestions_message">Generando sugerencias basadas en la visita...</string>
+    <string name="uploading_evidence">Subiendo evidencia</string>
+    <string name="uploading_evidence_message">Subiendo evidencia y registrando la visita...</string>
+    <string name="suggestion_info">Información</string>
+    <string name="model_used">Modelo usado</string>
+    <string name="created_at">Creado el</string>
+    <string name="error_visit_id_not_available">Visita ID no disponible</string>
+    <string name="error_token_not_available">Token de autenticación no disponible</string>
+    <string name="error_get_suggestions">Error al obtener sugerencias</string>
+    <string name="error_connection_suggestions">Error de conexión al obtener sugerencias</string>
 </resources>

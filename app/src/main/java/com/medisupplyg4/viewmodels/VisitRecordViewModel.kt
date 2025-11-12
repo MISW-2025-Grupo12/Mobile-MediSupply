@@ -8,7 +8,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.medisupplyg4.R
 import com.medisupplyg4.models.VisitRecordRequest
+import com.medisupplyg4.models.VisitSuggestionsResponse
 import com.medisupplyg4.repositories.SellerRepository
 import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
@@ -97,11 +99,24 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> = _isLoading
     
+    private val _isLoadingEvidence = MutableLiveData<Boolean>(false)
+    val isLoadingEvidence: LiveData<Boolean> = _isLoadingEvidence
+    
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
     
     private val _success = MutableLiveData<Boolean>(false)
     val success: LiveData<Boolean> = _success
+    
+    // Suggestions state
+    private val _isLoadingSuggestions = MutableLiveData<Boolean>(false)
+    val isLoadingSuggestions: LiveData<Boolean> = _isLoadingSuggestions
+    
+    private val _suggestions = MutableLiveData<VisitSuggestionsResponse?>()
+    val suggestions: LiveData<VisitSuggestionsResponse?> = _suggestions
+    
+    private val _suggestionsError = MutableLiveData<String?>()
+    val suggestionsError: LiveData<String?> = _suggestionsError
     
     // Validation state
     private val _isFormValid = MutableLiveData<Boolean>(false)
@@ -196,7 +211,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
         if (!isFormValid.value!!) return
         viewModelScope.launch {
             try {
-                _isLoading.value = true
+                _isLoadingEvidence.value = true
                 var ok = true
                 if (evidenceUri != null || evidenceComments.isNotBlank()) {
                     ok = repository.uploadEvidence(
@@ -217,7 +232,7 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
                 Log.e(TAG, "Error en uploadEvidenceAndRecord", e)
                 _error.value = ERROR_NETWORK_CONNECTION
             } finally {
-                _isLoading.value = false
+                _isLoadingEvidence.value = false
             }
         }
     }
@@ -295,6 +310,50 @@ class VisitRecordViewModel(application: Application) : AndroidViewModel(applicat
      */
     fun clearError() {
         _error.value = null
+    }
+    
+    /**
+     * Obtiene las sugerencias de la visita
+     */
+    fun getVisitSuggestions() {
+        if (_visitaId.isEmpty()) {
+            _suggestionsError.value = getApplication<Application>().getString(R.string.error_visit_id_not_available)
+            return
+        }
+        
+        viewModelScope.launch {
+            try {
+                _isLoadingSuggestions.value = true
+                _suggestionsError.value = null
+                
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                if (token.isEmpty()) {
+                    _suggestionsError.value = getApplication<Application>().getString(R.string.error_token_not_available)
+                    return@launch
+                }
+                
+                val response = repository.getVisitSuggestions(token, _visitaId)
+                if (response != null) {
+                    _suggestions.value = response
+                    Log.d(TAG, "Sugerencias obtenidas exitosamente: ${response.mensaje}")
+                } else {
+                    _suggestionsError.value = getApplication<Application>().getString(R.string.error_get_suggestions)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error al obtener sugerencias", e)
+                _suggestionsError.value = getApplication<Application>().getString(R.string.error_connection_suggestions)
+            } finally {
+                _isLoadingSuggestions.value = false
+            }
+        }
+    }
+    
+    /**
+     * Limpia las sugerencias
+     */
+    fun clearSuggestions() {
+        _suggestions.value = null
+        _suggestionsError.value = null
     }
     
     /**

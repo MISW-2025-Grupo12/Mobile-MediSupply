@@ -361,4 +361,18 @@
     <string name="evidence_attach_title">Attach evidence</string>
     <string name="evidence_attach_subtitle">Select files from your device</string>
     <string name="save">Save</string>
+    <string name="get_suggestions">Get visit suggestions</string>
+    <string name="visit_suggestions_title">Visit Suggestions</string>
+    <string name="close">Close</string>
+    <string name="loading_suggestions">Loading suggestions</string>
+    <string name="loading_suggestions_message">Generating suggestions based on the visit...</string>
+    <string name="uploading_evidence">Uploading evidence</string>
+    <string name="uploading_evidence_message">Uploading evidence and recording the visit...</string>
+    <string name="suggestion_info">Information</string>
+    <string name="model_used">Model used</string>
+    <string name="created_at">Created at</string>
+    <string name="error_visit_id_not_available">Visit ID not available</string>
+    <string name="error_token_not_available">Authentication token not available</string>
+    <string name="error_get_suggestions">Error getting suggestions</string>
+    <string name="error_connection_suggestions">Connection error getting suggestions</string>
 </resources>
