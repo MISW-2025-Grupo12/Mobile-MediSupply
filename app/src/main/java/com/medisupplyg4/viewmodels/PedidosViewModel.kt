@@ -7,11 +7,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.models.ClienteAPI
+import com.medisupplyg4.models.InventarioAPI
 import com.medisupplyg4.models.ItemPedido
 import com.medisupplyg4.models.PedidoCompletoRequest
 import com.medisupplyg4.models.ProductoConInventario
+import com.medisupplyg4.network.InventarioSSEService
 import com.medisupplyg4.repositories.PedidosRepository
 import com.medisupplyg4.utils.SessionManager
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 /**
@@ -47,6 +51,8 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private val repository = PedidosRepository()
+    private val sseService = InventarioSSEService()
+    private var sseJob: Job? = null
 
     // Clients data
     private val _clientes = MutableLiveData<List<ClienteAPI>>()
@@ -106,6 +112,11 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
         loadProductosConInventario()
         observeSearchQuery()
     }
+    
+    override fun onCleared() {
+        super.onCleared()
+        disconnectFromInventoryStream()
+    }
 
     /**
      * Loads all available clients
@@ -146,6 +157,11 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 
                 // Apply stock filter after loading
                 filterProductos(_searchQuery.value ?: "")
+                
+                // Connect to SSE stream after products are loaded (if not already connected)
+                if (sseJob == null || sseJob?.isCompleted == true) {
+                    connectToInventoryStream()
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading products with inventory", e)
                 _error.value = ERROR_NETWORK_CONNECTION
@@ -153,6 +169,88 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 _isLoadingProductos.value = false
             }
         }
+    }
+    
+    /**
+     * Connects to the inventory SSE stream for real-time updates
+     */
+    private fun connectToInventoryStream() {
+        val token = SessionManager.getToken(getApplication()) ?: ""
+        if (token.isEmpty()) {
+            Log.w(TAG, "No token available, skipping SSE connection")
+            return
+        }
+        
+        // Cancel existing connection if any
+        disconnectFromInventoryStream()
+        
+        sseJob = viewModelScope.launch {
+            sseService.connect(token)
+                .catch { e ->
+                    Log.e(TAG, "Error in SSE stream: ${e.message}", e)
+                }
+                .collect { event ->
+                    when (event.type) {
+                        InventarioSSEService.EventType.INVENTORY -> {
+                            // Initial inventory state - update the product
+                            event.data?.let { updateInventoryFromSSE(it) }
+                        }
+                        InventarioSSEService.EventType.UPDATE -> {
+                            // Inventory update - update the product
+                            event.data?.let { updateInventoryFromSSE(it) }
+                        }
+                        InventarioSSEService.EventType.HEARTBEAT -> {
+                            // Heartbeat - just log, no action needed
+                            Log.d(TAG, "Heartbeat received")
+                        }
+                    }
+                }
+        }
+    }
+    
+    /**
+     * Disconnects from the inventory SSE stream
+     */
+    private fun disconnectFromInventoryStream() {
+        sseJob?.cancel()
+        sseJob = null
+        sseService.disconnect()
+    }
+    
+    /**
+     * Updates inventory for a product based on SSE event data
+     * Note: Only updates products that are already in the list. New products must be loaded via loadProductosConInventario()
+     */
+    private fun updateInventoryFromSSE(sseEvent: com.medisupplyg4.models.InventarioSSEEvent) {
+        val currentProductos = _productosConInventario.value ?: emptyList()
+        val productoExists = currentProductos.any { it.id == sseEvent.productoId }
+        
+        if (!productoExists) {
+            Log.d(TAG, "Product ${sseEvent.productoId} not in current list, skipping SSE update. Product will be included on next load.")
+            return
+        }
+        
+        val updatedProductos = currentProductos.map { productoConInventario ->
+            if (productoConInventario.id == sseEvent.productoId) {
+                // Update the inventory for this product
+                val updatedInventario = InventarioAPI(
+                    productoId = sseEvent.productoId,
+                    totalDisponible = sseEvent.cantidadDisponible,
+                    totalReservado = productoConInventario.inventario.totalReservado, // Keep existing reserved
+                    lotes = productoConInventario.inventario.lotes // Keep existing lots
+                )
+                ProductoConInventario(productoConInventario.producto, updatedInventario)
+            } else {
+                productoConInventario
+            }
+        }
+        
+        _productosConInventario.value = updatedProductos
+        
+        // Re-apply filters to update the filtered list (this will show/hide products based on new stock)
+        filterProductos(_searchQuery.value ?: "")
+        
+        Log.d(TAG, "Inventory updated for product ${sseEvent.productoId}: ${sseEvent.cantidadDisponible}")
     }
 
     /**
@@ -344,6 +442,9 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
      */
     fun refrescarInventario() {
         loadProductosConInventario()
+        // Reconnect to SSE stream to ensure we have the latest updates
+        disconnectFromInventoryStream()
+        connectToInventoryStream()
     }
 
     /**

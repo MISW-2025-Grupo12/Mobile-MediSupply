@@ -179,22 +179,40 @@ class PedidosRepository {
                 try {
                     val gson = Gson()
                     val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
-                    if (errorResponse.detalle != null) {
-                        Log.e(TAG, "Error detalle: ${errorResponse.detalle}")
+                    // Use detalle if available, otherwise use error field
+                    if (errorResponse.detalle != null || errorResponse.error.isNotEmpty()) {
+                        Log.e(TAG, "Error detalle: ${errorResponse.detalle ?: errorResponse.error}")
                         // Create a detailed error message
                         val detailedMessage = buildDetailedErrorMessage(errorResponse)
                         throw Exception(detailedMessage)
                     }
                 } catch (e: Exception) {
-                    if (e.message?.contains("No se puede crear el pedido") == true || 
-                        e.message?.contains("Problemas con productos") == true) {
+                    // If this is an Exception we just threw with the error message, re-throw it
+                    if (e.message != null && (
+                        e.message!!.contains("No se puede crear el pedido") || 
+                        e.message!!.contains("Problemas con productos") ||
+                        e.message!!.contains("Vendedor") ||
+                        e.message!!.contains("no existe") ||
+                        e.message!!.isNotEmpty()
+                    )) {
                         // Re-throw with the detail message
                         throw e
                     }
-                    // If parsing fails, throw a generic error
+                }
+                
+                // If parsing failed or no error message found, try one more time to extract error
+                try {
+                    val gson = Gson()
+                    val errorResponse = gson.fromJson(errorBody, ErrorResponse::class.java)
+                    if (errorResponse.error.isNotEmpty()) {
+                        throw Exception(errorResponse.error)
+                    }
+                } catch (parseException: Exception) {
+                    // If parsing fails completely, throw a generic error
                     throw Exception("Error al crear el pedido: ${response.code()}")
                 }
-                // If no error detail found, throw generic error
+                
+                // Fallback: throw generic error
                 throw Exception("Error al crear el pedido: ${response.code()}")
             }
         } catch (e: Exception) {
@@ -210,13 +228,20 @@ class PedidosRepository {
     private fun buildDetailedErrorMessage(errorResponse: ErrorResponse): String {
         val message = StringBuilder()
         
-        // Add main error message
-        message.append(errorResponse.detalle ?: errorResponse.error)
+        // Add main error message (prefer detalle, fallback to error)
+        val mainMessage = errorResponse.detalle ?: errorResponse.error
+        if (mainMessage.isNotEmpty()) {
+            message.append(mainMessage)
+        }
         
         // Add details about problematic items
         errorResponse.itemsConProblemas?.let { items ->
             if (items.isNotEmpty()) {
-                message.append("\n\nProductos con problemas:")
+                if (message.isNotEmpty()) {
+                    message.append("\n\nProductos con problemas:")
+                } else {
+                    message.append("Productos con problemas:")
+                }
                 items.forEach { item ->
                     message.append("\n• ${item.nombre}: ${item.mensaje}")
                     if (item.problema == "no_existe_inventario") {
@@ -226,6 +251,11 @@ class PedidosRepository {
             }
         }
         
-        return message.toString()
+        // If no message was built, return a generic error
+        return if (message.isEmpty()) {
+            "Error al crear el pedido"
+        } else {
+            message.toString()
+        }
     }
 }

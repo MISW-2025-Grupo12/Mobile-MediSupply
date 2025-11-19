@@ -13,12 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
 import com.medisupplyg4.models.VisitSuggestionsResponse
+import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.delay
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -137,8 +139,9 @@ fun SellerNavigationScreen(
         }
         
         composable("order_summary") {
-            // TODO: Get vendedorId from user session
-            val vendedorId = "test-vendedor-id" // This should come from the logged-in user
+            val context = LocalContext.current
+            // Get entidad_id from user session (this is the vendedor's entidad_id)
+            val vendedorId = SessionManager.getUserId(context) ?: ""
             
             OrderSummaryScreen(
                 vendedorId = vendedorId,
