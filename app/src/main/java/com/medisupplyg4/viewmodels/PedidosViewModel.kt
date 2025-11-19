@@ -62,6 +62,7 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
 
     // Products with inventory data
     private val _productosConInventario = MutableLiveData<List<ProductoConInventario>>()
+    val productosConInventario: LiveData<List<ProductoConInventario>> = _productosConInventario
 
     // Filtered products based on search
     private val _productosFiltrados = MutableLiveData<List<ProductoConInventario>>()
