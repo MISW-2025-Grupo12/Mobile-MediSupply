@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.medisupplyg4.R
 import com.medisupplyg4.models.ClienteAPI
 import com.medisupplyg4.models.InventarioAPI
 import com.medisupplyg4.models.ItemPedido
@@ -53,6 +54,7 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
     private val repository = PedidosRepository()
     private val sseService = InventarioSSEService()
     private var sseJob: Job? = null
+    private var isSSEPaused: Boolean = false
 
     // Clients data
     private val _clientes = MutableLiveData<List<ClienteAPI>>()
@@ -190,6 +192,12 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                     Log.e(TAG, "Error in SSE stream: ${e.message}", e)
                 }
                 .collect { event ->
+                    // Skip processing if SSE is paused (e.g., during order creation)
+                    if (isSSEPaused) {
+                        Log.d(TAG, "SSE paused, skipping event: ${event.type}")
+                        return@collect
+                    }
+                    
                     when (event.type) {
                         InventarioSSEService.EventType.INVENTORY -> {
                             // Initial inventory state - update the product
@@ -215,11 +223,29 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
         sseJob?.cancel()
         sseJob = null
         sseService.disconnect()
+        isSSEPaused = false
+    }
+    
+    /**
+     * Pauses SSE updates (e.g., during order creation)
+     */
+    fun pauseSSEUpdates() {
+        isSSEPaused = true
+        Log.d(TAG, "SSE updates paused")
+    }
+    
+    /**
+     * Resumes SSE updates
+     */
+    fun resumeSSEUpdates() {
+        isSSEPaused = false
+        Log.d(TAG, "SSE updates resumed")
     }
     
     /**
      * Updates inventory for a product based on SSE event data
      * Note: Only updates products that are already in the list. New products must be loaded via loadProductosConInventario()
+     * Also removes products from cart if they become out of stock
      */
     private fun updateInventoryFromSSE(sseEvent: com.medisupplyg4.models.InventarioSSEEvent) {
         val currentProductos = _productosConInventario.value ?: emptyList()
@@ -250,7 +276,59 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
         // Re-apply filters to update the filtered list (this will show/hide products based on new stock)
         filterProductos(_searchQuery.value ?: "")
         
+        // Remove products from cart if they become out of stock or insufficient stock
+        removeOutOfStockItemsFromCart(sseEvent.productoId, sseEvent.cantidadDisponible)
+        
         Log.d(TAG, "Inventory updated for product ${sseEvent.productoId}: ${sseEvent.cantidadDisponible}")
+    }
+    
+    /**
+     * Removes items from cart if they become out of stock or have insufficient stock
+     * Only shows error messages to users who are NOT currently creating an order
+     */
+    private fun removeOutOfStockItemsFromCart(productoId: String, nuevaCantidadDisponible: Int) {
+        val currentItems = _itemsPedido.value ?: emptyList()
+        
+        // Don't process if cart is empty (e.g., after successful order creation)
+        if (currentItems.isEmpty()) {
+            Log.d(TAG, "Cart is empty, skipping cart update for product $productoId")
+            return
+        }
+        
+        val itemInCart = currentItems.find { it.producto.id == productoId }
+        val isCreatingOrder = _isCreatingOrder.value == true
+        
+        if (itemInCart != null) {
+            if (nuevaCantidadDisponible <= 0) {
+                // Product is completely out of stock, remove it
+                val updatedItems = currentItems.filter { it.producto.id != productoId }
+                _itemsPedido.value = updatedItems
+                updateTotal()
+                Log.d(TAG, "Product ${productoId} (${itemInCart.producto.nombre}) is out of stock, removed from cart")
+                
+                // Only show error message if NOT creating an order (to avoid showing to the user making the purchase)
+                if (!isCreatingOrder) {
+                    _error.value = getApplication<Application>().getString(R.string.product_out_of_stock_removed, itemInCart.producto.nombre)
+                }
+            } else if (itemInCart.cantidad > nuevaCantidadDisponible) {
+                // Product has insufficient stock, adjust quantity to available stock
+                val updatedItems = currentItems.map { item ->
+                    if (item.producto.id == productoId) {
+                        item.copy(cantidad = nuevaCantidadDisponible)
+                    } else {
+                        item
+                    }
+                }
+                _itemsPedido.value = updatedItems
+                updateTotal()
+                Log.d(TAG, "Product ${productoId} (${itemInCart.producto.nombre}) quantity adjusted from ${itemInCart.cantidad} to $nuevaCantidadDisponible (available stock)")
+                
+                // Only show error message if NOT creating an order (to avoid showing to the user making the purchase)
+                if (!isCreatingOrder) {
+                    _error.value = getApplication<Application>().getString(R.string.product_quantity_adjusted, itemInCart.producto.nombre, nuevaCantidadDisponible)
+                }
+            }
+        }
     }
 
     /**
@@ -375,6 +453,22 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 _isCreatingOrder.value = true
                 _error.value = null
 
+                // Pause SSE updates during order creation to avoid interference
+                pauseSSEUpdates()
+
+                // Clean up out of stock items before creating the order
+                cleanOutOfStockItemsFromCart()
+                
+                // Re-validate after cleaning
+                val validationErrorAfterCleanup = validarPedido()
+                if (validationErrorAfterCleanup != null) {
+                    _error.value = validationErrorAfterCleanup
+                    _isCreatingOrder.value = false
+                    // Resume SSE updates if validation fails
+                    resumeSSEUpdates()
+                    return@launch
+                }
+
                 val items = _itemsPedido.value?.map { item ->
                     com.medisupplyg4.models.ItemPedidoRequest(
                         productoId = item.producto.id,
@@ -404,6 +498,11 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 if (response != null) {
                     _success.value = true
                     Log.d(TAG, "Pedido creado exitosamente: ${response.message}")
+                    // Clear the cart immediately after successful order creation
+                    // This prevents SSE events from processing items that were just ordered
+                    _itemsPedido.value = emptyList()
+                    updateTotal()
+                    Log.d(TAG, "Cart cleared after successful order creation")
                 } else {
                     _error.value = ERROR_CREATING_ORDER
                 }
@@ -418,6 +517,9 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
                 }
             } finally {
                 _isCreatingOrder.value = false
+                // Resume SSE updates after order creation completes (success or error)
+                // Cart is already cleared if order was successful, so SSE events won't affect it
+                resumeSSEUpdates()
             }
         }
     }
@@ -445,6 +547,8 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
         // Reconnect to SSE stream to ensure we have the latest updates
         disconnectFromInventoryStream()
         connectToInventoryStream()
+        // Ensure SSE is resumed when refreshing inventory
+        resumeSSEUpdates()
     }
 
     /**
@@ -509,5 +613,61 @@ class PedidosViewModel(application: Application) : AndroidViewModel(application)
     private fun updateTotal() {
         val total = _itemsPedido.value?.sumOf { it.subtotal } ?: 0.0
         (totalPedido as MutableLiveData).value = total
+    }
+    
+    /**
+     * Removes out of stock items from cart by checking current inventory
+     */
+    private fun cleanOutOfStockItemsFromCart() {
+        val currentItems = _itemsPedido.value ?: emptyList()
+        val productosConInventario = _productosConInventario.value ?: emptyList()
+        
+        val itemsToRemove = mutableListOf<String>()
+        val itemsToAdjust = mutableMapOf<String, Int>()
+        
+        currentItems.forEach { item ->
+            val productoConInventario = productosConInventario.find { it.id == item.producto.id }
+            
+            if (productoConInventario == null) {
+                // Product not found in inventory, remove it
+                itemsToRemove.add(item.producto.id)
+                Log.d(TAG, "Product ${item.producto.id} (${item.producto.nombre}) not found in inventory, removing from cart")
+            } else if (productoConInventario.cantidadDisponible <= 0) {
+                // Product is out of stock, remove it
+                itemsToRemove.add(item.producto.id)
+                Log.d(TAG, "Product ${item.producto.id} (${item.producto.nombre}) is out of stock, removing from cart")
+            } else if (item.cantidad > productoConInventario.cantidadDisponible) {
+                // Product has insufficient stock, adjust quantity
+                itemsToAdjust[item.producto.id] = productoConInventario.cantidadDisponible
+                Log.d(TAG, "Product ${item.producto.id} (${item.producto.nombre}) has insufficient stock (requested: ${item.cantidad}, available: ${productoConInventario.cantidadDisponible}), adjusting quantity")
+            }
+        }
+        
+        if (itemsToRemove.isNotEmpty() || itemsToAdjust.isNotEmpty()) {
+            val updatedItems = currentItems
+                .filter { it.producto.id !in itemsToRemove }
+                .map { item ->
+                    itemsToAdjust[item.producto.id]?.let { newQuantity ->
+                        item.copy(cantidad = newQuantity)
+                    } ?: item
+                }
+            
+            _itemsPedido.value = updatedItems
+            updateTotal()
+            
+            if (itemsToRemove.isNotEmpty()) {
+                val removedProductNames = itemsToRemove.mapNotNull { productId ->
+                    currentItems.find { it.producto.id == productId }?.producto?.nombre
+                }
+                Log.w(TAG, "Removed ${itemsToRemove.size} out of stock items from cart: ${removedProductNames.joinToString(", ")}")
+            }
+            
+            if (itemsToAdjust.isNotEmpty()) {
+                val adjustedProductNames = itemsToAdjust.keys.mapNotNull { productId ->
+                    currentItems.find { it.producto.id == productId }?.producto?.nombre
+                }
+                Log.w(TAG, "Adjusted quantity for ${itemsToAdjust.size} items: ${adjustedProductNames.joinToString(", ")}")
+            }
+        }
     }
 }
