@@ -263,6 +263,8 @@
     <string name="validation_insufficient_inventory">Insufficient inventory available</string>
     <string name="validation_minimum_quantity">Minimum quantity is 1 unit</string>
     <string name="validation_maximum_quantity">Quantity cannot exceed available inventory</string>
+    <string name="product_out_of_stock_removed">Product %1$s is out of stock and was removed from the order</string>
+    <string name="product_quantity_adjusted">Product %1$s quantity was adjusted to %2$d (available stock)</string>
     <string name="no_products_added_to_order">No products added to order</string>
     <string name="search_clients">Search clients</string>
     <string name="no_clients_found">No clients found with the selected criteria</string>

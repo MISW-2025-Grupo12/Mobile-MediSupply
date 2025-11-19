@@ -1,11 +1,13 @@
 package com.medisupplyg4.ui.screens.seller
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.medisupplyg4.utils.SessionManager
 import com.medisupplyg4.viewmodels.PedidosViewModel
 
 /**
@@ -45,8 +47,9 @@ fun SellerOrdersNavigationScreen(
         }
         
         composable("order_summary") {
-            // TODO: Get vendedorId from user session
-            val vendedorId = "fce1183f-4bbe-40b8-9cd3-2cc2f323012c" // Using a realistic UUID format
+            val context = LocalContext.current
+            // Get entidad_id from user session (this is the vendedor's entidad_id)
+            val vendedorId = SessionManager.getUserId(context) ?: ""
             
             OrderSummaryScreen(
                 viewModel = sharedViewModel,
