@@ -30,4 +30,13 @@ interface PedidosApiService {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 20
     ): Response<PaginatedResponse<PedidoClienteAPI>>
+
+    /** Lista de pedidos por vendedor */
+    @GET("ventas/api/pedidos/")
+    suspend fun getPedidosVendedor(
+        @Header("Authorization") token: String,
+        @Query("vendedor_id") vendedorId: String,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 20
+    ): Response<PaginatedResponse<PedidoClienteAPI>>
 }
