@@ -28,8 +28,16 @@ fun SellerOrdersNavigationScreen(
             OrdersListScreen(
                 onCreateOrderClick = {
                     navController.navigate("new_order")
+                },
+                onOrderSelected = { id ->
+                    navController.navigate("order_detail/$id")
                 }
             )
+        }
+        
+        composable("order_detail/{orderId}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("orderId") ?: ""
+            SellerOrderDetailScreen(orderId = id, onBack = { navController.popBackStack() })
         }
         
         composable("new_order") {

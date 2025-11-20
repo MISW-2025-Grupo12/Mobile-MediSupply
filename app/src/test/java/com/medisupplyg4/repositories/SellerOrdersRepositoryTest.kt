@@ -17,9 +17,9 @@ import retrofit2.Response
 import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
-class ClientOrdersRepositoryTest {
+class SellerOrdersRepositoryTest {
 
-    private lateinit var repository: ClientOrdersRepository
+    private lateinit var repository: SellerOrdersRepository
     private lateinit var mockApi: PedidosApiService
 
     @Before
@@ -36,7 +36,7 @@ class ClientOrdersRepositoryTest {
         mockkObject(NetworkClient)
         every { NetworkClient.pedidosApiService } returns mockApi
 
-        repository = ClientOrdersRepository()
+        repository = SellerOrdersRepository()
     }
 
     @After
@@ -60,15 +60,15 @@ class ClientOrdersRepositoryTest {
     }
 
     @Test
-    fun `getPedidosCliente returns mapped list on success`() = runTest {
+    fun `getPedidosVendedor returns mapped list on success`() = runTest {
         // Given
         val token = "tkn"
-        val clienteId = "client-1"
+        val vendedorId = "vend-1"
         val apiResponse = createPaginatedResponse(
             PedidoClienteAPI(
                 id = "abc123456",
-                vendedorId = "vend-1",
-                clienteId = clienteId,
+                vendedorId = vendedorId,
+                clienteId = "client-1",
                 estado = "confirmado",
                 total = 1000.0,
                 fechaCreacion = "2025-10-29T02:06:19.651168",
@@ -84,10 +84,10 @@ class ClientOrdersRepositoryTest {
                 )
             )
         )
-        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+        coEvery { mockApi.getPedidosVendedor("Bearer $token", vendedorId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
+        val result = repository.getPedidosVendedor(token, vendedorId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -102,25 +102,25 @@ class ClientOrdersRepositoryTest {
     }
 
     @Test
-    fun `getPedidosCliente correctly parses fecha_creacion from ISO format`() = runTest {
+    fun `getPedidosVendedor correctly parses fecha_creacion from ISO format`() = runTest {
         // Given
         val token = "tkn"
-        val clienteId = "client-1"
+        val vendedorId = "vend-1"
         val apiResponse = createPaginatedResponse(
             PedidoClienteAPI(
                 id = "test123",
-                vendedorId = "vend-1",
-                clienteId = clienteId,
+                vendedorId = vendedorId,
+                clienteId = "client-1",
                 estado = "entregado",
                 total = 2000.0,
                 fechaCreacion = "2025-09-15T10:30:45.123456",
                 items = emptyList()
             )
         )
-        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+        coEvery { mockApi.getPedidosVendedor("Bearer $token", vendedorId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
+        val result = repository.getPedidosVendedor(token, vendedorId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -130,25 +130,25 @@ class ClientOrdersRepositoryTest {
     }
 
     @Test
-    fun `getPedidosCliente uses current date as fallback when fecha_creacion is invalid`() = runTest {
+    fun `getPedidosVendedor uses current date as fallback when fecha_creacion is invalid`() = runTest {
         // Given
         val token = "tkn"
-        val clienteId = "client-1"
+        val vendedorId = "vend-1"
         val apiResponse = createPaginatedResponse(
             PedidoClienteAPI(
                 id = "test123",
-                vendedorId = "vend-1",
-                clienteId = clienteId,
+                vendedorId = vendedorId,
+                clienteId = "client-1",
                 estado = "borrador",
                 total = 500.0,
                 fechaCreacion = "invalid-date-format",
                 items = emptyList()
             )
         )
-        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+        coEvery { mockApi.getPedidosVendedor("Bearer $token", vendedorId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
+        val result = repository.getPedidosVendedor(token, vendedorId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -160,14 +160,14 @@ class ClientOrdersRepositoryTest {
     }
 
     @Test
-    fun `getPedidosCliente returns failure on HTTP error`() = runTest {
+    fun `getPedidosVendedor returns failure on HTTP error`() = runTest {
         // Given
         val token = "tkn"
-        val clienteId = "client-1"
-        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.error(403, okhttp3.ResponseBody.create(null, ""))
+        val vendedorId = "vend-1"
+        coEvery { mockApi.getPedidosVendedor("Bearer $token", vendedorId, 1, 20) } returns Response.error(403, okhttp3.ResponseBody.create(null, ""))
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
+        val result = repository.getPedidosVendedor(token, vendedorId, "Pedido")
 
         // Then
         assertTrue(result.isFailure)
@@ -175,26 +175,26 @@ class ClientOrdersRepositoryTest {
     }
 
     @Test
-    fun `getPedidosCliente uses custom order number prefix`() = runTest {
+    fun `getPedidosVendedor uses custom order number prefix`() = runTest {
         // Given
         val token = "tkn"
-        val clienteId = "client-1"
+        val vendedorId = "vend-1"
         val customPrefix = "Order"
         val apiResponse = createPaginatedResponse(
             PedidoClienteAPI(
                 id = "test123456",
-                vendedorId = "vend-1",
-                clienteId = clienteId,
+                vendedorId = vendedorId,
+                clienteId = "client-1",
                 estado = "confirmado",
                 total = 1000.0,
                 fechaCreacion = "2025-10-29T02:06:19.651168",
                 items = emptyList()
             )
         )
-        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+        coEvery { mockApi.getPedidosVendedor("Bearer $token", vendedorId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId, customPrefix)
+        val result = repository.getPedidosVendedor(token, vendedorId, customPrefix)
 
         // Then
         assertTrue(result.isSuccess)
@@ -203,3 +203,4 @@ class ClientOrdersRepositoryTest {
         assertEquals("Order test12", order!!.number) // custom prefix + id.take(6)
     }
 }
+

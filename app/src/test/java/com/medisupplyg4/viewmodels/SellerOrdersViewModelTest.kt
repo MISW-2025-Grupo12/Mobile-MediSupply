@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer
 import com.medisupplyg4.models.OrderItemUI
 import com.medisupplyg4.models.OrderStatus
 import com.medisupplyg4.models.OrderUI
-import com.medisupplyg4.repositories.ClientOrdersRepository
+import com.medisupplyg4.repositories.SellerOrdersRepository
 import com.medisupplyg4.utils.SessionManager
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -24,14 +24,14 @@ import org.junit.Assert.*
 import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
-class ClientOrdersViewModelTest {
+class SellerOrdersViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: ClientOrdersViewModel
+    private lateinit var viewModel: SellerOrdersViewModel
     private lateinit var mockApplication: Application
-    private lateinit var mockRepository: ClientOrdersRepository
+    private lateinit var mockRepository: SellerOrdersRepository
     private val testDispatcher = StandardTestDispatcher()
 
     private val testOrders = listOf(
@@ -74,7 +74,7 @@ class ClientOrdersViewModelTest {
         // Mock SessionManager
         mockkObject(SessionManager)
         every { SessionManager.getToken(any()) } returns "test_token"
-        every { SessionManager.getUserId(any()) } returns "client-1"
+        every { SessionManager.getUserId(any()) } returns "vendedor-1"
 
         // Mock Application getString
         every { mockApplication.getString(com.medisupplyg4.R.string.order_number_prefix) } returns "Pedido"
@@ -87,8 +87,8 @@ class ClientOrdersViewModelTest {
         every { android.util.Log.w(any<String>(), any<String>()) } returns 0
 
         // Mock repository using reflection since it's private
-        viewModel = ClientOrdersViewModel(mockApplication)
-        val repositoryField = ClientOrdersViewModel::class.java.getDeclaredField("repository")
+        viewModel = SellerOrdersViewModel(mockApplication)
+        val repositoryField = SellerOrdersViewModel::class.java.getDeclaredField("repository")
         repositoryField.isAccessible = true
         repositoryField.set(viewModel, mockRepository)
     }
@@ -141,7 +141,7 @@ class ClientOrdersViewModelTest {
         val unorderedOrders = listOf(testOrders[0], testOrders[1], testOrders[2])
         
         coEvery { 
-            mockRepository.getPedidosCliente(any(), any(), any(), any(), any()) 
+            mockRepository.getPedidosVendedor(any(), any(), any(), any(), any()) 
         } returns Result.success(unorderedOrders)
 
         val ordersObserver = mockk<Observer<List<OrderUI>>>(relaxed = true)
@@ -168,7 +168,7 @@ class ClientOrdersViewModelTest {
     @Test
     fun `applyDateFilter should filter orders by date range`() {
         // Given
-        val ordersField = ClientOrdersViewModel::class.java.getDeclaredField("_orders")
+        val ordersField = SellerOrdersViewModel::class.java.getDeclaredField("_orders")
         ordersField.isAccessible = true
         val mutableOrders = ordersField.get(viewModel) as androidx.lifecycle.MutableLiveData<List<OrderUI>>
         mutableOrders.value = testOrders.sortedBy { it.createdAt }
@@ -194,7 +194,7 @@ class ClientOrdersViewModelTest {
     @Test
     fun `applyDateFilter should filter orders from start date only`() {
         // Given
-        val ordersField = ClientOrdersViewModel::class.java.getDeclaredField("_orders")
+        val ordersField = SellerOrdersViewModel::class.java.getDeclaredField("_orders")
         ordersField.isAccessible = true
         val mutableOrders = ordersField.get(viewModel) as androidx.lifecycle.MutableLiveData<List<OrderUI>>
         mutableOrders.value = testOrders.sortedBy { it.createdAt }
@@ -214,7 +214,7 @@ class ClientOrdersViewModelTest {
     @Test
     fun `applyDateFilter should return all orders when no date filter is set`() {
         // Given
-        val ordersField = ClientOrdersViewModel::class.java.getDeclaredField("_orders")
+        val ordersField = SellerOrdersViewModel::class.java.getDeclaredField("_orders")
         ordersField.isAccessible = true
         val mutableOrders = ordersField.get(viewModel) as androidx.lifecycle.MutableLiveData<List<OrderUI>>
         mutableOrders.value = testOrders.sortedBy { it.createdAt }
@@ -231,7 +231,7 @@ class ClientOrdersViewModelTest {
     @Test
     fun `applyDateFilter should maintain ascending order after filtering`() {
         // Given
-        val ordersField = ClientOrdersViewModel::class.java.getDeclaredField("_orders")
+        val ordersField = SellerOrdersViewModel::class.java.getDeclaredField("_orders")
         ordersField.isAccessible = true
         val mutableOrders = ordersField.get(viewModel) as androidx.lifecycle.MutableLiveData<List<OrderUI>>
         mutableOrders.value = testOrders.sortedBy { it.createdAt }
@@ -319,7 +319,7 @@ class ClientOrdersViewModelTest {
         // Given
         val exception = Exception("Repository error")
         coEvery { 
-            mockRepository.getPedidosCliente(any(), any(), any(), any(), any()) 
+            mockRepository.getPedidosVendedor(any(), any(), any(), any(), any()) 
         } returns Result.failure(exception)
 
         val ordersObserver = mockk<Observer<List<OrderUI>>>(relaxed = true)
@@ -339,7 +339,7 @@ class ClientOrdersViewModelTest {
     fun `loadOrders should set loading state correctly`() = runTest {
         // Given
         coEvery { 
-            mockRepository.getPedidosCliente(any(), any(), any(), any(), any()) 
+            mockRepository.getPedidosVendedor(any(), any(), any(), any(), any()) 
         } returns Result.success(emptyList())
 
         val isLoadingObserver = mockk<Observer<Boolean>>(relaxed = true)

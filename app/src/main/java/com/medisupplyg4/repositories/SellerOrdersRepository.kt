@@ -10,22 +10,22 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class ClientOrdersRepository {
+class SellerOrdersRepository {
 
-    companion object { private const val TAG = "ClientOrdersRepository" }
+    companion object { private const val TAG = "SellerOrdersRepository" }
 
     private val pedidosApi = NetworkClient.pedidosApiService
 
-    suspend fun getPedidosCliente(
+    suspend fun getPedidosVendedor(
         token: String,
-        clienteId: String,
+        vendedorId: String,
         orderNumberPrefix: String = "Pedido",
         page: Int = 1,
         pageSize: Int = 20
     ): Result<List<OrderUI>> {
         return try {
-            Log.d(TAG, "Obteniendo pedidos del cliente $clienteId (página $page, tamaño $pageSize)")
-            val resp = pedidosApi.getPedidosCliente("Bearer $token", clienteId, page, pageSize)
+            Log.d(TAG, "Obteniendo pedidos del vendedor $vendedorId (página $page, tamaño $pageSize)")
+            val resp = pedidosApi.getPedidosVendedor("Bearer $token", vendedorId, page, pageSize)
             if (resp.isSuccessful) {
                 val body = resp.body()
                 val orders = body?.items?.map { it.toOrderUI(orderNumberPrefix) } ?: emptyList()
@@ -34,7 +34,7 @@ class ClientOrdersRepository {
                 Result.failure(Exception("HTTP_${resp.code()}"))
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error al obtener pedidos de cliente", e)
+            Log.e(TAG, "Error al obtener pedidos de vendedor", e)
             Result.failure(e)
         }
     }
@@ -58,7 +58,7 @@ private fun PedidoClienteAPI.toOrderUI(orderNumberPrefix: String = "Pedido"): Or
         )
         dateTime.toLocalDate()
     } catch (e: Exception) {
-        Log.w("ClientOrdersRepository", "Error parseando fecha_creacion: $fechaCreacion", e)
+        Log.w("SellerOrdersRepository", "Error parseando fecha_creacion: $fechaCreacion", e)
         LocalDate.now() // Fallback a fecha actual si hay error
     }
     
@@ -78,3 +78,4 @@ private fun mapBackendStatus(backend: String): OrderStatus = when (backend.lower
     "entregado" -> OrderStatus.ENTREGADO
     else -> OrderStatus.BORRADOR
 }
+

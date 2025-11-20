@@ -8,17 +8,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.R
 import com.medisupplyg4.models.OrderUI
-import com.medisupplyg4.repositories.ClientOrdersRepository
+import com.medisupplyg4.repositories.SellerOrdersRepository
 import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-class ClientOrdersViewModel(application: Application) : AndroidViewModel(application) {
+class SellerOrdersViewModel(application: Application) : AndroidViewModel(application) {
 
-    companion object { private const val TAG = "ClientOrdersVM" }
+    companion object { private const val TAG = "SellerOrdersVM" }
 
-    private val repository = ClientOrdersRepository()
+    private val repository = SellerOrdersRepository()
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -57,9 +57,9 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
             _isLoading.value = true
             try {
                 val token = SessionManager.getToken(getApplication()) ?: ""
-                val clienteId = SessionManager.getUserId(getApplication()) ?: ""
+                val vendedorId = SessionManager.getUserId(getApplication()) ?: ""
                 val orderPrefix = getApplication<Application>().getString(R.string.order_number_prefix)
-                val result = repository.getPedidosCliente(token, clienteId, orderPrefix, page, pageSize)
+                val result = repository.getPedidosVendedor(token, vendedorId, orderPrefix, page, pageSize)
                 if (result.isSuccess) {
                     _orders.value = result.getOrNull()?.sortedBy { it.createdAt } ?: emptyList()
                 } else {
@@ -109,3 +109,4 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
         _filteredOrders.value = filtered.sortedBy { it.createdAt }
     }
 }
+

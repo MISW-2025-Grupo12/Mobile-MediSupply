@@ -356,6 +356,7 @@
     <string name="orders_clear">Limpiar</string>
     <string name="orders_quantity">Cantidad: %1$d</string>
     <string name="orders_subtotal">Subtotal: %1$s</string>
+    <string name="order_number_prefix">Pedido</string>
     
     <!-- Evidence Upload -->
     <string name="upload_evidence">Subir evidencia</string>
