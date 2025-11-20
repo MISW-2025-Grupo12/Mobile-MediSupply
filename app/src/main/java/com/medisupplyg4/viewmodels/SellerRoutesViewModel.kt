@@ -128,7 +128,8 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
                     fechaInicio = startDate,
                     fechaFin = endDate,
                     page = 1,
-                    pageSize = 10
+                    pageSize = 10,
+                    context = getApplication()
                 )
                 
                 if (result.isSuccess) {
@@ -182,7 +183,8 @@ class SellerRoutesViewModel(application: Application) : AndroidViewModel(applica
                     fechaInicio = startDate,
                     fechaFin = endDate,
                     page = nextPage,
-                    pageSize = 10
+                    pageSize = 10,
+                    context = getApplication()
                 )
                 
                 if (result.isSuccess) {

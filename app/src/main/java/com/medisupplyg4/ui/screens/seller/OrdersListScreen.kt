@@ -71,11 +71,11 @@ fun OrdersListScreen(
                 Column(modifier = Modifier.weight(1f)) {
                     val startText = startDate?.toString() ?: "-"
                     val endText = endDate?.toString() ?: "-"
-                    Text(
+            Text(
                         text = stringResource(R.string.orders_date_range, startText, endText),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { showDatePicker = true }) {

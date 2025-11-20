@@ -57,6 +57,25 @@
     <string name="delivery_estimated_time">Entrega: %1$s</string>
     <string name="delivery_products">Productos:</string>
     
+    <!-- Route Detail -->
+    <string name="route_detail_title">Detalle de Ruta</string>
+    <string name="route_date">Fecha de ruta:</string>
+    <string name="route_status">Estado:</string>
+    <string name="route_warehouse">Bodega:</string>
+    <string name="route_deliveries">Entregas (%1$d)</string>
+    <string name="route_delivery">Entrega</string>
+    <string name="route_order_total">Total pedido:</string>
+    <string name="route_order_status">Estado pedido:</string>
+    <string name="route_products">Productos del pedido</string>
+    <string name="route_loading">Cargando ruta...</string>
+    <string name="route_error">Error al cargar la ruta</string>
+    <string name="route_not_found">Ruta no encontrada</string>
+    
+    <!-- Route Status -->
+    <string name="route_status_pendiente">Pendiente</string>
+    <string name="route_status_en_proceso">En proceso</string>
+    <string name="route_status_completada">Completada</string>
+    
     <!-- Profile Screen -->
     <string name="deliveries_today">Entregas hoy</string>
     <string name="rating">Calificación</string>
@@ -331,6 +350,7 @@
     <string name="error_passwords_no_match">Las contraseñas no coinciden</string>
     <string name="error_server_empty_response">Respuesta vacía del servidor</string>
     <string name="error_server_error">Error del servidor: %1$d - %2$s</string>
+    <string name="error_http_code">HTTP_%1$d</string>
     <string name="error_connection_error">Error de conexión: %1$s</string>
     <string name="error_token_not_found">No se encontró token de autenticación</string>
     <string name="error_load_deliveries">Error al cargar entregas: %1$d</string>

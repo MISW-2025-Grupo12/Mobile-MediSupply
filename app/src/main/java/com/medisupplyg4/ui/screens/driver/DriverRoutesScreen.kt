@@ -26,7 +26,10 @@ import com.medisupplyg4.R
 @Composable
 fun DriverRoutesScreen(
     viewModel: DeliveryRouteViewModel = viewModel(),
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    onRouteClick: (String) -> Unit = { rutaId ->
+        navController.navigate("route_detail/$rutaId")
+    }
 ) {
     // Usar el ViewModel real
     val deliveries by viewModel.deliveries.observeAsState(emptyList())
@@ -111,10 +114,20 @@ fun DriverRoutesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            groupedDeliveries.forEach { (_, dayDeliveries) ->
+                            groupedDeliveries.forEach { (date, dayDeliveries) ->
                                 item {
                                     DeliveryGroupedByDay(
-                                        deliveries = dayDeliveries
+                                        deliveries = dayDeliveries,
+                                        onDayClick = { selectedDate ->
+                                            // Navegar al detalle de la ruta de ese día
+                                            val fechaStr = selectedDate.toString()
+                                            onRouteClick(fechaStr)
+                                        },
+                                        onDeliveryClick = { delivery ->
+                                            // Navegar al detalle de la ruta del día de esta entrega
+                                            val fechaStr = delivery.fechaEntrega.toLocalDate().toString()
+                                            onRouteClick(fechaStr)
+                                        }
                                     )
                                 }
                             }
@@ -134,10 +147,20 @@ fun DriverRoutesScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             contentPadding = PaddingValues(vertical = 16.dp)
                         ) {
-                            groupedDeliveries.forEach { (_, dayDeliveries) ->
+                            groupedDeliveries.forEach { (date, dayDeliveries) ->
                                 item {
                                     DeliveryGroupedByDay(
-                                        deliveries = dayDeliveries
+                                        deliveries = dayDeliveries,
+                                        onDayClick = { selectedDate ->
+                                            // Navegar al detalle de la ruta de ese día
+                                            val fechaStr = selectedDate.toString()
+                                            onRouteClick(fechaStr)
+                                        },
+                                        onDeliveryClick = { delivery ->
+                                            // Navegar al detalle de la ruta del día de esta entrega
+                                            val fechaStr = delivery.fechaEntrega.toLocalDate().toString()
+                                            onRouteClick(fechaStr)
+                                        }
                                     )
                                 }
                             }
