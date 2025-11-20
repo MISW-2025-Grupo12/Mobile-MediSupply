@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import com.medisupplyg4.R
 import com.medisupplyg4.config.ApiConfig
 import com.medisupplyg4.models.PaginatedResponse
 import com.medisupplyg4.models.SellerAPI
@@ -133,7 +134,8 @@ class SellerRepository {
         fechaInicio: LocalDate,
         fechaFin: LocalDate,
         page: Int = 1,
-        pageSize: Int = 10
+        pageSize: Int = 10,
+        context: Context
     ): Result<PaginatedResponse<VisitAPI>> {
         return try {
             val fechaInicioStr = fechaInicio.format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -158,11 +160,13 @@ class SellerRepository {
                     Result.success(paginatedResponse)
                 } else {
                     Log.e(TAG, "Respuesta vacía al obtener visitas paginadas")
-                    Result.failure(Exception("Respuesta vacía del servidor"))
+                    val errorMessage = context.getString(R.string.error_server_empty_response)
+                    Result.failure(Exception(errorMessage))
                 }
             } else {
                 Log.e(TAG, "Error al obtener visitas paginadas: ${response.code()} - ${response.message()}")
-                Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
+                val errorMessage = context.getString(R.string.error_server_error, response.code(), response.message() ?: "")
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al obtener visitas paginadas", e)

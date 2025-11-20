@@ -1,11 +1,13 @@
 package com.medisupplyg4.network
 
 import com.medisupplyg4.models.PaginatedResponse
+import com.medisupplyg4.models.RouteDetail
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.models.SimpleDeliveryResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -31,4 +33,25 @@ interface DeliveryApiService {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 100
     ): Response<PaginatedResponse<SimpleDeliveryResponse>>
+    
+    /**
+     * Obtiene el detalle de una ruta por ID
+     */
+    @GET("rutas/{ruta_id}")
+    suspend fun getRouteDetail(
+        @Header("Authorization") token: String,
+        @Path("ruta_id") rutaId: String
+    ): Response<RouteDetail>
+    
+    /**
+     * Obtiene las rutas por fecha
+     * Nota: El backend devuelve un array directo, no un objeto paginado
+     */
+    @GET("rutas")
+    suspend fun getRoutesByDate(
+        @Header("Authorization") token: String,
+        @Query("fecha_ruta") fechaRuta: String,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 20
+    ): Response<List<RouteDetail>>
 }

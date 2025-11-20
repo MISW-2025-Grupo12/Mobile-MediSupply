@@ -57,6 +57,25 @@
     <string name="delivery_estimated_time">Delivery: %1$s</string>
     <string name="delivery_products">Products:</string>
     
+    <!-- Route Detail -->
+    <string name="route_detail_title">Route Detail</string>
+    <string name="route_date">Route date:</string>
+    <string name="route_status">Status:</string>
+    <string name="route_warehouse">Warehouse:</string>
+    <string name="route_deliveries">Deliveries (%1$d)</string>
+    <string name="route_delivery">Delivery</string>
+    <string name="route_order_total">Order total:</string>
+    <string name="route_order_status">Order status:</string>
+    <string name="route_products">Order products</string>
+    <string name="route_loading">Loading route...</string>
+    <string name="route_error">Error loading route</string>
+    <string name="route_not_found">Route not found</string>
+    
+    <!-- Route Status -->
+    <string name="route_status_pendiente">Pending</string>
+    <string name="route_status_en_proceso">In Progress</string>
+    <string name="route_status_completada">Completed</string>
+    
     <!-- Profile Screen -->
     <string name="deliveries_today">Deliveries today</string>
     <string name="rating">Rating</string>
@@ -328,6 +347,7 @@
     <string name="error_passwords_no_match">Passwords do not match</string>
     <string name="error_server_empty_response">Empty response from server</string>
     <string name="error_server_error">Server error: %1$d - %2$s</string>
+    <string name="error_http_code">HTTP_%1$d</string>
     <string name="error_connection_error">Connection error: %1$s</string>
     <string name="error_token_not_found">Authentication token not found</string>
     <string name="error_load_deliveries">Error loading deliveries: %1$d</string>

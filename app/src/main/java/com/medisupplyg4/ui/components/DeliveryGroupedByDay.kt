@@ -1,6 +1,7 @@
 package com.medisupplyg4.ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -20,6 +21,7 @@ import java.time.LocalDate
 fun DeliveryGroupedByDay(
     deliveries: List<SimpleDelivery>,
     onDeliveryClick: (SimpleDelivery) -> Unit = {},
+    onDayClick: ((LocalDate) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     // Agrupar entregas por día
@@ -34,7 +36,10 @@ fun DeliveryGroupedByDay(
     ) {
         groupedDeliveries.forEach { (date, dayDeliveries) ->
             // Header del día
-            DayHeader(date = date)
+            DayHeader(
+                date = date,
+                onClick = onDayClick?.let { { it(date) } }
+            )
             
             // Espaciado adicional
             Spacer(modifier = Modifier.height(8.dp))
@@ -54,15 +59,21 @@ fun DeliveryGroupedByDay(
 @Composable
 private fun DayHeader(
     date: LocalDate,
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val today = LocalDate.now()
     val isToday = date == today
     
+    val cardModifier = if (onClick != null) {
+        modifier.fillMaxWidth().clickable(onClick = onClick)
+    } else {
+        modifier.fillMaxWidth()
+    }
+    
     Card(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = cardModifier
             .border(
                 width = 1.dp,
                 color = if (isToday) MaterialTheme.colorScheme.primary
