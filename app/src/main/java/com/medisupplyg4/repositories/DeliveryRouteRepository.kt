@@ -3,6 +3,7 @@ package com.medisupplyg4.repositories
 import android.app.Application
 import android.util.Log
 import com.medisupplyg4.models.ClienteAPI
+import com.medisupplyg4.models.RouteDetail
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.network.NetworkClient
@@ -19,7 +20,51 @@ class DeliveryRouteRepository() {
     }
     
     /**
-     * Obtiene entregas según el período seleccionado
+     * Obtiene rutas según el período seleccionado
+     */
+    suspend fun getRoutes(token: String, repartidorId: String, selectedDate: LocalDate, selectedPeriod: RoutePeriod): List<RouteDetail> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "Obteniendo rutas para repartidor $repartidorId")
+                
+                val response = NetworkClient.deliveryApiService.getRoutesByRepartidor(
+                    token = "Bearer $token",
+                    repartidorId = repartidorId
+                )
+                
+                if (response.isSuccessful) {
+                    val routes = response.body() ?: emptyList()
+                    Log.d(TAG, "Datos recibidos: ${routes.size} rutas")
+                    
+                    // Filtrar rutas según el período seleccionado
+                    val (fechaInicio, fechaFin) = calculateDateRange(selectedDate, selectedPeriod)
+                    val fechaInicioDate = LocalDate.parse(fechaInicio, DateTimeFormatter.ISO_LOCAL_DATE)
+                    val fechaFinDate = LocalDate.parse(fechaFin, DateTimeFormatter.ISO_LOCAL_DATE)
+                    
+                    val filteredRoutes = routes.filter { route ->
+                        val fechaRuta = route.fechaRutaLocalDate
+                        !fechaRuta.isBefore(fechaInicioDate) && !fechaRuta.isAfter(fechaFinDate)
+                    }
+                    
+                    Log.d(TAG, "Rutas filtradas: ${filteredRoutes.size} rutas en el período seleccionado")
+                    filteredRoutes
+                } else {
+                    Log.w(TAG, "Error del backend: ${response.code()}")
+                    Log.w(TAG, "Response body: ${response.errorBody()?.string()}")
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                // Solo logear errores reales, no cancelaciones
+                if (e !is kotlinx.coroutines.CancellationException) {
+                    Log.e(TAG, "Error de red: ${e.message}", e)
+                }
+                emptyList()
+            }
+        }
+    }
+    
+    /**
+     * Obtiene entregas según el período seleccionado (método legacy, mantenido para compatibilidad)
      */
     suspend fun getDeliveries(token: String, selectedDate: LocalDate, selectedPeriod: RoutePeriod, page: Int = 1, pageSize: Int = 20): List<SimpleDelivery> {
         return withContext(Dispatchers.IO) {

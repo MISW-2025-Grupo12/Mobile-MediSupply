@@ -92,5 +92,14 @@ class RouteDetailViewModel(application: Application) : AndroidViewModel(applicat
     fun clearError() {
         _error.value = null
     }
+
+    /**
+     * Establece el detalle de la ruta directamente sin hacer petición
+     */
+    fun setRouteDetail(routeDetail: RouteDetail) {
+        _routeDetail.value = routeDetail
+        _isLoading.value = false
+        _error.value = null
+    }
 }
 

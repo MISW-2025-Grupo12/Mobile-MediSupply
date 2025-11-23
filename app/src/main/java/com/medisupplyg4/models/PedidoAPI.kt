@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Model to represent a complete order request
  */
 data class PedidoCompletoRequest(
-    @SerializedName("entidad_id") val vendedorId: String,
+    @SerializedName("vendedor_id") val vendedorId: String,
     @SerializedName("cliente_id") val clienteId: String,
     val items: List<ItemPedidoRequest>
 )

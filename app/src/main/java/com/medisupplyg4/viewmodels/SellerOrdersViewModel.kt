@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.R
+import com.medisupplyg4.models.ClienteAPI
 import com.medisupplyg4.models.OrderUI
+import com.medisupplyg4.repositories.ClientesRepository
 import com.medisupplyg4.repositories.SellerOrdersRepository
 import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ class SellerOrdersViewModel(application: Application) : AndroidViewModel(applica
     companion object { private const val TAG = "SellerOrdersVM" }
 
     private val repository = SellerOrdersRepository()
+    private val clientesRepository = ClientesRepository()
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,6 +37,23 @@ class SellerOrdersViewModel(application: Application) : AndroidViewModel(applica
 
     private val _selectedEndDate = MutableLiveData<LocalDate?>(null)
     val selectedEndDate: LiveData<LocalDate?> = _selectedEndDate
+
+    // Detalle del pedido
+    private val _orderDetail = MutableLiveData<OrderUI?>()
+    val orderDetail: LiveData<OrderUI?> = _orderDetail
+
+    private val _isLoadingDetail = MutableLiveData(false)
+    val isLoadingDetail: LiveData<Boolean> = _isLoadingDetail
+
+    // Cliente del pedido
+    private val _cliente = MutableLiveData<ClienteAPI?>()
+    val cliente: LiveData<ClienteAPI?> = _cliente
+
+    private val _isLoadingCliente = MutableLiveData(false)
+    val isLoadingCliente: LiveData<Boolean> = _isLoadingCliente
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     init {
         // Establecer filtro por defecto: semana actual (lunes a domingo)
@@ -107,6 +127,58 @@ class SellerOrdersViewModel(application: Application) : AndroidViewModel(applica
             else -> list
         }
         _filteredOrders.value = filtered.sortedBy { it.createdAt }
+    }
+
+    /**
+     * Carga el detalle de un pedido por ID
+     */
+    fun loadOrderDetail(pedidoId: String) {
+        viewModelScope.launch {
+            _isLoadingDetail.value = true
+            _error.value = null
+            try {
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val orderPrefix = getApplication<Application>().getString(R.string.order_number_prefix)
+                val result = repository.getPedidoDetail(token, pedidoId, orderPrefix)
+                if (result.isSuccess) {
+                    val (order, clienteId) = result.getOrNull() ?: return@launch
+                    _orderDetail.value = order
+                    // Cargar información del cliente
+                    loadCliente(clienteId)
+                } else {
+                    val errorMsg = result.exceptionOrNull()?.message ?: "Error al cargar el detalle del pedido"
+                    _error.value = errorMsg
+                    Log.e(TAG, "Error cargando detalle del pedido: $errorMsg")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Excepción cargando detalle del pedido", e)
+                _error.value = e.message ?: "Error desconocido"
+            } finally {
+                _isLoadingDetail.value = false
+            }
+        }
+    }
+
+    /**
+     * Carga la información del cliente por ID
+     */
+    fun loadCliente(clienteId: String) {
+        viewModelScope.launch {
+            _isLoadingCliente.value = true
+            try {
+                val token = SessionManager.getToken(getApplication()) ?: ""
+                val result = clientesRepository.getClienteById(token, clienteId)
+                if (result.isSuccess) {
+                    _cliente.value = result.getOrNull()
+                } else {
+                    Log.e(TAG, "Error cargando cliente: ${result.exceptionOrNull()?.message}")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Excepción cargando cliente", e)
+            } finally {
+                _isLoadingCliente.value = false
+            }
+        }
     }
 }
 

@@ -38,6 +38,33 @@ class SellerOrdersRepository {
             Result.failure(e)
         }
     }
+
+    suspend fun getPedidoDetail(
+        token: String,
+        pedidoId: String,
+        orderNumberPrefix: String = "Pedido"
+    ): Result<Pair<OrderUI, String>> {
+        return try {
+            Log.d(TAG, "Obteniendo detalle del pedido $pedidoId")
+            val resp = pedidosApi.getPedidoDetail("Bearer $token", pedidoId)
+            if (resp.isSuccessful) {
+                val pedido = resp.body()
+                if (pedido != null) {
+                    val orderUI = pedido.toOrderUI(orderNumberPrefix)
+                    val clienteId = pedido.clienteId
+                    Log.d(TAG, "Detalle del pedido obtenido exitosamente")
+                    Result.success(Pair(orderUI, clienteId))
+                } else {
+                    Result.failure(Exception("Respuesta vacía del servidor"))
+                }
+            } else {
+                Result.failure(Exception("HTTP_${resp.code()}"))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener detalle del pedido", e)
+            Result.failure(e)
+        }
+    }
 }
 
 private fun PedidoClienteAPI.toOrderUI(orderNumberPrefix: String = "Pedido"): OrderUI {

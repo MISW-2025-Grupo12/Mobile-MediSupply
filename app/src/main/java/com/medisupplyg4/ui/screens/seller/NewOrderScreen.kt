@@ -69,6 +69,11 @@ fun NewOrderScreen(
         }
     }
 
+    // Load clients when entering the screen
+    LaunchedEffect(Unit) {
+        viewModel.loadClientes()
+    }
+
     // Observe error changes
     LaunchedEffect(error) {
         if (error != null) {
