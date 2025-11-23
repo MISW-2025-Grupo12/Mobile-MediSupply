@@ -57,6 +57,25 @@
     <string name="delivery_estimated_time">Delivery: %1$s</string>
     <string name="delivery_products">Products:</string>
     
+    <!-- Route Detail -->
+    <string name="route_detail_title">Route Detail</string>
+    <string name="route_date">Route date:</string>
+    <string name="route_status">Status:</string>
+    <string name="route_warehouse">Warehouse:</string>
+    <string name="route_deliveries">Deliveries (%1$d)</string>
+    <string name="route_delivery">Delivery</string>
+    <string name="route_order_total">Order total:</string>
+    <string name="route_order_status">Order status:</string>
+    <string name="route_products">Order products</string>
+    <string name="route_loading">Loading route...</string>
+    <string name="route_error">Error loading route</string>
+    <string name="route_not_found">Route not found</string>
+    
+    <!-- Route Status -->
+    <string name="route_status_pendiente">Pending</string>
+    <string name="route_status_en_proceso">In Progress</string>
+    <string name="route_status_completada">Completed</string>
+    
     <!-- Profile Screen -->
     <string name="deliveries_today">Deliveries today</string>
     <string name="rating">Rating</string>
@@ -103,6 +122,11 @@
     <string name="customer_id">Customer %1$s</string>
     <string name="product_id">Product: %1$s</string>
     <string name="delivery_date">Delivery: %1$s</string>
+    <string name="delivery_detail_title">Delivery Details</string>
+    <string name="delivery_information">Delivery Information</string>
+    <string name="order_information">Order Information</string>
+    <string name="order_id">ID: %1$s</string>
+    <string name="order_confirmation_date">Confirmation Date</string>
     
     <!-- Empty States -->
     <string name="no_routes_available">No routes available</string>
@@ -180,7 +204,8 @@
     <!-- Working Routes Screen -->
     <string name="screen_title_routes">Routes</string>
     <string name="loading_deliveries">Loading deliveries…</string>
-    <string name="no_deliveries_found">No deliveries found for the selected date.</string>
+        <string name="no_deliveries_found">No deliveries found.</string>
+        <string name="dismiss">Dismiss</string>
     
     <!-- Date Header -->
     <string name="date_header_today">Today</string>
@@ -257,6 +282,8 @@
     <string name="validation_insufficient_inventory">Insufficient inventory available</string>
     <string name="validation_minimum_quantity">Minimum quantity is 1 unit</string>
     <string name="validation_maximum_quantity">Quantity cannot exceed available inventory</string>
+    <string name="product_out_of_stock_removed">Product %1$s is out of stock and was removed from the order</string>
+    <string name="product_quantity_adjusted">Product %1$s quantity was adjusted to %2$d (available stock)</string>
     <string name="no_products_added_to_order">No products added to order</string>
     <string name="search_clients">Search clients</string>
     <string name="no_clients_found">No clients found with the selected criteria</string>
@@ -320,7 +347,10 @@
     <string name="error_passwords_no_match">Passwords do not match</string>
     <string name="error_server_empty_response">Empty response from server</string>
     <string name="error_server_error">Server error: %1$d - %2$s</string>
+    <string name="error_http_code">HTTP_%1$d</string>
     <string name="error_connection_error">Connection error: %1$s</string>
+    <string name="error_token_not_found">Authentication token not found</string>
+    <string name="error_load_deliveries">Error loading deliveries: %1$d</string>
     <string name="error_unknown">Unknown error</string>
 
     <!-- Client Orders (new) -->
@@ -332,11 +362,18 @@
     <string name="orders_delivered_at">Delivered:</string>
     <string name="orders_products">Products</string>
     <string name="orders_total_label">Total</string>
+    
+    <!-- Order Status -->
+    <string name="order_status_draft">Draft</string>
+    <string name="order_status_confirmed">Confirmed</string>
+    <string name="order_status_in_transit">In Transit</string>
+    <string name="order_status_delivered">Delivered</string>
     <string name="orders_date_range">Date range: %1$s to %2$s</string>
     <string name="orders_select">Select</string>
     <string name="orders_clear">Clear</string>
     <string name="orders_quantity">Quantity: %1$d</string>
     <string name="orders_subtotal">Subtotal: %1$s</string>
+    <string name="order_number_prefix">Order</string>
     <!-- Evidence Upload (new additions) -->
     <string name="upload_evidence">Upload evidence</string>
     <string name="select_file">Select file</string>
@@ -347,4 +384,18 @@
     <string name="evidence_attach_title">Attach evidence</string>
     <string name="evidence_attach_subtitle">Select files from your device</string>
     <string name="save">Save</string>
+    <string name="get_suggestions">Get visit suggestions</string>
+    <string name="visit_suggestions_title">Visit Suggestions</string>
+    <string name="close">Close</string>
+    <string name="loading_suggestions">Loading suggestions</string>
+    <string name="loading_suggestions_message">Generating suggestions based on the visit...</string>
+    <string name="uploading_evidence">Uploading evidence</string>
+    <string name="uploading_evidence_message">Uploading evidence and recording the visit...</string>
+    <string name="suggestion_info">Information</string>
+    <string name="model_used">Model used</string>
+    <string name="created_at">Created at</string>
+    <string name="error_visit_id_not_available">Visit ID not available</string>
+    <string name="error_token_not_available">Authentication token not available</string>
+    <string name="error_get_suggestions">Error getting suggestions</string>
+    <string name="error_connection_suggestions">Connection error getting suggestions</string>
 </resources>

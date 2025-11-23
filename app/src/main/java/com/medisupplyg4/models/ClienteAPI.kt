@@ -6,9 +6,10 @@ package com.medisupplyg4.models
 data class ClienteAPI(
     val id: String,
     val nombre: String,
-    val email: String,
-    val identificacion: String, // NIT
-    val telefono: String,
-    val direccion: String,
-    val estado: String
+    val email: String = "",
+    val identificacion: String = "", // NIT
+    val telefono: String = "",
+    val direccion: String = "",
+    val estado: String = "ACTIVO",
+    val avatar: String? = null
 )

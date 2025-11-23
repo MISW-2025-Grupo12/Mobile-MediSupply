@@ -6,10 +6,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.medisupplyg4.R
 import com.medisupplyg4.models.OrderUI
 import com.medisupplyg4.repositories.ClientOrdersRepository
 import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 class ClientOrdersViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,7 +36,20 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
     val selectedEndDate: LiveData<LocalDate?> = _selectedEndDate
 
     init {
+        // Establecer filtro por defecto: semana actual (lunes a domingo)
+        setDefaultWeekFilter()
         loadOrders()
+    }
+
+    /**
+     * Establece el filtro por defecto a la semana actual (lunes a domingo)
+     */
+    private fun setDefaultWeekFilter() {
+        val today = LocalDate.now()
+        val monday = today.with(DayOfWeek.MONDAY)
+        val sunday = today.with(DayOfWeek.SUNDAY)
+        _selectedStartDate.value = monday
+        _selectedEndDate.value = sunday
     }
 
     fun loadOrders(page: Int = 1, pageSize: Int = 20) {
@@ -43,9 +58,10 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
             try {
                 val token = SessionManager.getToken(getApplication()) ?: ""
                 val clienteId = SessionManager.getUserId(getApplication()) ?: ""
-                val result = repository.getPedidosCliente(token, clienteId, page, pageSize)
+                val orderPrefix = getApplication<Application>().getString(R.string.order_number_prefix)
+                val result = repository.getPedidosCliente(token, clienteId, orderPrefix, page, pageSize)
                 if (result.isSuccess) {
-                    _orders.value = result.getOrNull()?.sortedByDescending { it.createdAt } ?: emptyList()
+                    _orders.value = result.getOrNull()?.sortedBy { it.createdAt } ?: emptyList()
                 } else {
                     Log.w(TAG, "Fallo cargando pedidos desde API: ${result.exceptionOrNull()?.message}")
                     _orders.value = emptyList()
@@ -72,6 +88,14 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
         applyDateFilter()
     }
 
+    /**
+     * Limpia el filtro de fechas y restablece el filtro por defecto de la semana actual
+     */
+    fun clearDateFilter() {
+        setDefaultWeekFilter()
+        applyDateFilter()
+    }
+
     private fun applyDateFilter() {
         val list = _orders.value ?: emptyList()
         val start = _selectedStartDate.value
@@ -82,6 +106,6 @@ class ClientOrdersViewModel(application: Application) : AndroidViewModel(applica
             start != null && end != null -> list.filter { !it.createdAt.isBefore(start) && !it.createdAt.isAfter(end) }
             else -> list
         }
-        _filteredOrders.value = filtered.sortedByDescending { it.createdAt }
+        _filteredOrders.value = filtered.sortedBy { it.createdAt }
     }
 }

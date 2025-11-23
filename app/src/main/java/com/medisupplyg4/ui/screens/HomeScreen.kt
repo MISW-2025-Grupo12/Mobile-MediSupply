@@ -12,8 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.R
 import com.medisupplyg4.models.UserRole
-import com.medisupplyg4.ui.screens.driver.DriverRoutesScreen
-import com.medisupplyg4.ui.screens.driver.DriverDeliveriesScreen
+import com.medisupplyg4.ui.screens.driver.DriverRoutesNavigation
 import com.medisupplyg4.ui.screens.seller.SellerNavigationScreen
 import com.medisupplyg4.ui.screens.seller.SellerOrdersNavigationScreen
 import com.medisupplyg4.ui.screens.seller.ClientesScreen
@@ -36,7 +35,6 @@ fun HomeScreen(
     val tabs = when (userRole) {
         UserRole.DRIVER -> listOf(
             Triple(R.drawable.map, stringResource(R.string.routes), "routes"),
-            Triple(R.drawable.inventory, stringResource(R.string.deliveries), "deliveries"),
             Triple(R.drawable.person, stringResource(R.string.profile), "profile")
         )
         UserRole.SELLER -> listOf(
@@ -47,7 +45,7 @@ fun HomeScreen(
         )
         UserRole.CLIENT -> listOf(
             Triple(R.drawable.inventory, stringResource(R.string.orders_title), "orders"),
-            Triple(R.drawable.history, stringResource(R.string.history), "history"),
+            Triple(R.drawable.local_shipping, stringResource(R.string.deliveries), "deliveries"),
             Triple(R.drawable.person, stringResource(R.string.profile), "profile")
         )
         else -> {
@@ -87,9 +85,8 @@ fun HomeScreen(
             when (userRole) {
                 UserRole.DRIVER -> {
                     when (selectedTabIndex) {
-                        0 -> DriverRoutesScreen(navController = navController)
-                        1 -> DriverDeliveriesScreen(navController = navController)
-                        2 -> ProfileScreen(navController = navController)
+                        0 -> DriverRoutesNavigation()
+                        1 -> ProfileScreen(navController = navController)
                     }
                 }
                 UserRole.SELLER -> {
@@ -106,10 +103,7 @@ fun HomeScreen(
                 UserRole.CLIENT -> {
                     when (selectedTabIndex) {
                         0 -> ClientOrdersNavigation()
-                        1 -> {
-                            // Placeholder historial
-                            Text(text = stringResource(R.string.section_not_implemented))
-                        }
+                        1 -> com.medisupplyg4.ui.screens.client.ClientDeliveriesNavigation()
                         2 -> ProfileScreen(navController = navController)
                     }
                 }

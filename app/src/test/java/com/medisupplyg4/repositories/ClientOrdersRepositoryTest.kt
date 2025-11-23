@@ -87,7 +87,7 @@ class ClientOrdersRepositoryTest {
         coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId)
+        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -95,7 +95,7 @@ class ClientOrdersRepositoryTest {
         assertNotNull(list)
         assertEquals(1, list!!.size)
         val first = list.first()
-        assertEquals("Pedido abc123", first.number) // built from id.take(6)
+        assertEquals("Pedido abc123", first.number) // built from prefix + id.take(6)
         assertEquals(1, first.items.size)
         assertEquals("Prod 1", first.items.first().name)
         assertEquals(LocalDate.of(2025, 10, 29), first.createdAt)
@@ -120,7 +120,7 @@ class ClientOrdersRepositoryTest {
         coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId)
+        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -148,7 +148,7 @@ class ClientOrdersRepositoryTest {
         coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId)
+        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
 
         // Then
         assertTrue(result.isSuccess)
@@ -167,10 +167,39 @@ class ClientOrdersRepositoryTest {
         coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.error(403, okhttp3.ResponseBody.create(null, ""))
 
         // When
-        val result = repository.getPedidosCliente(token, clienteId)
+        val result = repository.getPedidosCliente(token, clienteId, "Pedido")
 
         // Then
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull()?.message?.startsWith("HTTP_") == true)
+    }
+
+    @Test
+    fun `getPedidosCliente uses custom order number prefix`() = runTest {
+        // Given
+        val token = "tkn"
+        val clienteId = "client-1"
+        val customPrefix = "Order"
+        val apiResponse = createPaginatedResponse(
+            PedidoClienteAPI(
+                id = "test123456",
+                vendedorId = "vend-1",
+                clienteId = clienteId,
+                estado = "confirmado",
+                total = 1000.0,
+                fechaCreacion = "2025-10-29T02:06:19.651168",
+                items = emptyList()
+            )
+        )
+        coEvery { mockApi.getPedidosCliente("Bearer $token", clienteId, 1, 20) } returns Response.success(apiResponse)
+
+        // When
+        val result = repository.getPedidosCliente(token, clienteId, customPrefix)
+
+        // Then
+        assertTrue(result.isSuccess)
+        val order = result.getOrNull()?.first()
+        assertNotNull(order)
+        assertEquals("Order test12", order!!.number) // custom prefix + id.take(6)
     }
 }

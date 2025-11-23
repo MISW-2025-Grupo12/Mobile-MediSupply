@@ -19,6 +19,7 @@ class ClientOrdersRepository {
     suspend fun getPedidosCliente(
         token: String,
         clienteId: String,
+        orderNumberPrefix: String = "Pedido",
         page: Int = 1,
         pageSize: Int = 20
     ): Result<List<OrderUI>> {
@@ -27,7 +28,7 @@ class ClientOrdersRepository {
             val resp = pedidosApi.getPedidosCliente("Bearer $token", clienteId, page, pageSize)
             if (resp.isSuccessful) {
                 val body = resp.body()
-                val orders = body?.items?.map { it.toOrderUI() } ?: emptyList()
+                val orders = body?.items?.map { it.toOrderUI(orderNumberPrefix) } ?: emptyList()
                 Result.success(orders)
             } else {
                 Result.failure(Exception("HTTP_${resp.code()}"))
@@ -39,7 +40,7 @@ class ClientOrdersRepository {
     }
 }
 
-private fun PedidoClienteAPI.toOrderUI(): OrderUI {
+private fun PedidoClienteAPI.toOrderUI(orderNumberPrefix: String = "Pedido"): OrderUI {
     val itemsUi = items.map {
         OrderItemUI(
             id = it.id,
@@ -63,7 +64,7 @@ private fun PedidoClienteAPI.toOrderUI(): OrderUI {
     
     return OrderUI(
         id = id,
-        number = "Pedido ${id.take(6)}",
+        number = "$orderNumberPrefix ${id.take(6)}",
         createdAt = createdAt,
         status = mapBackendStatus(estado),
         items = itemsUi

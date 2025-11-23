@@ -78,7 +78,7 @@ fun ClientOrdersScreen(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.orders_select))
                     }
-                    TextButton(onClick = { viewModel.setDateRange(null, null) }) {
+                    TextButton(onClick = { viewModel.clearDateFilter() }) {
                         Text(stringResource(R.string.orders_clear))
                     }
                 }

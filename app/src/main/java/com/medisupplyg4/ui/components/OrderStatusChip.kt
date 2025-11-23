@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.medisupplyg4.R
@@ -21,6 +23,9 @@ import com.medisupplyg4.models.OrderStatus
 
 @Composable
 fun OrderStatusChip(status: OrderStatus, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val statusText = stringResource(status.titleResId)
+    
     val (bg, fg, iconRes) = when (status) {
         // Borrador
         OrderStatus.BORRADOR -> Triple(Color(0xFFFFF8E1), Color(0xFFF9A825), R.drawable.contract_edit)
@@ -38,8 +43,8 @@ fun OrderStatusChip(status: OrderStatus, modifier: Modifier = Modifier) {
             .background(bg, RoundedCornerShape(12.dp))
             .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
-        Icon(painter = painterResource(id = iconRes), contentDescription = status.displayName, tint = fg, modifier = Modifier.size(18.dp))
+        Icon(painter = painterResource(id = iconRes), contentDescription = statusText, tint = fg, modifier = Modifier.size(18.dp))
         Spacer(modifier = Modifier.size(6.dp))
-        Text(text = status.displayName, color = fg, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+        Text(text = statusText, color = fg, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
     }
 }

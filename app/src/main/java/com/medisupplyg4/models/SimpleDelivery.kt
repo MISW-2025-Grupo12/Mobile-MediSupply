@@ -13,7 +13,13 @@ data class SimpleDelivery(
     val direccion: String,
     @SerializedName("fecha_entrega") val fechaEntregaString: String,
     val cliente: ClienteAPI?,
-    val productos: List<ItemPedido>
+    val productos: List<ItemPedido>,
+    // Información del pedido asociado
+    val pedidoId: String? = null,
+    val pedidoTotal: Double? = null,
+    val pedidoEstado: String? = null,
+    val pedidoFechaConfirmacion: String? = null,
+    val pedidoVendedorId: String? = null
 ) {
     /**
      * Convierte la fecha string a LocalDateTime
@@ -40,9 +46,9 @@ data class SimpleDelivery(
     }
 
     /**
-     * Obtiene el avatar del cliente (placeholder)
+     * Obtiene el avatar del cliente
      */
     val avatarCliente: String
-        get() = "" // TODO: Add avatar field to ClienteAPI if needed
+        get() = cliente?.avatar ?: ""
 
 }

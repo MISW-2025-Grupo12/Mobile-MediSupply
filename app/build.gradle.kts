@@ -16,8 +16,8 @@ android {
         applicationId = "com.medisupplyg4"
         minSdk = 28
         targetSdk = 36
-        versionCode = 3
-        versionName = "2.0.0"
+        versionCode = 4
+        versionName = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.gson)
     implementation(libs.okhttp)
+    implementation(libs.okhttp.sse)
     implementation(libs.kotlinx.coroutines.android)
     
     // Image loading

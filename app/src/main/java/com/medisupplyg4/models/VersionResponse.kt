@@ -8,3 +8,4 @@ data class VersionResponse(
     @SerializedName("commit_hash") val commitHash: String,
     val environment: String
 )
+

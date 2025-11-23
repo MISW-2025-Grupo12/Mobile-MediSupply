@@ -1,10 +1,13 @@
 package com.medisupplyg4.ui.screens.client
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -182,8 +187,17 @@ fun ClientOrderSummaryScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(itemsPedido) { item ->
+                        // Get available inventory for this product
+                        // First try filtered list, then try all products (in case product was filtered out)
+                        val productosFiltrados by viewModel.productosFiltrados.observeAsState(emptyList())
+                        val productosConInventario by viewModel.productosConInventario.observeAsState(emptyList())
+                        val productoConInventario = productosFiltrados.find { it.id == item.producto.id }
+                            ?: productosConInventario.find { it.id == item.producto.id }
+                        val cantidadDisponible = productoConInventario?.cantidadDisponible ?: 0
+                        
                         OrderItemCard(
                             item = item,
+                            cantidadDisponible = cantidadDisponible,
                             onQuantityChange = { newQuantity ->
                                 viewModel.actualizarCantidadProducto(item.producto.id, newQuantity)
                             },
@@ -283,10 +297,21 @@ fun ClientOrderSummaryScreen(
 @Composable
 private fun OrderItemCard(
     item: ItemPedido,
+    cantidadDisponible: Int,
     onQuantityChange: (Int) -> Unit,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var quantityText by remember(item.cantidad) { mutableStateOf(item.cantidad.toString()) }
+    var isEditing by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    
+    // Update quantity text when item quantity changes externally
+    LaunchedEffect(item.cantidad) {
+        if (!isEditing) {
+            quantityText = item.cantidad.toString()
+        }
+    }
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -372,19 +397,71 @@ private fun OrderItemCard(
                     )
                 }
                 
-                Text(
-                    text = item.cantidad.toString(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
+                // Editable quantity field
+                if (isEditing) {
+                    TextField(
+                        value = quantityText,
+                        onValueChange = { newValue ->
+                            // Only allow numeric input
+                            if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
+                                quantityText = newValue
+                            }
+                        },
+                        modifier = Modifier
+                            .width(60.dp)
+                            .padding(horizontal = 8.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                val newQuantity = quantityText.toIntOrNull() ?: item.cantidad
+                                val validQuantity = newQuantity.coerceIn(1, cantidadDisponible)
+                                quantityText = validQuantity.toString()
+                                onQuantityChange(validQuantity)
+                                isEditing = false
+                                keyboardController?.hide()
+                            },
+                            onNext = {
+                                val newQuantity = quantityText.toIntOrNull() ?: item.cantidad
+                                val validQuantity = newQuantity.coerceIn(1, cantidadDisponible)
+                                quantityText = validQuantity.toString()
+                                onQuantityChange(validQuantity)
+                                isEditing = false
+                                keyboardController?.hide()
+                            }
+                        ),
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                        )
+                    )
+                } else {
+                    Text(
+                        text = item.cantidad.toString(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .clickable {
+                                isEditing = true
+                                keyboardController?.show()
+                            }
+                    )
+                }
                 
                 IconButton(
                     onClick = { 
-                        // TODO: Get inventory from ViewModel to check availability
-                        onQuantityChange(item.cantidad + 1)
+                        if (item.cantidad < cantidadDisponible) {
+                            onQuantityChange(item.cantidad + 1)
+                        }
                     },
-                    enabled = true // TODO: Check against actual inventory
+                    enabled = item.cantidad < cantidadDisponible
                 ) {
                     Icon(
                         Icons.Default.Add,

@@ -88,13 +88,19 @@ MediSupply G12 es una aplicación móvil desarrollada en Android que facilita la
 ### Opción 1: APK Pre-compilado (Recomendado)
 ```bash
 # El APK ya está disponible en la raíz del proyecto
-MediSupplyG12-v2.0.0.apk
+MediSupplyG12-v3.0.0.apk
 
 # Instalar en dispositivo Android
-adb install MediSupplyG12-v2.0.0.apk
+adb install MediSupplyG12-v3.0.0.apk
 ```
 
 ## 📋 Changelog
+
+### v3.0.0 (2025-11-22)
+- 🎉 **Release 3.0.0**: Versión mayor con nuevas funcionalidades y mejoras
+- ✅ **Registro de clientes**: Implementado sistema de registro de nuevos clientes desde la aplicación
+- ✅ **Mejoras en gestión de pedidos**: Optimizaciones en el flujo de creación y seguimiento de pedidos
+- ✅ **Mejoras de rendimiento**: Optimizaciones generales en la aplicación
 
 ### v2.0.0 (2025-11-02)
 - ✅ **Paginación infinita**: Implementada paginación con scroll infinito para visitas del vendedor y listado de clientes
@@ -263,6 +269,6 @@ export ANDROID_HOME=/path/to/android-sdk
 
 ---
 
-**Versión**: 2.0.0  
-**Última actualización**: 2 de Noviembre de 2025  
+**Versión**: 3.0.0  
+**Última actualización**: 22 de Noviembre de 2025  
 **Estado**: ✅ Estable y listo para producción

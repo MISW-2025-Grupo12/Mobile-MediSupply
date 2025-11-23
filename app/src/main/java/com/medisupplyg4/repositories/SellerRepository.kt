@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import com.medisupplyg4.R
 import com.medisupplyg4.config.ApiConfig
 import com.medisupplyg4.models.PaginatedResponse
 import com.medisupplyg4.models.SellerAPI
 import com.medisupplyg4.models.VisitAPI
 import com.medisupplyg4.models.VisitRecordRequest
 import com.medisupplyg4.models.VisitRecordResponse
+import com.medisupplyg4.models.VisitSuggestionsResponse
 import com.medisupplyg4.network.NetworkClient
 import com.medisupplyg4.utils.SessionManager
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -132,7 +134,8 @@ class SellerRepository {
         fechaInicio: LocalDate,
         fechaFin: LocalDate,
         page: Int = 1,
-        pageSize: Int = 10
+        pageSize: Int = 10,
+        context: Context
     ): Result<PaginatedResponse<VisitAPI>> {
         return try {
             val fechaInicioStr = fechaInicio.format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -157,11 +160,13 @@ class SellerRepository {
                     Result.success(paginatedResponse)
                 } else {
                     Log.e(TAG, "Respuesta vacía al obtener visitas paginadas")
-                    Result.failure(Exception("Respuesta vacía del servidor"))
+                    val errorMessage = context.getString(R.string.error_server_empty_response)
+                    Result.failure(Exception(errorMessage))
                 }
             } else {
                 Log.e(TAG, "Error al obtener visitas paginadas: ${response.code()} - ${response.message()}")
-                Result.failure(Exception("Error del servidor: ${response.code()} - ${response.message()}"))
+                val errorMessage = context.getString(R.string.error_server_error, response.code(), response.message() ?: "")
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al obtener visitas paginadas", e)
@@ -272,6 +277,27 @@ class SellerRepository {
         } catch (e: Exception) {
             Log.e(TAG, "Excepción subiendo evidencia", e)
             false
+        }
+    }
+    
+    /**
+     * Obtiene las sugerencias de una visita
+     */
+    suspend fun getVisitSuggestions(token: String, visitaId: String): VisitSuggestionsResponse? {
+        return try {
+            val response = visitasApiService.getVisitSuggestions(
+                token = "Bearer $token",
+                visitaId = visitaId
+            )
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                Log.e(TAG, "Error obteniendo sugerencias: ${response.code()} - ${response.message()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Excepción obteniendo sugerencias", e)
+            null
         }
     }
 }

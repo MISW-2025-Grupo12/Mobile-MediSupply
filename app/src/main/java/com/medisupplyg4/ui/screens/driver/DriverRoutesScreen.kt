@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.medisupplyg4.models.RoutePeriod
 import com.medisupplyg4.ui.components.SimplePeriodTabs
-import com.medisupplyg4.ui.components.DeliveryGroupedByDay
+import com.medisupplyg4.ui.components.RoutesGroupedByDay
 import com.medisupplyg4.viewmodels.DeliveryRouteViewModel
 import java.time.LocalDate
 import androidx.compose.ui.res.painterResource
@@ -29,7 +29,7 @@ fun DriverRoutesScreen(
     navController: NavController = rememberNavController()
 ) {
     // Usar el ViewModel real
-    val deliveries by viewModel.deliveries.observeAsState(emptyList())
+    val routes by viewModel.routes.observeAsState(emptyList())
     val isLoading by viewModel.isLoading.observeAsState(false)
     val selectedPeriod by viewModel.selectedPeriod.observeAsState(RoutePeriod.DAY)
     val selectedDate by viewModel.selectedDate.observeAsState(LocalDate.now())
@@ -70,7 +70,7 @@ fun DriverRoutesScreen(
                     CircularProgressIndicator()
                 }
             }
-            deliveries.isEmpty() -> {
+            routes.isEmpty() -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -83,12 +83,12 @@ fun DriverRoutesScreen(
                     ) {
                         Icon(
                             painterResource(R.drawable.inventory),
-                            contentDescription = stringResource(R.string.no_deliveries),
+                            contentDescription = stringResource(R.string.no_routes_available),
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = stringResource(R.string.no_deliveries_found),
+                            text = stringResource(R.string.no_routes_available),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -96,52 +96,31 @@ fun DriverRoutesScreen(
                 }
             }
             else -> {
-                when (selectedPeriod) {
-                    RoutePeriod.DAY -> {
-                        // Para el día, mostrar entregas agrupadas por día
-                        val groupedDeliveries = deliveries.groupBy { delivery ->
-                            delivery.fechaEntrega.toLocalDate()
-                        }.toSortedMap()
-
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            state = groupedListState,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(vertical = 16.dp)
-                        ) {
-                            groupedDeliveries.forEach { (_, dayDeliveries) ->
-                                item {
-                                    DeliveryGroupedByDay(
-                                        deliveries = dayDeliveries
-                                    )
+                // Para todos los períodos (día, semana, mes), mostrar rutas agrupadas por día
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    state = groupedListState,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
+                    item {
+                        RoutesGroupedByDay(
+                            routes = routes,
+                            onDayClick = { selectedDate ->
+                                // Buscar la ruta del día seleccionado
+                                val routeForDate = routes.find { it.fechaRutaLocalDate == selectedDate }
+                                routeForDate?.let { 
+                                    // Pasar solo el ID de la ruta
+                                    navController.navigate("route_detail/${it.id}")
                                 }
+                            },
+                            onRouteClick = { route ->
+                                // Pasar solo el ID de la ruta
+                                navController.navigate("route_detail/${route.id}")
                             }
-                        }
-                    }
-                    RoutePeriod.WEEK, RoutePeriod.MONTH -> {
-                        // Para semana y mes, mostrar entregas agrupadas por día
-                        val groupedDeliveries = deliveries.groupBy { delivery ->
-                            delivery.fechaEntrega.toLocalDate()
-                        }.toSortedMap()
-
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            state = groupedListState,
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(vertical = 16.dp)
-                        ) {
-                            groupedDeliveries.forEach { (_, dayDeliveries) ->
-                                item {
-                                    DeliveryGroupedByDay(
-                                        deliveries = dayDeliveries
-                                    )
-                                }
-                            }
-                        }
+                        )
                     }
                 }
             }
