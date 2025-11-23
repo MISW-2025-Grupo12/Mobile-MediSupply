@@ -54,4 +54,14 @@ interface DeliveryApiService {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 20
     ): Response<List<RouteDetail>>
+    
+    /**
+     * Obtiene las rutas de un repartidor
+     * Nota: El backend devuelve un array directo
+     */
+    @GET("rutas/repartidor/{repartidor_id}")
+    suspend fun getRoutesByRepartidor(
+        @Header("Authorization") token: String,
+        @Path("repartidor_id") repartidorId: String
+    ): Response<List<RouteDetail>>
 }

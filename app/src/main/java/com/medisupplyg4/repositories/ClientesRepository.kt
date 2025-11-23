@@ -66,4 +66,30 @@ class ClientesRepository {
             Result.failure(e)
         }
     }
+
+    suspend fun getClienteById(token: String, clienteId: String): Result<ClienteAPI> {
+        return try {
+            Log.d(TAG, "Obteniendo cliente por ID: $clienteId")
+            
+            val response = clientesApiService.getClienteById("Bearer $token", clienteId)
+            
+            if (response.isSuccessful) {
+                val cliente = response.body()
+                if (cliente != null) {
+                    Log.d(TAG, "Cliente obtenido exitosamente: ${cliente.nombre}")
+                    Result.success(cliente)
+                } else {
+                    Log.e(TAG, "Respuesta vacía del servidor")
+                    Result.failure(Exception("Respuesta vacía del servidor"))
+                }
+            } else {
+                val errorMessage = "Error ${response.code()}: ${response.message()}"
+                Log.e(TAG, errorMessage)
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener cliente por ID", e)
+            Result.failure(e)
+        }
+    }
 }

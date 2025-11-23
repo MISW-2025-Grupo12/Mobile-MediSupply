@@ -35,6 +35,7 @@ import java.util.Locale
 @Composable
 fun RouteDetailScreen(
     rutaId: String,
+    routeFromList: RouteDetail? = null,
     onBack: () -> Unit,
     viewModel: RouteDetailViewModel = viewModel()
 ) {
@@ -42,13 +43,17 @@ fun RouteDetailScreen(
     val isLoading by viewModel.isLoading.observeAsState(false)
     val error by viewModel.error.observeAsState(null)
 
-    LaunchedEffect(rutaId) {
-        // Si rutaId parece ser una fecha (formato YYYY-MM-DD), cargar por fecha
-        // De lo contrario, cargar por ID
-        if (rutaId.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
-            viewModel.loadRouteByDate(rutaId)
+    LaunchedEffect(rutaId, routeFromList) {
+        // Si tenemos la ruta de la lista, usarla directamente
+        if (routeFromList != null) {
+            viewModel.setRouteDetail(routeFromList)
         } else {
-            viewModel.loadRouteDetail(rutaId)
+            // Si no la tenemos, intentar cargar por ID o fecha
+            if (rutaId.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
+                viewModel.loadRouteByDate(rutaId)
+            } else {
+                viewModel.loadRouteDetail(rutaId)
+            }
         }
     }
 
@@ -67,8 +72,11 @@ fun RouteDetailScreen(
             )
         }
     ) { padding ->
+        // Usar routeFromList si está disponible, sino usar routeDetail del ViewModel
+        val currentRoute = routeFromList ?: routeDetail
+        
         when {
-            isLoading -> {
+            isLoading && currentRoute == null -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -78,7 +86,7 @@ fun RouteDetailScreen(
                     CircularProgressIndicator()
                 }
             }
-            error != null -> {
+            error != null && currentRoute == null -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -101,7 +109,7 @@ fun RouteDetailScreen(
                     }
                 }
             }
-            routeDetail == null -> {
+            currentRoute == null -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -113,7 +121,7 @@ fun RouteDetailScreen(
             }
             else -> {
                 RouteDetailContent(
-                    routeDetail = routeDetail!!,
+                    routeDetail = currentRoute,
                     modifier = Modifier.padding(padding)
                 )
             }

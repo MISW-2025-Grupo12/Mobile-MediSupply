@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.medisupplyg4.R
-import com.medisupplyg4.models.SimpleDelivery
+import com.medisupplyg4.models.RouteDetail
 import com.medisupplyg4.models.RoutePeriod
+import com.medisupplyg4.models.SimpleDelivery
 import com.medisupplyg4.repositories.DeliveryRouteRepository
 import com.medisupplyg4.utils.SessionManager
 import kotlinx.coroutines.Job
@@ -25,6 +26,7 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
 
     private val deliveryRouteRepository = DeliveryRouteRepository()
 
+    private val _routes = MutableLiveData<List<RouteDetail>>()
     private val _deliveries = MutableLiveData<List<SimpleDelivery>>()
     private val _isLoading = MutableLiveData(false)
     private val _selectedPeriod = MutableLiveData(RoutePeriod.DAY)
@@ -32,6 +34,9 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
 
     // Job para cancelar llamadas anteriores
     private var loadRoutesJob: Job? = null
+
+    val routes: LiveData<List<RouteDetail>>
+        get() = _routes
 
     val deliveries: LiveData<List<SimpleDelivery>>
         get() = _deliveries
@@ -64,20 +69,28 @@ class DeliveryRouteViewModel(application: Application) : AndroidViewModel(applic
                 val date = _selectedDate.value ?: LocalDate.now()
                 val period = _selectedPeriod.value ?: RoutePeriod.DAY
                 
-                // Log.d(TAG, "loadRoutes() llamado - Período: $period, Fecha: $date, Página: $page")
-
-                // Obtener token de autenticación
+                // Obtener token de autenticación y repartidor_id
                 val token = SessionManager.getToken(getApplication()) ?: ""
-                val fetchedDeliveries = deliveryRouteRepository.getDeliveries(token, date, period, page, pageSize)
+                val repartidorId = SessionManager.getUserId(getApplication()) ?: ""
+                
+                if (repartidorId.isEmpty()) {
+                    Log.w(TAG, "No se encontró repartidor_id en la sesión")
+                    _routes.value = emptyList()
+                    _isLoading.value = false
+                    return@launch
+                }
 
-                // Ordenar entregas por fecha de entrega
-                _deliveries.value = fetchedDeliveries.sortedBy { delivery -> delivery.fechaEntrega }
+                // Obtener rutas del repartidor
+                val fetchedRoutes = deliveryRouteRepository.getRoutes(token, repartidorId, date, period)
+
+                // Ordenar rutas por fecha de ruta
+                _routes.value = fetchedRoutes.sortedBy { route -> route.fechaRutaLocalDate }
                 _eventNetworkError.value = false
                 _isLoading.value = false
             } catch (error: Exception) {
                 // Solo logear errores reales, no cancelaciones
                 if (error !is kotlinx.coroutines.CancellationException) {
-                    Log.d(TAG, error.toString())
+                    Log.e(TAG, "Error cargando rutas", error)
                     _eventNetworkError.value = true
                 }
                 _isLoading.value = false

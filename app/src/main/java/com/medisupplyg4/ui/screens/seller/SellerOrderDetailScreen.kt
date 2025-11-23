@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -30,8 +31,19 @@ fun SellerOrderDetailScreen(
     onBack: () -> Unit,
     viewModel: SellerOrdersViewModel = viewModel()
 ) {
-    val orders by viewModel.orders.observeAsState(emptyList())
-    val order = orders.find { it.id == orderId }
+    // Observar estados del ViewModel
+    val orderDetail by viewModel.orderDetail.observeAsState(null)
+    val cliente by viewModel.cliente.observeAsState(null)
+    val isLoadingDetail by viewModel.isLoadingDetail.observeAsState(false)
+    val isLoadingCliente by viewModel.isLoadingCliente.observeAsState(false)
+    val error by viewModel.error.observeAsState(null)
+
+    // Cargar el detalle del pedido cuando se entra a la pantalla
+    LaunchedEffect(orderId) {
+        viewModel.loadOrderDetail(orderId)
+    }
+
+    val isLoading = isLoadingDetail || isLoadingCliente
 
     Scaffold(
         topBar = {
@@ -43,12 +55,26 @@ fun SellerOrderDetailScreen(
             )
         }
     ) { padding ->
-        if (order == null) {
+        if (isLoading) {
             Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.orders_order_not_found))
+                CircularProgressIndicator()
             }
             return@Scaffold
         }
+
+        if (orderDetail == null) {
+            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = error ?: stringResource(R.string.orders_order_not_found),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            return@Scaffold
+        }
+
+        val order = orderDetail!!
 
         LazyColumn(
             modifier = Modifier
@@ -57,6 +83,40 @@ fun SellerOrderDetailScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Información del cliente
+            cliente?.let { client ->
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.client),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = client.nombre,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = client.direccion,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+                item { Divider() }
+            }
+
             item {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OrderStatusChip(status = order.status)
